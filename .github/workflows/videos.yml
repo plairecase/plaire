@@ -20,7 +20,7 @@ permissions:
 jobs:
   videos:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -45,6 +45,13 @@ jobs:
           pip install -q -r requirements.txt
           cd remotion && npm ci --no-audit --no-fund && npx remotion browser ensure
 
+      - name: Кеш исходников (не качать с Диска заново)
+        uses: actions/cache@v4
+        with:
+          path: work/src
+          key: sources-v1-${{ github.run_id }}
+          restore-keys: sources-v1-
+
       - name: Подключить Google Диск
         env:
           GDRIVE_ROOT_ID: ${{ secrets.GDRIVE_ROOT_ID }}
@@ -55,7 +62,7 @@ jobs:
         run: bash scripts/setup_rclone.sh
 
       - name: Собрать ролики
-        run: python -m scripts.make_videos --mode test --hdr-compare ${{ inputs.seed != '' && format('--seed {0}', inputs.seed) || '' }}
+        run: python -m scripts.make_videos --mode test ${{ inputs.seed != '' && format('--seed {0}', inputs.seed) || '' }}
 
       - name: Превью (артефакт)
         if: always()

@@ -39,7 +39,11 @@ def cut(src: Path, start: float, dur: float, out: Path, fps: int, crf: int, hdr:
                "-vf", vf, "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", str(crf),
                "-pix_fmt", "yuv420p", "-color_primaries", "bt709", "-color_trc", "bt709",
                "-colorspace", "bt709", "-movflags", "+faststart", str(out)]
-        res = subprocess.run(cmd, capture_output=True, text=True)
+        try:
+            res = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
+        except subprocess.TimeoutExpired:
+            err = "нарезка дольше 5 минут"
+            continue
         if res.returncode == 0:
             return out
         err = res.stderr[-400:]

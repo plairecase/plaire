@@ -17,8 +17,16 @@ class DriveError(RuntimeError):
     pass
 
 
-def _run(*args: str, input_text: str | None = None) -> str:
-    res = subprocess.run(["rclone", *args], input=input_text, capture_output=True, text=True)
+# сеть: таймауты и повторы, чтобы зависание Диска не съедало весь запуск
+NET = ["--timeout", "60s", "--contimeout", "20s", "--low-level-retries", "5", "--retries", "3"]
+
+
+def _run(*args: str, input_text: str | None = None, timeout: int = 900) -> str:
+    try:
+        res = subprocess.run(["rclone", *args, *NET], input=input_text, capture_output=True, text=True,
+                             timeout=timeout)
+    except subprocess.TimeoutExpired as e:
+        raise DriveError(f"rclone {args[0]}: нет ответа {timeout} с") from e
     if res.returncode != 0:
         raise DriveError(f"rclone {args[0]}: {res.stderr.strip()[-800:]}")
     return res.stdout
@@ -30,8 +38,11 @@ def list_files(folder: str) -> list[dict]:
     return json.loads(out or "[]")
 
 
-def download(folder: str, name: str, dest: Path) -> Path:
+def download(folder: str, name: str, dest: Path, size: int | None = None) -> Path:
+    """Скачать файл; если в кеше уже лежит файл того же размера — не качать."""
     dest.parent.mkdir(parents=True, exist_ok=True)
+    if size and dest.exists() and dest.stat().st_size == size:
+        return dest
     _run("copyto", f"{REMOTE}{folder}/{name}", str(dest))
     return dest
 
@@ -42,7 +53,7 @@ def _check_writable(path: str) -> None:
 
 
 def read_json(path: str, default):
-    res = subprocess.run(["rclone", "cat", f"{REMOTE}{path}"], capture_output=True, text=True)
+    res = subprocess.run(["rclone", "cat", f"{REMOTE}{path}", *NET], capture_output=True, text=True, timeout=300)
     if res.returncode != 0:
         if "not found" in res.stderr.lower() or "doesn't exist" in res.stderr.lower():
             return default

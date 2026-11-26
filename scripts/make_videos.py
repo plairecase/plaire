@@ -64,7 +64,11 @@ def render(props: dict, comp: str, out: Path, cfg: dict) -> Path:
            "--codec=h264", f"--video-bitrate={cfg['render']['video_bitrate']}", "--log=error"]
     if os.environ.get("REMOTION_BROWSER"):
         cmd.append(f"--browser-executable={os.environ['REMOTION_BROWSER']}")
-    res = subprocess.run(cmd, cwd=REMOTION, capture_output=True, text=True)
+    cmd.append("--timeout=60000")
+    try:
+        res = subprocess.run(cmd, cwd=REMOTION, capture_output=True, text=True, timeout=900)
+    except subprocess.TimeoutExpired as e:
+        raise RuntimeError("Remotion: рендер не уложился в 15 минут") from e
     if res.returncode != 0:
         raise RuntimeError(f"Remotion: {(res.stderr or res.stdout)[-1500:]}")
     return out
@@ -160,9 +164,12 @@ def main(argv=None) -> int:
     t = time.time()
     src_dir = WORK / "src"
     need = sorted({s.name for p in plans for s in p.segments})
+    sizes = {f["name"]: f.get("size") for f in index["files"].values()}
     local_src = {}
     for name in need:
-        local_src[name] = (args.local / name) if args.local else drive.download(dcfg["sources"], name, src_dir / name)
+        print(f"  исходник {name}", flush=True)
+        local_src[name] = (args.local / name) if args.local else \
+            drive.download(dcfg["sources"], name, src_dir / name, sizes.get(name))
     if args.hdr_compare:
         hdr_seg = next((s for p in plans for s in p.segments if s.hdr), None)
         if hdr_seg:
@@ -171,6 +178,7 @@ def main(argv=None) -> int:
     for p in plans:
         for sg, clip in zip(p.segments, p.props["clips"]):
             rel = f"clips/c{k}.mp4"
+            print(f"  нарезка {rel}: {sg.name} {sg.src_start:.1f}+{sg.src_dur:.1f}", flush=True)
             media.cut(local_src[sg.name], sg.src_start, sg.src_dur, REMOTION / "public" / rel,
                       cfg["render"]["fps"], cfg["render"]["crf"], sg.hdr, sg.bbox, cfg["render"]["hdr_tonemap"])
             clip["src"] = rel
@@ -194,12 +202,14 @@ def main(argv=None) -> int:
         d = out_root / name
         d.mkdir(parents=True, exist_ok=True)
         t = time.time()
+        print(f"  рендер {name}…", flush=True)
         silent = render(p.props, COMP_ID[p.template], d / "_silent.mp4", cfg)
         timing[f"рендер {name}"] = time.time() - t
         audio = mix.render(p.sfx, sfx_dir, p.duration_s, d / "_clean.wav")
         final = mix.mux(silent, d / "_clean.wav", d / "video_clean.mp4")
         errs = probe_ok(final, p.template)
         contact(final, WORK / f"contact_{name}.jpg")
+        print(f"  готово {name}", flush=True)
         for tmp in (silent, d / "_clean.wav", silent.with_suffix(".props.json")):
             tmp.unlink(missing_ok=True)
         results.append({"folder": name, "plan": p, "audio": audio, "errors": errs})
@@ -209,6 +219,7 @@ def main(argv=None) -> int:
     if not args.local:
         t = time.time()
         for r in results:
+            print(f"  на Диск {r['folder']}", flush=True)
             drive.upload(out_root / r["folder"] / "video_clean.mp4", f"{dcfg['done']}/{folder}/{r['folder']}/video_clean.mp4")
         timing["загрузка на Диск"] = time.time() - t
     timing["всего"] = time.time() - t0
