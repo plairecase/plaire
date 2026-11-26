@@ -84,12 +84,16 @@ def fg_extent(src: Path, start: float, end: float, hdr: bool, n: int = 5) -> tup
             continue
         img = np.frombuffer(res.stdout, np.uint8).reshape(480, 270, 3)
         lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float32)
-        border = np.concatenate([lab[:12].reshape(-1, 3), lab[-12:].reshape(-1, 3),
-                                 lab[:, :12].reshape(-1, 3), lab[:, -12:].reshape(-1, 3)])
-        bg = np.median(border, axis=0)
-        if np.std(border, axis=0).mean() > 18:              # пёстрый фон — не измерить
+        # фон по строкам из левой и правой полос: студийный градиент сверху вниз — не помеха
+        strips = np.concatenate([lab[:, :14], lab[:, -14:]], axis=1)          # 480×28×3
+        bg_row = np.median(strips, axis=1)                                    # 480×3
+        k = 31
+        pad = np.pad(bg_row, ((k // 2, k // 2), (0, 0)), mode="edge")
+        bg_row = np.stack([np.convolve(pad[:, c], np.ones(k) / k, "valid") for c in range(3)], axis=1)
+        resid = np.linalg.norm(strips - bg_row[:, None, :], axis=2)
+        if np.median(resid) > 10:                            # пёстрый фон по краям — не измерить
             continue
-        mask = (np.linalg.norm(lab - bg, axis=2) > 28).astype(np.uint8)
+        mask = (np.linalg.norm(lab - bg_row[:, None, :], axis=2) > 28).astype(np.uint8)
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, np.ones((5, 5), np.uint8))
         if mask.mean() > 0.7:
             continue

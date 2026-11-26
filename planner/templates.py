@@ -120,7 +120,7 @@ def end_fit(s: dict) -> float:
     top, bot = bbox(s)
     if top >= END_TOP and bot <= END_BOTTOM:
         v = 4.0
-    elif top >= 0.36:                     # чехол в нижней части — ценник встанет сверху, под вордмарком
+    elif top >= 0.33:                     # чехол в нижней части — ценник встанет сверху, под вордмарком
         v = 1.0
     else:
         v = -6.0                          # вордмарк или ценник закроют чехол
@@ -223,8 +223,8 @@ def build_p_one_line(ctx: Ctx) -> Plan | None:
     case_top, case_bot = bbox(chosen[-1])
     if case_bot * 1920 + 40 <= 1130:
         tag_top = int(max(1090, case_bot * 1920 + 40))          # ниже чехла, выше y 1248
-    elif case_top >= 0.36:
-        tag_top = 520                                           # чехол внизу: ценник под вордмарком
+    elif case_top >= 0.33:
+        tag_top = 500                                           # чехол внизу: ценник под вордмарком
     else:
         tag_top = 1130
     end = {"from": frames(end_from, fps), "durationInFrames": frames(total, fps) - frames(end_from, fps),
