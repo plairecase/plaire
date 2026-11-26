@@ -66,3 +66,37 @@ def hdr_compare(src: Path, t: float, out: Path) -> Path:
     h = min(i.shape[0] for i in tiles)
     cv2.imwrite(str(out), np.hstack([i[:h] for i in tiles]))
     return out
+
+
+def fg_extent(src: Path, start: float, end: float, hdr: bool, n: int = 5) -> tuple[float, float] | None:
+    """Где по вертикали в кадре предмет (чехол, руки) — по отличию от фона по краям кадра.
+    Объединение по n кадрам плана. Возвращает (верх, низ) в долях высоты или None, если фон пёстрый."""
+    import cv2
+    import numpy as np
+
+    tops, bots = [], []
+    for i in range(n):
+        t = start + (end - start) * (i + 0.5) / n
+        vf = (TONEMAP["mobius"] + "," if hdr else "") + "scale=270:480"
+        res = subprocess.run(["ffmpeg", "-v", "error", "-ss", f"{t:.2f}", "-i", str(src), "-frames:v", "1",
+                              "-vf", vf, "-f", "rawvideo", "-pix_fmt", "bgr24", "-"], capture_output=True, timeout=60)
+        if res.returncode != 0 or len(res.stdout) != 270 * 480 * 3:
+            continue
+        img = np.frombuffer(res.stdout, np.uint8).reshape(480, 270, 3)
+        lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float32)
+        border = np.concatenate([lab[:12].reshape(-1, 3), lab[-12:].reshape(-1, 3),
+                                 lab[:, :12].reshape(-1, 3), lab[:, -12:].reshape(-1, 3)])
+        bg = np.median(border, axis=0)
+        if np.std(border, axis=0).mean() > 18:              # пёстрый фон — не измерить
+            continue
+        mask = (np.linalg.norm(lab - bg, axis=2) > 28).astype(np.uint8)
+        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, np.ones((5, 5), np.uint8))
+        if mask.mean() > 0.7:
+            continue
+        rows = np.where(mask.mean(axis=1) > 0.04)[0]
+        if len(rows):
+            tops.append(rows[0] / 480)
+            bots.append(rows[-1] / 480)
+    if not tops:
+        return None
+    return round(float(min(tops)), 3), round(float(max(bots)), 3)

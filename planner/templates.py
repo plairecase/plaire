@@ -90,8 +90,15 @@ def usable_len(s: dict, margin: float = 0.15) -> float:
     return s["shot"]["dur"] - 2 * margin
 
 
+MEASURE = None          # функция (shot) → (верх, низ) по реальным кадрам; задаёт make_videos
+
+
 def bbox(s: dict) -> tuple[float, float]:
-    """Верх и низ чехла в кадре (0…1)."""
+    """Верх и низ предмета в кадре (0…1): замер по кадрам плана, иначе рамка от разметки."""
+    if MEASURE is not None:
+        m = MEASURE(s)
+        if m:
+            return m
     x, y, w, h = s["shot"]["vision"]["case_bbox"]
     return y, y + h
 
@@ -111,9 +118,14 @@ def end_fit(s: dict) -> float:
     """Финал: чехол компактный и между вордмарком и ценником. Открытый/крутящийся чехол
     меняет размер внутри плана, поэтому предпочитаем статичный или медленный поворот."""
     top, bot = bbox(s)
-    v = 4.0 if (top >= END_TOP and bot <= END_BOTTOM) else (-2.0 if bot > 0.60 or top < 0.2 else 0.5)
+    if top >= END_TOP and bot <= END_BOTTOM:
+        v = 4.0
+    elif top >= 0.36:                     # чехол в нижней части — ценник встанет сверху, под вордмарком
+        v = 1.0
+    else:
+        v = -6.0                          # вордмарк или ценник закроют чехол
     act = s["shot"]["vision"]["action"]
-    v += 2.0 if act in ("static", "rotate", "reveal") else (-3.0 if act in ("open", "close", "insert") else 0)
+    v += 1.0 if act in ("static", "rotate", "reveal") else (-2.0 if act in ("open", "close", "insert") else 0)
     return v
 
 
@@ -208,8 +220,13 @@ def build_p_one_line(ctx: Ctx) -> Plan | None:
                         "eyebrow": hook.get("eyebrow") if i == 0 else None, "animateIn": i > 0})
         cursor += h
     p = brand()["product"]
-    _, case_bot = bbox(chosen[-1])
-    tag_top = int(min(1130, max(1090, case_bot * 1920 + 40)))   # ниже чехла, но выше y 1248
+    case_top, case_bot = bbox(chosen[-1])
+    if case_bot * 1920 + 40 <= 1130:
+        tag_top = int(max(1090, case_bot * 1920 + 40))          # ниже чехла, выше y 1248
+    elif case_top >= 0.36:
+        tag_top = 520                                           # чехол внизу: ценник под вордмарком
+    else:
+        tag_top = 1130
     end = {"from": frames(end_from, fps), "durationInFrames": frames(total, fps) - frames(end_from, fps),
            "color": text_color(chosen[-1]), "eyebrow": "The condom case", "price": p["price"],
            "site": p["site"].upper(), "shipping": p["shipping"], "tagTop": tag_top}

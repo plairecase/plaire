@@ -28,6 +28,7 @@ from analyze import drive                      # noqa: E402
 from analyze.index import thresholds, usable   # noqa: E402
 from audio import mix                          # noqa: E402
 from planner import media                      # noqa: E402
+from planner import templates                  # noqa: E402
 from planner.templates import BUILDERS, Ctx    # noqa: E402
 
 WORK = ROOT / "work"
@@ -138,6 +139,34 @@ def main(argv=None) -> int:
     shots = load_shots(index, cfg)
     print(f"Годных планов: {len(shots)}; seed {seed}", flush=True)
 
+    # --- замер положения чехла по реальным кадрам (для хука и финала премиума)
+    src_dir = WORK / "src"
+    sizes = {f["name"]: f.get("size") for f in index["files"].values()}
+    ids = {f["name"]: f.get("id") for f in index["files"].values()}
+    local_src: dict[str, Path] = {}
+
+    def get_src(name: str) -> Path:
+        if name not in local_src:
+            print(f"  исходник {name}", flush=True)
+            local_src[name] = (args.local / name) if args.local else \
+                drive.download(dcfg["sources"], name, src_dir / name, sizes.get(name), ids.get(name))
+        return local_src[name]
+
+    extents: dict[str, tuple | None] = {}
+
+    def measure(s: dict):
+        sid = s["shot"]["id"]
+        if sid not in extents:
+            try:
+                extents[sid] = media.fg_extent(get_src(s["file"]["name"]), s["shot"]["start"], s["shot"]["end"],
+                                               s["file"]["probe"]["hdr"])
+            except Exception as e:                       # noqa: BLE001 — нет замера → рамка из разметки
+                print(f"  замер {sid}: {e}", flush=True)
+                extents[sid] = None
+        return extents[sid]
+
+    templates.MEASURE = measure
+
     # --- план на день: по одному ролику каждого стиля
     ctx = Ctx(shots, texts, rng, cfg["render"]["fps"], cfg["render"]["dissolve_frames"])
     plans, skipped = [], []
@@ -162,15 +191,8 @@ def main(argv=None) -> int:
 
     # --- нарезка
     t = time.time()
-    src_dir = WORK / "src"
-    need = sorted({s.name for p in plans for s in p.segments})
-    sizes = {f["name"]: f.get("size") for f in index["files"].values()}
-    ids = {f["name"]: f.get("id") for f in index["files"].values()}
-    local_src = {}
-    for name in need:
-        print(f"  исходник {name}", flush=True)
-        local_src[name] = (args.local / name) if args.local else \
-            drive.download(dcfg["sources"], name, src_dir / name, sizes.get(name), ids.get(name))
+    for name in sorted({s.name for p in plans for s in p.segments}):
+        get_src(name)
     if args.hdr_compare:
         hdr_seg = next((s for p in plans for s in p.segments if s.hdr), None)
         if hdr_seg:
