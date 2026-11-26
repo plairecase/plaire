@@ -23,7 +23,7 @@ export const EndFrame: React.FC<{spec: EndFrameSpec}> = ({spec}) => {
       <div style={{position: 'absolute', top: 300 + 90 + 28, left: 0, width: W, textAlign: 'center', opacity: mark}}>
         <span style={eyebrowStyle(spec.color)}>{spec.eyebrow}</span>
       </div>
-      <div style={{position: 'absolute', left: TEXT_LEFT, top: 1090, opacity: tag}}>
+      <div style={{position: 'absolute', left: TEXT_LEFT, top: spec.tagTop ?? 1090, opacity: tag}}>
         <PriceTag price={spec.price} site={spec.site} color={spec.color} />
         <div
           style={{

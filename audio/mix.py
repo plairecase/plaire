@@ -71,15 +71,25 @@ def render(cues: list[dict], sfx_dir: Path, duration: float, out: Path) -> dict:
     mix = "".join(f"[a{i}]" for i in range(len(cues)))
     fc = ";".join(parts) + f";{mix}amix=inputs={len(cues)}:normalize=0,apad,atrim=0:{duration:.3f}[out]"
     subprocess.run(cmd + ["-filter_complex", fc, "-map", "[out]", "-ar", "48000", str(raw)], check=True)
-    m = _measure(raw)
-    if m and m.get("input_i") not in (None, "-inf"):
-        ln = (f"loudnorm=I=-14:TP=-1:LRA=11:measured_I={m['input_i']}:measured_TP={m['input_tp']}:"
-              f"measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:offset={m['target_offset']}:"
-              f"linear=true")
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(raw), "-af", ln, "-ar", "48000", str(out)],
-                       check=True)
-    else:
-        raw.replace(out)
+    # Редкие SFX: loudnorm на таких дорожках промахивается. Ставим усиление по замеру
+    # и мягкий лимитер на −1 dBTP, затем перепроверяем (до 3 итераций).
+    cur = raw
+    for it in range(3):
+        m = _measure(cur)
+        try:
+            gain = -14.0 - float(m["input_i"])
+        except (KeyError, ValueError):
+            break
+        if abs(gain) <= 0.5 and float(m.get("input_tp", 0)) <= -1.0:
+            break
+        nxt = out.with_name(f"{out.stem}_it{it}.wav")
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(cur), "-af",
+                        f"volume={gain:.2f}dB,alimiter=limit=0.83:attack=1:release=50:level=false",
+                        "-ar", "48000", str(nxt)], check=True)
+        if cur != raw:
+            cur.unlink(missing_ok=True)
+        cur = nxt
+    cur.replace(out)
     after = _measure(out)
     raw.unlink(missing_ok=True)
     return {"silent": False, "lufs": float(after.get("input_i", "nan")), "true_peak": float(after.get("input_tp", "nan"))}

@@ -24,6 +24,7 @@ export type EndFrameSpec = {
   price: string;
   site: string;
   shipping: string;
+  tagTop?: number;          // y ценника: ниже чехла, выше 1248
 };
 
 export type VideoProps = {

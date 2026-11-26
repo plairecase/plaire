@@ -90,6 +90,28 @@ def usable_len(s: dict, margin: float = 0.15) -> float:
     return s["shot"]["dur"] - 2 * margin
 
 
+def bbox(s: dict) -> tuple[float, float]:
+    """Верх и низ чехла в кадре (0…1)."""
+    x, y, w, h = s["shot"]["vision"]["case_bbox"]
+    return y, y + h
+
+
+# хук премиума занимает y 300…~560 (2 строки) из 1920 → чехол должен начинаться ниже
+HOOK_CLEAR = 0.30
+# финал: вордмарк + eyebrow до y ≈ 450, ценник с y ≈ 1090 → чехол между ними
+END_TOP, END_BOTTOM = 0.24, 0.56
+
+
+def hook_fit(s: dict) -> float:
+    top, _ = bbox(s)
+    return 4.0 if top >= HOOK_CLEAR else (1.5 if top >= 0.24 else 0.0)
+
+
+def end_fit(s: dict) -> float:
+    top, bot = bbox(s)
+    return 4.0 if (top >= END_TOP and bot <= END_BOTTOM) else (1.5 if bot <= 0.60 else 0.0)
+
+
 # ------------------------------------------------------------------ p_one_line
 def build_p_one_line(ctx: Ctx) -> Plan | None:
     """Премиум 7–12 с: одна сильная фраза на 2–3 героических планах + финал с ценником."""
@@ -111,36 +133,51 @@ def build_p_one_line(ctx: Ctx) -> Plan | None:
     screens_txt = hook["screens"]
     hook_total = sum(hold_s(t) for t in screens_txt)
     end_s = 2.8
-    want = [max(2.2, hook_total + 0.3), 2.2, end_s]       # хук, середина, финал
 
-    # первый план — не тот, что у второго ролика дня; разные файлы, если возможно
-    chosen, used_files = [], set()
-    for need in want:
-        best = None
-        for s in cand:
-            if s in chosen or (not chosen and s["shot"]["id"] in ctx.avoid_first):
+    def take(cands, need, score, chosen):
+        best, best_v = None, -1e9
+        used_files = {c["file"]["id"] for c in chosen}
+        for s in cands:
+            if s in chosen or usable_len(s) < min(need, 2.0):
                 continue
-            if usable_len(s) < min(need, 2.0):
+            if not chosen and s["shot"]["id"] in ctx.avoid_first:
                 continue
-            if s["file"]["id"] in used_files and any(x["file"]["id"] not in used_files for x in cand
-                                                     if x not in chosen and usable_len(x) >= min(need, 2.0)):
-                continue
-            best = s
-            break
-        if best:
-            chosen.append(best)
-            used_files.add(best["file"]["id"])
-    if len(chosen) < 2:
+            v = score(s) + s["shot"]["vision"]["hero_score"] / 3 + ctx.rng.random() * 1.5
+            v -= 3 if s["file"]["id"] in used_files else 0           # разные файлы, если можно
+            v += min(usable_len(s), need) / need                     # хватает длины
+            if v > best_v:
+                best, best_v = s, v
+        return best
+
+    others = [s for s in pool if s not in cand]
+    chosen = []
+    first = take(cand, max(2.2, hook_total + 0.3), hook_fit, chosen)
+    if not first:
         return None
-    if len(chosen) == 2:                                   # хук + финал
-        want = [want[0], want[2]]
+    chosen.append(first)
+    last = take(cand, end_s, end_fit, chosen) or take(others, end_s, end_fit, chosen)
+    if not last:
+        return None
+    middle = take(cand, 2.2, lambda s: 0, chosen + [last]) or take(others, 2.2, lambda s: 0, chosen + [last])
+    if middle:
+        chosen.append(middle)
+    chosen.append(last)
+    want = [max(2.2, hook_total + 0.3)] + ([2.2] if middle else []) + [end_s]
+    # добрать длительность до ≥ 7.5 с за счёт более длинных планов
+    durs = [min(n, usable_len(s)) for s, n in zip(chosen, want)]
+    short = 7.5 - sum(durs)
+    for i in range(len(durs)):
+        if short <= 0:
+            break
+        add = min(short, usable_len(chosen[i]) - durs[i], 4.5 - durs[i])
+        if add > 0:
+            durs[i] += add
+            short -= add
+    if sum(durs) < 6.8:
+        return None
 
     fps, dis = ctx.fps, ctx.dissolve
     segments, clips, t = [], [], 0.0
-    durs = []
-    for s, need in zip(chosen, want):
-        d = min(need, usable_len(s))
-        durs.append(d)
     for i, (s, d) in enumerate(zip(chosen, durs)):
         overlap = dis / fps if i > 0 else 0.0
         mid = s["shot"]["start"] + s["shot"]["dur"] / 2
@@ -162,9 +199,11 @@ def build_p_one_line(ctx: Ctx) -> Plan | None:
                         "eyebrow": hook.get("eyebrow") if i == 0 else None, "animateIn": i > 0})
         cursor += h
     p = brand()["product"]
+    _, case_bot = bbox(chosen[-1])
+    tag_top = int(min(1130, max(1090, case_bot * 1920 + 40)))   # ниже чехла, но выше y 1248
     end = {"from": frames(end_from, fps), "durationInFrames": frames(total, fps) - frames(end_from, fps),
            "color": text_color(chosen[-1]), "eyebrow": "The condom case", "price": p["price"],
-           "site": p["site"].upper(), "shipping": p["shipping"]}
+           "site": p["site"].upper(), "shipping": p["shipping"], "tagTop": tag_top}
 
     sfx, last = [], -9.0
     for i in range(1, len(durs)):
@@ -189,6 +228,10 @@ CUTS = [0.5, 0.7, 0.8, 1.0, 1.0, 1.2]
 def build_n_statement(ctx: Ctx) -> Plan | None:
     """Нативный 7–10 с: одна фраза поверх жизни, быстрые прямые склейки 0.4–1.2 с, финал — живой кадр."""
     pool = [s for s in ctx.shots if s["shot"]["vision"]["setting"] in LIFESTYLE]
+    # белый текст на светлом кадре не читается (дизайн-система): светлый верх кадра — мимо
+    dark = [s for s in pool if (s["shot"]["metrics"].get("luma_top") or 0) <= 0.62]
+    if len(dark) >= 3:
+        pool = dark
     if len(pool) < 3:
         return None
     pool = weighted_order(ctx, pool, lambda s: s["shot"]["vision"]["hero_score"]
