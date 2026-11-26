@@ -20,15 +20,30 @@ SMALL_W = 160
 
 
 # ------------------------------------------------------------ планы
-def detect_shots(path: Path, duration: float, min_len: float, max_seg: float) -> list[tuple[float, float]]:
-    """Планы по склейкам (ContentDetector). Короче min_len — выбрасываем,
-    длиннее max_seg — режем на равные куски (их размечаем отдельно)."""
-    from scenedetect import ContentDetector, detect
+def find_cuts(rgb: np.ndarray, fps: float) -> list[float]:
+    """Склейки по уменьшенным цветным кадрам (быстро, без полного декодирования).
+    Склейка = резкий скачок разницы соседних кадров относительно соседей."""
+    if len(rgb) < 3:
+        return []
+    f = rgb.astype(np.float32) / 255.0
+    d = np.abs(np.diff(f, axis=0)).mean(axis=(1, 2, 3))          # разница кадр→кадр
+    cuts, last = [], -1e9
+    for i, v in enumerate(d):
+        lo, hi = max(0, i - 10), min(len(d), i + 11)
+        local = np.median(np.concatenate([d[lo:i], d[i + 1:hi]])) if hi - lo > 1 else 0
+        t = (i + 1) / fps
+        if v > 0.10 and v > 4 * local + 0.02 and t - last >= 0.3:
+            cuts.append(round(t, 3))
+            last = t
+    return cuts
 
-    scenes = detect(str(path), ContentDetector(), show_progress=False)
-    spans = [(s.get_seconds(), e.get_seconds()) for s, e in scenes] or [(0.0, duration)]
+
+def detect_shots(cuts: list[float], duration: float, min_len: float, max_seg: float) -> list[tuple[float, float]]:
+    """Планы между склейками. Короче min_len — выбрасываем,
+    длиннее max_seg — режем на равные куски (их размечаем отдельно)."""
+    bounds = [0.0] + [c for c in cuts if 0 < c < duration] + [duration]
     out = []
-    for a, b in spans:
+    for a, b in zip(bounds, bounds[1:]):
         length = b - a
         if length < min_len:
             continue
@@ -60,16 +75,22 @@ def extract_frame(path: Path, t: float, out: Path, long_side: int = 512, hdr: bo
 
 
 def decode_small(path: Path, width: int, height: int) -> tuple[np.ndarray, float]:
-    """Весь ролик в сером, SMALL_W px, SAMPLE_FPS кадров в секунду → (frames[N,h,w], fps)."""
+    """Весь ролик в цвете, SMALL_W px, SAMPLE_FPS кадров в секунду → (rgb[N,h,w,3], fps).
+    Декодер пропускает лишнее (-skip_frame nokey не используем: нужна точность склеек)."""
     h = max(2, int(round(SMALL_W * height / width / 2)) * 2)
     res = subprocess.run(
-        ["ffmpeg", "-v", "error", "-i", str(path), "-vf", f"fps={SAMPLE_FPS},scale={SMALL_W}:{h},format=gray",
+        ["ffmpeg", "-v", "error", "-threads", "0", "-i", str(path),
+         "-vf", f"fps={SAMPLE_FPS},scale={SMALL_W}:{h}:flags=fast_bilinear,format=rgb24",
          "-f", "rawvideo", "-"], capture_output=True)
     if res.returncode != 0:
         raise RuntimeError(f"ffmpeg decode: {res.stderr.decode(errors='ignore')[-300:]}")
     buf = np.frombuffer(res.stdout, dtype=np.uint8)
-    n = buf.size // (SMALL_W * h)
-    return buf[: n * SMALL_W * h].reshape(n, h, SMALL_W), float(SAMPLE_FPS)
+    n = buf.size // (SMALL_W * h * 3)
+    return buf[: n * SMALL_W * h * 3].reshape(n, h, SMALL_W, 3), float(SAMPLE_FPS)
+
+
+def to_gray(rgb: np.ndarray) -> np.ndarray:
+    return (rgb[..., 0] * 0.299 + rgb[..., 1] * 0.587 + rgb[..., 2] * 0.114).astype(np.uint8)
 
 
 # ------------------------------------------------------------ метрики

@@ -60,10 +60,13 @@ def index_file(path: Path, meta: dict, cfg: dict, client, usage, frames_dir: Pat
     icfg = cfg["index"]
     with timer.run("ffprobe"):
         info = probe.probe(path)
+    with timer.run("декодирование"):
+        rgb, fps = shots.decode_small(path, info["width"], info["height"])
     with timer.run("планы"):
-        spans = shots.detect_shots(path, info["duration"], icfg["min_shot_s"], icfg["max_segment_s"])
-    with timer.run("метрики"):
-        small, fps = shots.decode_small(path, info["width"], info["height"])
+        cuts = shots.find_cuts(rgb, fps)
+        spans = shots.detect_shots(cuts, info["duration"], icfg["min_shot_s"], icfg["max_segment_s"])
+        small = shots.to_gray(rgb)
+        del rgb
     fid = meta.get("ID") or meta["Name"]
     entry = {"name": meta["Name"], "id": fid, "size": meta.get("Size"), "modtime": meta.get("ModTime"),
              "key": file_key(meta), "indexed_at": now(), "probe": info, "shots": []}
@@ -310,7 +313,9 @@ def main(argv=None) -> int:
             with timer.run("скачивание"):
                 local = (args.local / f["Name"]) if args.local else \
                     drive.download(dcfg["sources"], f["Name"], src_dir / f"{len(new_files)}{Path(f['Name']).suffix}")
+            t0 = time.time()
             entry = index_file(local, f, cfg, client, usage, frames_dir, timer)
+            print(f"    планов: {len(entry['shots'])}, {time.time() - t0:.0f} с", flush=True)
             index["files"][entry["id"]] = entry
             new_files.append(f["Name"])
             if not args.local:

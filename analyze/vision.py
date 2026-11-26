@@ -108,7 +108,7 @@ def make_client():
     import anthropic
 
     key = clean_key(os.environ.get("ANTHROPIC_API_KEY", ""))
-    return anthropic.Anthropic(api_key=key, max_retries=4)
+    return anthropic.Anthropic(api_key=key, max_retries=4, timeout=90.0)
 
 
 def check_key(client, model: str) -> None:
