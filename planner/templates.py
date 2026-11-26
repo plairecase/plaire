@@ -160,7 +160,11 @@ def build_p_one_line(ctx: Ctx) -> Plan | None:
     if not first:
         return None
     chosen.append(first)
-    last = take(cand, end_s, end_fit, chosen) or take(others, end_s, end_fit, chosen)
+    # финал: компактный чехол важнее совпадения цвета (вордмарк и ценник не должны его закрывать)
+    same = {id(x) for x in cand}
+    last = take([x for x in cand + others if end_fit(x) > 0], end_s,
+                lambda x: end_fit(x) + (2.0 if id(x) in same else 0.0), chosen) \
+        or take(cand, end_s, end_fit, chosen)
     if not last:
         return None
     middle = take(cand, 2.2, lambda s: 0, chosen + [last]) or take(others, 2.2, lambda s: 0, chosen + [last])
