@@ -18,15 +18,28 @@ class DriveError(RuntimeError):
 
 
 # сеть: таймауты и повторы, чтобы зависание Диска не съедало весь запуск
-NET = ["--timeout", "60s", "--contimeout", "20s", "--low-level-retries", "5", "--retries", "3"]
+NET = ["--timeout", "60s", "--contimeout", "20s", "--low-level-retries", "10", "--retries", "3"]
+# общий лимит Google API у встроенного приложения rclone иногда переполнен: ждём и повторяем
+TRANSIENT = ("ratelimitexceeded", "userratelimitexceeded", "rate limit", "directory not found",
+             "quota", "backend error", "internal error", "503", "500")
+BACKOFF = (20, 45, 90)
 
 
 def _run(*args: str, input_text: str | None = None, timeout: int = 900) -> str:
-    try:
-        res = subprocess.run(["rclone", *args, *NET], input=input_text, capture_output=True, text=True,
-                             timeout=timeout)
-    except subprocess.TimeoutExpired as e:
-        raise DriveError(f"rclone {args[0]}: нет ответа {timeout} с") from e
+    import time
+
+    for attempt in range(len(BACKOFF) + 1):
+        try:
+            res = subprocess.run(["rclone", *args, *NET], input=input_text, capture_output=True, text=True,
+                                 timeout=timeout)
+        except subprocess.TimeoutExpired as e:
+            raise DriveError(f"rclone {args[0]}: нет ответа {timeout} с") from e
+        if res.returncode == 0 or attempt == len(BACKOFF):
+            break
+        if not any(t in res.stderr.lower() for t in TRANSIENT):
+            break
+        print(f"  Диск занят ({args[0]}), повтор через {BACKOFF[attempt]} с", flush=True)
+        time.sleep(BACKOFF[attempt])
     if res.returncode != 0:
         raise DriveError(f"rclone {args[0]}: {res.stderr.strip()[-800:]}")
     return res.stdout
