@@ -1,0 +1,13 @@
+{
+  "drive": {
+    "sources": "<уточнить у владельца>",
+    "models3d": "Plaire/3D",
+    "sfx": "SFX",
+    "music": "Music",
+    "done": "Done",
+    "state": "_autoedit_state"
+  },
+  "style_mix": {"premium": 1, "native": 1},
+  "post_days": ["Mon", "Thu"],
+  "phase": 1
+}

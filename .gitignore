@@ -1,0 +1,14 @@
+# секреты и ключи — никогда в git
+*.sa.json
+sa.json
+service_account*.json
+rclone.conf
+.env
+
+# рабочие файлы
+work/
+tmp/
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store

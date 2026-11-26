@@ -1,0 +1,217 @@
+{
+ "v": 3,
+ "layout": "files",
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-15T14:53:10Z"
+ },
+ "title": "PLAIRE",
+ "namespace": "Plaire",
+ "libraries": [],
+ "sections": {},
+ "groups": [
+  "Logos",
+  "Photos",
+  "Social",
+  "Icons"
+ ],
+ "assetGroups": {
+  "Logos": {
+   "name": "Logos",
+   "tile": "l",
+   "order": [
+    "plaire-wordmark-black.svg",
+    "plaire-wordmark-white.svg",
+    "plaire-wordmark-cognac.svg",
+    "plaire-monogram-black.svg",
+    "plaire-monogram-white.svg"
+   ],
+   "files": {
+    "plaire-wordmark-black.svg": {
+     "name": "plaire-wordmark-black.svg",
+     "blob": "da9747c0218015f8f28ebbb35ffe16ad",
+     "size": 1024,
+     "type": "image/svg+xml"
+    },
+    "plaire-wordmark-white.svg": {
+     "name": "plaire-wordmark-white.svg",
+     "blob": "7136b5883a1aa6e86736604251677951",
+     "size": 1024,
+     "type": "image/svg+xml"
+    },
+    "plaire-wordmark-cognac.svg": {
+     "name": "plaire-wordmark-cognac.svg",
+     "blob": "698b30e5f1bb3ebed979ba4d36513216",
+     "size": 1024,
+     "type": "image/svg+xml"
+    },
+    "plaire-monogram-black.svg": {
+     "name": "plaire-monogram-black.svg",
+     "blob": "8dac596ffe09eefc1d7876c215d03500",
+     "size": 355,
+     "type": "image/svg+xml"
+    },
+    "plaire-monogram-white.svg": {
+     "name": "plaire-monogram-white.svg",
+     "blob": "4c7bfd70f88eb0c023eeebf3c67c3c9d",
+     "size": 355,
+     "type": "image/svg+xml"
+    }
+   }
+  },
+  "Photos": {
+   "name": "Photos",
+   "tile": "l",
+   "order": [
+    "plaire-duo-studio.jpg",
+    "plaire-duo-light.jpg",
+    "plaire-cognac-standing.jpg",
+    "plaire-black-angle.jpg"
+   ],
+   "files": {
+    "plaire-duo-studio.jpg": {
+     "name": "plaire-duo-studio.jpg",
+     "blob": "f44d8355797bc3fcd040fd07a7494377",
+     "size": 58369,
+     "type": "image/jpeg"
+    },
+    "plaire-duo-light.jpg": {
+     "name": "plaire-duo-light.jpg",
+     "blob": "3b22d915f0a45f7eeb039c0e80a7cf1a",
+     "size": 53447,
+     "type": "image/jpeg"
+    },
+    "plaire-cognac-standing.jpg": {
+     "name": "plaire-cognac-standing.jpg",
+     "blob": "711322af287ff4544dae42ca8e0703d5",
+     "size": 34332,
+     "type": "image/jpeg"
+    },
+    "plaire-black-angle.jpg": {
+     "name": "plaire-black-angle.jpg",
+     "blob": "3e176dbdeb2a94df282216bf4dd061ed",
+     "size": 49523,
+     "type": "image/jpeg"
+    }
+   }
+  },
+  "Social": {
+   "name": "Social",
+   "tile": "m",
+   "order": [
+    "avatar-monogram-paper.png",
+    "avatar-monogram-cognac.png",
+    "avatar-wordmark-ink.png",
+    "highlight-shop.png",
+    "highlight-details.png",
+    "highlight-gift.png",
+    "highlight-faq.png",
+    "highlight-shipping.png"
+   ],
+   "files": {
+    "avatar-monogram-paper.png": {
+     "name": "avatar-monogram-paper.png",
+     "blob": "dff8b18fd00e34cca99288271b6de1f3",
+     "size": 10997,
+     "type": "image/png"
+    },
+    "avatar-monogram-cognac.png": {
+     "name": "avatar-monogram-cognac.png",
+     "blob": "4aece0a222f46a79bd7802de82e59144",
+     "size": 11118,
+     "type": "image/png"
+    },
+    "avatar-wordmark-ink.png": {
+     "name": "avatar-wordmark-ink.png",
+     "blob": "00abedba81c675cff1db9fe7253c0878",
+     "size": 15092,
+     "type": "image/png"
+    },
+    "highlight-shop.png": {
+     "name": "highlight-shop.png",
+     "blob": "7679bd24a2e79a82f04b9d16015234fc",
+     "size": 16362,
+     "type": "image/png"
+    },
+    "highlight-details.png": {
+     "name": "highlight-details.png",
+     "blob": "6aacfdcabc1addd13375057c11b430f7",
+     "size": 19102,
+     "type": "image/png"
+    },
+    "highlight-gift.png": {
+     "name": "highlight-gift.png",
+     "blob": "c812ebaa8ecc4b8b5742fe492bbd7cce",
+     "size": 14758,
+     "type": "image/png"
+    },
+    "highlight-faq.png": {
+     "name": "highlight-faq.png",
+     "blob": "96f2637567e88ae547566b57f6d500bf",
+     "size": 23305,
+     "type": "image/png"
+    },
+    "highlight-shipping.png": {
+     "name": "highlight-shipping.png",
+     "blob": "8cac87c77eca025f5bd87aeb39587504",
+     "size": 27443,
+     "type": "image/png"
+    }
+   }
+  },
+  "Icons": {
+   "name": "Icons",
+   "tile": "s",
+   "order": [
+    "icon-shop.svg",
+    "icon-details.svg",
+    "icon-gift.svg",
+    "icon-faq.svg",
+    "icon-shipping.svg"
+   ],
+   "files": {
+    "icon-shop.svg": {
+     "name": "icon-shop.svg",
+     "blob": "c6dc16b06c87925d4d749561ebc10c85",
+     "size": 287,
+     "type": "image/svg+xml"
+    },
+    "icon-details.svg": {
+     "name": "icon-details.svg",
+     "blob": "b65ddd3ffefd9f5ed6c2da66234d7243",
+     "size": 266,
+     "type": "image/svg+xml"
+    },
+    "icon-gift.svg": {
+     "name": "icon-gift.svg",
+     "blob": "ea6882a864d8c664354a44201eb9118f",
+     "size": 411,
+     "type": "image/svg+xml"
+    },
+    "icon-faq.svg": {
+     "name": "icon-faq.svg",
+     "blob": "bab81a7197def8dcaec7c22dc553450b",
+     "size": 321,
+     "type": "image/svg+xml"
+    },
+    "icon-shipping.svg": {
+     "name": "icon-shipping.svg",
+     "blob": "f49bc9a2c32ff1fe4d58c8dc449c50f8",
+     "size": 353,
+     "type": "image/svg+xml"
+    }
+   }
+  }
+ },
+ "blobs": {},
+ "docs": {
+  "readme": "project/README.md",
+  "sections": []
+ },
+ "lastChange": {
+  "by": "Claude",
+  "at": "2026-11-15T15:16:48Z",
+  "via": "Claude chat",
+  "note": "Кадры с фиксированными цветами, финал: ценник под чехлом"
+ }
+}

@@ -1,0 +1,58 @@
+# Шаг 1 фазы 1: проверка доступа к Google Диску и дерево папки Plaire.
+# Запуск вручную: Actions → «Проверка Диска» → Run workflow.
+name: Проверка Диска
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: plaire-autoedit
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  drive-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Установить rclone
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq rclone
+          rclone version | head -1
+
+      - name: Подключить Google Диск
+        env:
+          GDRIVE_SA_JSON: ${{ secrets.GDRIVE_SA_JSON }}
+          GDRIVE_ROOT_ID: ${{ secrets.GDRIVE_ROOT_ID }}
+          GDRIVE_OAUTH_CLIENT_ID: ${{ secrets.GDRIVE_OAUTH_CLIENT_ID }}
+          GDRIVE_OAUTH_CLIENT_SECRET: ${{ secrets.GDRIVE_OAUTH_CLIENT_SECRET }}
+          GDRIVE_OAUTH_TOKEN: ${{ secrets.GDRIVE_OAUTH_TOKEN }}
+        run: bash scripts/setup_rclone.sh
+
+      - name: Ключ Claude API
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::warning::Нет секрета ANTHROPIC_API_KEY. Для шага 1 не нужен, но без него не заработает шаг 3 (разметка кадров)."
+            echo "- ⚠️ Секрет \`ANTHROPIC_API_KEY\` пока не добавлен (понадобится на шаге 3)." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- ✅ Секрет \`ANTHROPIC_API_KEY\` есть." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Дерево Диска и проверка записи
+        run: python3 scripts/drive_check.py
+
+      - name: Сохранить отчёт
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drive-check
+          path: work/drive_check.*
+          if-no-files-found: ignore
+          retention-days: 14
