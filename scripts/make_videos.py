@@ -165,11 +165,12 @@ def main(argv=None) -> int:
     src_dir = WORK / "src"
     need = sorted({s.name for p in plans for s in p.segments})
     sizes = {f["name"]: f.get("size") for f in index["files"].values()}
+    ids = {f["name"]: f.get("id") for f in index["files"].values()}
     local_src = {}
     for name in need:
         print(f"  исходник {name}", flush=True)
         local_src[name] = (args.local / name) if args.local else \
-            drive.download(dcfg["sources"], name, src_dir / name, sizes.get(name))
+            drive.download(dcfg["sources"], name, src_dir / name, sizes.get(name), ids.get(name))
     if args.hdr_compare:
         hdr_seg = next((s for p in plans for s in p.segments if s.hdr), None)
         if hdr_seg:
@@ -188,12 +189,18 @@ def main(argv=None) -> int:
 
     # --- SFX
     sfx_dir = WORK / "sfx"
-    lib = mix.library(drive.list_files(dcfg["sfx"])) if not args.local else {}
+    sfx_listing = drive.list_files(dcfg["sfx"]) if not args.local else []
+    sfx_ids = {f["Name"]: f.get("ID") for f in sfx_listing}
+    lib = mix.library(sfx_listing)
     for p in plans:
         p.sfx = mix.pick(lib, p.sfx, rng)
         for c in p.sfx:
             if not (sfx_dir / c["file"]).exists():
-                drive.download(dcfg["sfx"], c["file"], sfx_dir / c["file"])
+                try:
+                    drive.download(dcfg["sfx"], c["file"], sfx_dir / c["file"], file_id=sfx_ids.get(c["file"]))
+                except drive.DriveError as e:                # без звука ролик всё равно собираем
+                    print(f"  SFX «{c['file']}» не скачался: {e}", flush=True)
+        p.sfx = [c for c in p.sfx if (sfx_dir / c["file"]).exists()]
 
     # --- рендер + звук
     results = []

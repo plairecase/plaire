@@ -38,12 +38,26 @@ def list_files(folder: str) -> list[dict]:
     return json.loads(out or "[]")
 
 
-def download(folder: str, name: str, dest: Path, size: int | None = None) -> Path:
-    """Скачать файл; если в кеше уже лежит файл того же размера — не качать."""
+def download(folder: str, name: str, dest: Path, size: int | None = None, file_id: str | None = None) -> Path:
+    """Скачать файл; если в кеше уже лежит файл того же размера — не качать.
+    Сначала по пути, при ошибке — по ID файла на Диске (не зависит от пробелов и спецсимволов в имени)."""
     dest.parent.mkdir(parents=True, exist_ok=True)
     if size and dest.exists() and dest.stat().st_size == size:
         return dest
-    _run("copyto", f"{REMOTE}{folder}/{name}", str(dest))
+    try:
+        _run("copyto", f"{REMOTE}{folder}/{name}", str(dest))
+        return dest
+    except DriveError:
+        if not file_id:
+            raise
+    tmp = dest.parent / f".id_{file_id}"
+    tmp.mkdir(exist_ok=True)
+    _run("backend", "copyid", REMOTE, file_id, str(tmp) + "/")
+    got = next(tmp.iterdir(), None)
+    if not got:
+        raise DriveError(f"файл {name} (ID {file_id}) не скачался")
+    got.replace(dest)
+    tmp.rmdir()
     return dest
 
 
