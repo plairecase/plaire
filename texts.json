@@ -1,0 +1,350 @@
+{
+  "version": 1,
+  "note": "Банк хуков и CTA. Каждая запись проходит qc/text_check.py. screens — экраны по очереди, ≤6 слов на экран.",
+  "items": [
+    {
+      "id": "p_hook_01",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Introducing Plaire."
+      ],
+      "eyebrow": "PLAIRE — ECO-LEATHER CASE"
+    },
+    {
+      "id": "p_hook_02",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Stop keeping condoms in your wallet."
+      ]
+    },
+    {
+      "id": "p_hook_03",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Holds 2. Feels like nothing."
+      ]
+    },
+    {
+      "id": "p_hook_04",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Eco-leather. Magnetic. Ultra-slim."
+      ]
+    },
+    {
+      "id": "p_hook_05",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "The condom case, redesigned."
+      ],
+      "eyebrow": "PLAIRE"
+    },
+    {
+      "id": "p_hook_06",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Looks like a wallet."
+      ],
+      "eyebrow": "THE CONDOM CASE"
+    },
+    {
+      "id": "p_hook_07",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Body heat. Friction. Cards.",
+        "Your wallet was never the place."
+      ]
+    },
+    {
+      "id": "p_hook_08",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Quiet luxury for your pocket."
+      ]
+    },
+    {
+      "id": "p_hook_09",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "A condom case, finally done right."
+      ]
+    },
+    {
+      "id": "p_hook_10",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Holds two. Nothing more."
+      ]
+    },
+    {
+      "id": "p_hook_11",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Slim enough to forget."
+      ],
+      "eyebrow": "ULTRA-SLIM CONDOM CASE"
+    },
+    {
+      "id": "p_hook_12",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Hidden magnetic closure."
+      ],
+      "eyebrow": "PLAIRE — ECO-LEATHER CASE"
+    },
+    {
+      "id": "p_hook_13",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Designed to carry two."
+      ]
+    },
+    {
+      "id": "p_hook_14",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Small case. Calm mind."
+      ]
+    },
+    {
+      "id": "p_hook_15",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Made from soft eco-leather."
+      ],
+      "eyebrow": "MATERIAL"
+    },
+    {
+      "id": "p_hook_16",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Two condoms. One slim case."
+      ]
+    },
+    {
+      "id": "p_hook_17",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Your condoms deserve better."
+      ]
+    },
+    {
+      "id": "p_hook_18",
+      "style": "premium",
+      "kind": "hook",
+      "screens": [
+        "Cognac Brown. Midnight Black."
+      ],
+      "eyebrow": "TWO COLOURS"
+    },
+    {
+      "id": "n_hook_01",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Carrying a condom case while clubbing >"
+      ]
+    },
+    {
+      "id": "n_hook_02",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Finally, a real condom case."
+      ]
+    },
+    {
+      "id": "n_hook_03",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "POV: no more crushed wrappers"
+      ]
+    },
+    {
+      "id": "n_hook_04",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "It looks like a mini wallet"
+      ]
+    },
+    {
+      "id": "n_hook_05",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Why I stopped using my wallet"
+      ]
+    },
+    {
+      "id": "n_hook_06",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Nobody knows it's a condom case"
+      ]
+    },
+    {
+      "id": "n_hook_07",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Date night essentials, sorted."
+      ]
+    },
+    {
+      "id": "n_hook_08",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Things in my bag",
+        "that just make sense"
+      ]
+    },
+    {
+      "id": "n_hook_09",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Being prepared >"
+      ]
+    },
+    {
+      "id": "n_hook_10",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "POV: finally, a proper condom case"
+      ]
+    },
+    {
+      "id": "n_hook_11",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "My wallet used to crush them"
+      ]
+    },
+    {
+      "id": "n_hook_12",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Small upgrade, big difference"
+      ]
+    },
+    {
+      "id": "n_hook_13",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "The underrated thing I always carry"
+      ]
+    },
+    {
+      "id": "n_hook_14",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Clubbing with a condom case >"
+      ]
+    },
+    {
+      "id": "n_hook_15",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "It disappears in my pocket"
+      ]
+    },
+    {
+      "id": "n_hook_16",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Tell me you're prepared",
+        "without telling me"
+      ]
+    },
+    {
+      "id": "n_hook_17",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Weekend away, packed in seconds"
+      ]
+    },
+    {
+      "id": "n_hook_18",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Not a wallet. A condom case."
+      ]
+    }
+  ],
+  "caption_ctas": [
+    {
+      "id": "cta_01",
+      "styles": [
+        "premium",
+        "native"
+      ],
+      "text": "Link in bio — plaire.eu"
+    },
+    {
+      "id": "cta_02",
+      "styles": [
+        "premium"
+      ],
+      "text": "€29. Free shipping to all EU countries."
+    },
+    {
+      "id": "cta_03",
+      "styles": [
+        "premium"
+      ],
+      "text": "€29 · Free EU shipping · 14-day returns"
+    },
+    {
+      "id": "cta_04",
+      "styles": [
+        "native"
+      ],
+      "text": "Got mine at plaire.eu"
+    },
+    {
+      "id": "cta_05",
+      "styles": [
+        "native"
+      ],
+      "text": "plaire.eu if you need one too"
+    },
+    {
+      "id": "cta_06",
+      "styles": [
+        "premium",
+        "native"
+      ],
+      "text": "Two colours: Cognac Brown and Midnight Black. plaire.eu"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+# Быстрые проверки при каждом изменении: тесты и банк текстов (≈20 с).
+name: Проверки
+
+on:
+  push:
+    paths: ["qc/**", "tests/**", "brand.json", "texts.json", ".github/workflows/checks.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Тесты валидатора
+        run: python -m unittest discover -s tests -v
+      - name: Банк текстов
+        run: python -m qc.text_check
