@@ -1,12 +1,12 @@
-# Шаг 4. Тестовые ролики (TEST_2026-11-26_2314)
+# Шаг 4. Тестовые ролики (TEST_2026-11-26_2327)
 
 seed: `20208` (повторить тот же монтаж: run с этим seed)
 
 ## 01_premium_p_one_line
 - 7.5 с, 3 планов, цвет black
 - текст: «Designed to carry two.» (`p_hook_13`)
-- исходники: IMG_1384.MOV, IMG_1386.MOV
-- звук: -14.3 LUFS, пик -1.6 dBTP; SFX: whoosh «swoosh 1.wav» 2.3 с, whoosh «swoosh 2.wav» 4.5 с
+- исходники: IMG_1384.MOV, IMG_1386.MOV, IMG_1438.MOV
+- звук: -14.4 LUFS, пик -1.6 dBTP; SFX: whoosh «swoosh 1.wav» 2.2 с, whoosh «swoosh 2.wav» 4.4 с
 - проверка: ✅
 
 ## 02_native_n_statement
@@ -18,8 +18,8 @@ seed: `20208` (повторить тот же монтаж: run с этим seed
 
 ## Время
 
-- нарезка: 1.1 мин
-- рендер 01_premium_p_one_line: 0.7 мин
-- рендер 02_native_n_statement: 0.6 мин
-- загрузка на Диск: 0.7 мин
-- всего: 9.8 мин
+- нарезка: 1.0 мин
+- рендер 01_premium_p_one_line: 0.6 мин
+- рендер 02_native_n_statement: 0.5 мин
+- загрузка на Диск: 2.9 мин
+- всего: 6.2 мин
