@@ -29,5 +29,8 @@
     "max_segment_s": 6.0,
     "frame_px": 512,
     "case_visible_min": 0.8
+  },
+  "exclude_sources": {
+    "IMG_7072.MOV": "чужой бренд в кадре (Johnnie Walker), решение владельца 26.11.2026"
   }
 }
