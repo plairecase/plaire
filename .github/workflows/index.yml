@@ -1,0 +1,82 @@
+# Шаг 3 фазы 1: индекс исходников (новые файлы из Videos → планы → метрики → разметка Claude).
+# Запуск вручную: Actions → «Индекс исходников» → Run workflow. Позже вызывается из ежедневного запуска.
+name: Индекс исходников
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Переразметить все файлы заново"
+        type: boolean
+        default: false
+
+concurrency:
+  group: plaire-autoedit
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # только для отчёта в ветку autoedit-reports
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Установить ffmpeg и rclone
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg rclone
+          ffmpeg -version | head -1
+
+      - name: Python-пакеты
+        run: pip install -q -r requirements.txt
+
+      - name: Подключить Google Диск
+        env:
+          GDRIVE_ROOT_ID: ${{ secrets.GDRIVE_ROOT_ID }}
+          GDRIVE_OAUTH_TOKEN: ${{ secrets.GDRIVE_OAUTH_TOKEN }}
+          GDRIVE_OAUTH_CLIENT_ID: ${{ secrets.GDRIVE_OAUTH_CLIENT_ID }}
+          GDRIVE_OAUTH_CLIENT_SECRET: ${{ secrets.GDRIVE_OAUTH_CLIENT_SECRET }}
+          GDRIVE_SA_JSON: ${{ secrets.GDRIVE_SA_JSON }}
+        run: bash scripts/setup_rclone.sh
+
+      - name: Индекс
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python -m analyze.index ${{ inputs.force && '--force' || '' }}
+
+      - name: Сохранить отчёт (артефакт)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: index-report
+          path: |
+            work/index_report.md
+            work/index_contact.jpg
+            work/clips_index.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Отчёт в ветку autoedit-reports
+        if: always()
+        run: |
+          [ -f work/index_report.md ] || exit 0
+          git config user.name "plaire-autoedit"
+          git config user.email "plaire-autoedit@users.noreply.github.com"
+          if git fetch -q origin autoedit-reports 2>/dev/null; then
+            git worktree add -q rep FETCH_HEAD && git -C rep checkout -q -B autoedit-reports
+          else
+            git worktree add -q --orphan -b autoedit-reports rep
+          fi
+          mkdir -p rep/index
+          cp work/index_report.md rep/index/report.md
+          [ -f work/index_contact.jpg ] && cp work/index_contact.jpg rep/index/contact.jpg
+          cd rep && git add -A
+          git commit -q -m "Индекс $(date -u +%F\ %H:%M) (run ${{ github.run_id }})" && git push -q origin autoedit-reports || echo "нечего коммитить"
