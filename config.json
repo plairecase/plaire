@@ -1,6 +1,7 @@
 {
   "drive": {
     "sources": "Videos",
+    "reference": "Reference",
     "models3d": "Plaire／3D",
     "sfx": "SFX",
     "music": "Music",
