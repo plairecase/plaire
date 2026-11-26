@@ -30,10 +30,33 @@ if [ -n "${GDRIVE_OAUTH_TOKEN:-}" ]; then
       echo "RCLONE_CONFIG_GDRIVE_CLIENT_SECRET=${GDRIVE_OAUTH_CLIENT_SECRET}"
     } >> "$out"
   fi
-  python3 -c 'import json,os,sys; d=json.loads(os.environ["GDRIVE_OAUTH_TOKEN"]); sys.exit(0 if d.get("refresh_token") else 1)' 2>/dev/null \
-    || fail "GDRIVE_OAUTH_TOKEN — не та строка. Нужна строка вида {\"access_token\":...,\"refresh_token\":...} из команды rclone authorize, целиком."
+  # Чистим следы копирования из терминала: переносы строк, пробелы, стрелки
+  # "--->" и "<---End paste". Ключ не печатаем, только описание проблемы.
+  token_clean="$(python3 - <<'PY'
+import json, os, re, sys
+raw = os.environ["GDRIVE_OAUTH_TOKEN"]
+s = re.sub(r"\s+", "", raw)   # в токене не бывает пробелов: убираем переносы из окна терминала
+a, b = s.find("{"), s.rfind("}")
+if a < 0 or b < a:
+    print("Нет фигурных скобок { }. Скопируйте строку от { до } включительно.", file=sys.stderr); sys.exit(1)
+s = s[a:b + 1]
+try:
+    d = json.loads(s)
+except Exception:
+    print(f"Строка не читается как JSON (длина {len(raw)} символов). Скорее всего, скопирована не целиком.", file=sys.stderr); sys.exit(1)
+if not d.get("refresh_token"):
+    print("В строке нет refresh_token. Скопируйте вывод команды rclone authorize \"drive\" полностью.", file=sys.stderr); sys.exit(1)
+print(f"::add-mask::{s}")
+print(f"::add-mask::{d['refresh_token']}")
+if d.get("access_token"):
+    print(f"::add-mask::{d['access_token']}")
+print(json.dumps(d, separators=(",", ":")))
+PY
+)" || fail "GDRIVE_OAUTH_TOKEN не подходит (причина строкой выше). Замените секрет: Settings → Secrets → GDRIVE_OAUTH_TOKEN → Update."
+  echo "$token_clean" | grep '^::add-mask::' || true
+  token_json="$(echo "$token_clean" | grep -v '^::add-mask::')"
   {
-    echo "RCLONE_CONFIG_GDRIVE_TOKEN=${GDRIVE_OAUTH_TOKEN}"
+    echo "RCLONE_CONFIG_GDRIVE_TOKEN=${token_json}"
     echo "GDRIVE_AUTH_MODE=oauth"
   } >> "$out"
   echo "Вход на Диск: OAuth"
