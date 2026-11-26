@@ -21,6 +21,7 @@ export const NativeText: React.FC<{screens: TextScreen[]}> = ({screens}) => (
             lineHeight: '70px',
             color: palette.on_photo,
             textShadow: effects.text_on_photo_shadow,
+            textWrap: 'balance',
           }}
         >
           {s.text}

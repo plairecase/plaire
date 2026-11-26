@@ -50,6 +50,7 @@ const HookScreen: React.FC<{s: TextScreen; color: TextColor}> = ({s, color}) => 
           letterSpacing: '-0.02em',
           color: colorOf(color),
           textShadow: shadowOf(color),
+          textWrap: 'balance',
         }}
       >
         {words.map((w, i) => {

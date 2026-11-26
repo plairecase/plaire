@@ -99,7 +99,7 @@ def bbox(s: dict) -> tuple[float, float]:
 # хук премиума занимает y 300…~560 (2 строки) из 1920 → чехол должен начинаться ниже
 HOOK_CLEAR = 0.30
 # финал: вордмарк + eyebrow до y ≈ 450, ценник с y ≈ 1090 → чехол между ними
-END_TOP, END_BOTTOM = 0.24, 0.56
+END_TOP, END_BOTTOM = 0.25, 0.53
 
 
 def hook_fit(s: dict) -> float:
@@ -108,8 +108,13 @@ def hook_fit(s: dict) -> float:
 
 
 def end_fit(s: dict) -> float:
+    """Финал: чехол компактный и между вордмарком и ценником. Открытый/крутящийся чехол
+    меняет размер внутри плана, поэтому предпочитаем статичный или медленный поворот."""
     top, bot = bbox(s)
-    return 4.0 if (top >= END_TOP and bot <= END_BOTTOM) else (1.5 if bot <= 0.60 else 0.0)
+    v = 4.0 if (top >= END_TOP and bot <= END_BOTTOM) else (-2.0 if bot > 0.60 or top < 0.2 else 0.5)
+    act = s["shot"]["vision"]["action"]
+    v += 2.0 if act in ("static", "rotate", "reveal") else (-3.0 if act in ("open", "close", "insert") else 0)
+    return v
 
 
 # ------------------------------------------------------------------ p_one_line
@@ -240,7 +245,8 @@ def build_n_statement(ctx: Ctx) -> Plan | None:
     first = next((s for s in pool if s["shot"]["id"] not in ctx.avoid_first), pool[0])
     rest = [s for s in pool if s is not first]
     # финал: самый «чистый» план с чехлом
-    final = max(rest, key=lambda s: (s["shot"]["vision"]["case_visible_ratio"], s["shot"]["vision"]["hero_score"]))
+    final = max(rest, key=lambda s: (s["shot"]["vision"]["setting"] in ("street", "pocket_bag", "indoor_lifestyle"),
+                                      s["shot"]["vision"]["case_visible_ratio"], s["shot"]["vision"]["hero_score"]))
     middle = [s for s in rest if s is not final][:4]
     order = [first] + middle
     if len(order) < 2:
