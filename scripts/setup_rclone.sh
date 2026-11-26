@@ -5,9 +5,9 @@
 #
 # Способы входа:
 #   1) сервисный аккаунт: GDRIVE_SA_JSON (+ GDRIVE_ROOT_ID)
-#   2) запасной, OAuth в статусе "In production":
-#      GDRIVE_OAUTH_CLIENT_ID, GDRIVE_OAUTH_CLIENT_SECRET, GDRIVE_OAUTH_TOKEN (+ GDRIVE_ROOT_ID)
-#      Если заданы секреты OAuth, используется он.
+#   2) OAuth-токен rclone: GDRIVE_OAUTH_TOKEN (+ GDRIVE_ROOT_ID),
+#      по желанию свой GDRIVE_OAUTH_CLIENT_ID / GDRIVE_OAUTH_CLIENT_SECRET.
+#      Если задан GDRIVE_OAUTH_TOKEN, используется он.
 set -euo pipefail
 
 fail() { echo "::error::$1"; exit 1; }
@@ -22,11 +22,17 @@ out="${GITHUB_ENV:-/dev/null}"
 } >> "$out"
 
 if [ -n "${GDRIVE_OAUTH_TOKEN:-}" ]; then
-  [ -n "${GDRIVE_OAUTH_CLIENT_ID:-}" ] && [ -n "${GDRIVE_OAUTH_CLIENT_SECRET:-}" ] \
-    || fail "Есть GDRIVE_OAUTH_TOKEN, но нет GDRIVE_OAUTH_CLIENT_ID или GDRIVE_OAUTH_CLIENT_SECRET."
+  # Свой client_id необязателен: без него rclone входит через своё
+  # проверенное Google приложение, токен не истекает через 7 дней.
+  if [ -n "${GDRIVE_OAUTH_CLIENT_ID:-}" ] && [ -n "${GDRIVE_OAUTH_CLIENT_SECRET:-}" ]; then
+    {
+      echo "RCLONE_CONFIG_GDRIVE_CLIENT_ID=${GDRIVE_OAUTH_CLIENT_ID}"
+      echo "RCLONE_CONFIG_GDRIVE_CLIENT_SECRET=${GDRIVE_OAUTH_CLIENT_SECRET}"
+    } >> "$out"
+  fi
+  python3 -c 'import json,os,sys; d=json.loads(os.environ["GDRIVE_OAUTH_TOKEN"]); sys.exit(0 if d.get("refresh_token") else 1)' 2>/dev/null \
+    || fail "GDRIVE_OAUTH_TOKEN — не та строка. Нужна строка вида {\"access_token\":...,\"refresh_token\":...} из команды rclone authorize, целиком."
   {
-    echo "RCLONE_CONFIG_GDRIVE_CLIENT_ID=${GDRIVE_OAUTH_CLIENT_ID}"
-    echo "RCLONE_CONFIG_GDRIVE_CLIENT_SECRET=${GDRIVE_OAUTH_CLIENT_SECRET}"
     echo "RCLONE_CONFIG_GDRIVE_TOKEN=${GDRIVE_OAUTH_TOKEN}"
     echo "GDRIVE_AUTH_MODE=oauth"
   } >> "$out"
