@@ -1,0 +1,88 @@
+# Шаг 4 фазы 1: тестовые ролики (премиум p_one_line + нативный n_statement) в Done/TEST_…
+# Запуск вручную: Actions → «Ролики (тест)» → Run workflow.
+name: Ролики (тест)
+
+on:
+  workflow_dispatch:
+    inputs:
+      seed:
+        description: "Число, чтобы повторить конкретный монтаж (пусто = случайно)"
+        required: false
+        default: ""
+
+concurrency:
+  group: plaire-autoedit
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # только для превью в ветку autoedit-reports
+
+jobs:
+  videos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: remotion/package-lock.json
+
+      - name: Установить ffmpeg и rclone
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg rclone
+
+      - name: Пакеты Python и Remotion
+        run: |
+          pip install -q -r requirements.txt
+          cd remotion && npm ci --no-audit --no-fund && npx remotion browser ensure
+
+      - name: Подключить Google Диск
+        env:
+          GDRIVE_ROOT_ID: ${{ secrets.GDRIVE_ROOT_ID }}
+          GDRIVE_OAUTH_TOKEN: ${{ secrets.GDRIVE_OAUTH_TOKEN }}
+          GDRIVE_OAUTH_CLIENT_ID: ${{ secrets.GDRIVE_OAUTH_CLIENT_ID }}
+          GDRIVE_OAUTH_CLIENT_SECRET: ${{ secrets.GDRIVE_OAUTH_CLIENT_SECRET }}
+          GDRIVE_SA_JSON: ${{ secrets.GDRIVE_SA_JSON }}
+        run: bash scripts/setup_rclone.sh
+
+      - name: Собрать ролики
+        run: python -m scripts.make_videos --mode test --hdr-compare ${{ inputs.seed != '' && format('--seed {0}', inputs.seed) || '' }}
+
+      - name: Превью (артефакт)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: videos-preview
+          path: |
+            work/videos_report.md
+            work/contact_*.jpg
+            work/hdr_compare.jpg
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Превью в ветку autoedit-reports
+        if: always()
+        run: |
+          [ -f work/videos_report.md ] || exit 0
+          git config user.name "plaire-autoedit"
+          git config user.email "plaire-autoedit@users.noreply.github.com"
+          if git fetch -q origin autoedit-reports 2>/dev/null; then
+            git worktree add -q rep FETCH_HEAD && git -C rep checkout -q -B autoedit-reports
+          else
+            git worktree add -q --orphan -b autoedit-reports rep
+          fi
+          rm -rf rep/videos && mkdir -p rep/videos
+          cp work/videos_report.md rep/videos/report.md
+          cp work/contact_*.jpg rep/videos/ 2>/dev/null || true
+          cp work/hdr_compare.jpg rep/videos/ 2>/dev/null || true
+          cd rep && git add -A
+          git commit -q -m "Ролики $(date -u +%F\ %H:%M) (run ${{ github.run_id }})" && git push -q origin autoedit-reports || echo "нечего коммитить"

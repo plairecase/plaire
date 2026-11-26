@@ -32,5 +32,20 @@
   },
   "exclude_sources": {
     "IMG_7072.MOV": "чужой бренд в кадре (Johnnie Walker), решение владельца 26.11.2026"
+  },
+  "render": {
+    "fps": 30,
+    "crf": 14,
+    "video_bitrate": "14M",
+    "hdr_tonemap": "mobius",
+    "dissolve_frames": 8
+  },
+  "templates": {
+    "premium": [
+      "p_one_line"
+    ],
+    "native": [
+      "n_statement"
+    ]
   }
 }
