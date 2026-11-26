@@ -87,12 +87,28 @@ class VisionError(RuntimeError):
     pass
 
 
+def clean_key(raw: str) -> str:
+    """Секрет должен быть одной строкой sk-ant-…; если вставили пример команды curl,
+    достаём ключ из него. Сам ключ никуда не печатаем."""
+    import re
+
+    raw = (raw or "").strip()
+    if re.fullmatch(r"sk-ant-[A-Za-z0-9_\-]{20,}", raw):
+        return raw
+    found = re.findall(r"sk-ant-[A-Za-z0-9_\-]{20,}", raw)
+    if len(set(found)) == 1:
+        return found[0]
+    if not raw:
+        raise VisionError("нет секрета ANTHROPIC_API_KEY: разметка зрением невозможна")
+    raise VisionError("в секрете ANTHROPIC_API_KEY не ключ: там текст на несколько строк "
+                      "(похоже на пример команды curl). Нужна только строка вида sk-ant-api03-…")
+
+
 def make_client():
     import anthropic
 
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        raise VisionError("нет ANTHROPIC_API_KEY: разметка зрением невозможна")
-    return anthropic.Anthropic(max_retries=4)
+    key = clean_key(os.environ.get("ANTHROPIC_API_KEY", ""))
+    return anthropic.Anthropic(api_key=key, max_retries=4)
 
 
 def check_key(client, model: str) -> None:
@@ -107,6 +123,8 @@ def check_key(client, model: str) -> None:
         raise VisionError("у ключа нет доступа к API") from e
     except anthropic.NotFoundError as e:
         raise VisionError(f"модель {model} недоступна для этого ключа") from e
+    except anthropic.APIConnectionError as e:
+        raise VisionError("не удалось связаться с API Claude (сеть или неверный формат ключа)") from e
 
 
 def validate(d: dict) -> dict:
