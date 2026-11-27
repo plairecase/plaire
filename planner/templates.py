@@ -578,6 +578,15 @@ def build_p_organic(ctx: Ctx, purpose: str = "organic", bpm_fallback: float = 12
                             "animateIn": True})
     if purpose == "promote" and end:
         screens = [x for x in screens if x["from"] + x["durationInFrames"] <= end["from"]] or screens[:1]
+    # цвет текста — по кадру под каждым экраном (белый на светлом не читается)
+    starts = [c["from"] for c in clips]
+    for sc in screens:
+        mid = sc["from"] + sc["durationInFrames"] // 2
+        idx = max(i for i, st in enumerate(starts) if st <= max(sc["from"], 0)) if starts else 0
+        idx2 = max(i for i, st in enumerate(starts) if st <= mid) if starts else 0
+        shots_under = [body[i] if i < len(body) else first for i in {idx, idx2}]
+        light = max((x["shot"]["metrics"].get("luma_top") or 0) for x in shots_under)
+        sc["color"] = "ink" if light > 0.55 else "white"
 
     # проверки fix-02 §7
     cuts = [c["from"] + (c.get("transitionIn", {}).get("frames", 0)

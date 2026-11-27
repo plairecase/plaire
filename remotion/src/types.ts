@@ -22,6 +22,7 @@ export type TextScreen = {
   text: string;
   eyebrow?: string;
   animateIn: boolean;       // первый экран = обложка, виден с кадра 0
+  color?: TextColor;        // цвет по кадру под текстом (иначе общий textColor)
 };
 
 export type EndFrameSpec = {

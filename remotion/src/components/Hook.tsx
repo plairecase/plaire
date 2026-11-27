@@ -83,7 +83,7 @@ export const Hook: React.FC<{screens: TextScreen[]; color: TextColor}> = ({scree
   <>
     {screens.map((s, i) => (
       <Sequence key={i} from={s.from} durationInFrames={s.durationInFrames} layout="none">
-        <HookScreen s={s} color={color} />
+        <HookScreen s={s} color={s.color ?? color} />
       </Sequence>
     ))}
   </>

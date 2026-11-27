@@ -43,6 +43,21 @@ def analyze(path: Path, length_s: float, rng: random.Random) -> Track:
     rms = librosa.feature.rms(y=y)[0]
     t_rms = librosa.frames_to_time(np.arange(len(rms)), sr=sr)
     need = length_s + 1.0
+    ib = float(np.median(np.diff(beats))) if len(beats) > 2 else 60.0 / max(bpm, 60.0)
+    if dur < need + 0.5:
+        # короткий звук (например, из TikTok): играем с начала по кругу, сетку продлеваем ровным шагом
+        base = list(beats) or [0.0]
+        ext = []
+        k = 0
+        while (base[-1] if base else 0) + k * ib < need + ib:
+            ext.append(base[-1] + k * ib)
+            k += 1
+        allb = sorted(set([float(b) for b in base] + ext[1:]))
+        rel = [round(b, 3) for b in allb if b < need]
+        first = rel[0] if rel else 0.0
+        down = [round(b, 3) for i, b in enumerate(rel) if i % 4 == 0]
+        return Track(file=path.name, title=Path(path.name).stem, bpm=round(bpm, 1), start_s=0.0,
+                     beats=[round(float(b - first), 3) for b in rel], downbeats=[round(float(b - first), 3) for b in down])
     # кандидаты начала: сильные доли, после которых хватает трека
     starts = [b for i, b in enumerate(beats) if i % 4 == 0 and b + need < dur and b > 3.0] or [0.0]
     def energy(s):
@@ -67,7 +82,8 @@ def render(track: Track | None, track_path: Path | None, sfx_cues: list[dict], s
         return mix.render(sfx_cues, sfx_dir, duration, out)
     out.parent.mkdir(parents=True, exist_ok=True)
     music = out.with_name(out.stem + "_music.wav")
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{track.start_s:.3f}", "-i", str(track_path),
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-stream_loop", "-1", "-ss", f"{track.start_s:.3f}",
+                    "-i", str(track_path),
                     "-t", f"{duration:.3f}", "-af",
                     f"aresample=48000,aformat=channel_layouts=stereo,afade=t=in:d=0.3,"
                     f"afade=t=out:st={max(0.0, duration - 0.8):.3f}:d=0.8", str(music)], check=True)

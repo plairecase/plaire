@@ -96,7 +96,10 @@ def render(cues: list[dict], sfx_dir: Path, duration: float, out: Path) -> dict:
 
 
 def mux(video: Path, audio: Path, out: Path) -> Path:
+    # длина = длина видео: короткий звук добиваем тишиной, длинный обрезаем
+    dur = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(video)],
+                         capture_output=True, text=True).stdout.strip()
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(video), "-i", str(audio), "-map", "0:v", "-map", "1:a",
-                    "-c:v", "copy", "-c:a", "aac", "-b:a", "320k", "-ar", "48000", "-shortest",
+                    "-c:v", "copy", "-af", "apad", "-c:a", "aac", "-b:a", "320k", "-ar", "48000", "-t", dur,
                     "-movflags", "+faststart", str(out)], check=True)
     return out
