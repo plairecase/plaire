@@ -23,6 +23,7 @@ class Segment:
     src_dur: float
     hdr: bool
     bbox: list
+    stabilize: bool = False           # ручная/дрожащая съёмка → стабилизация при нарезке
     out: str = ""                     # clips/cN.mp4 — заполняет media.prepare
 
 
@@ -38,6 +39,8 @@ class Plan:
     color: str = ""
     first_shot: str = ""
     notes: list[str] = field(default_factory=list)
+    track: object = None               # audio.music.Track
+    track_path: object = None
 
 
 @dataclass
@@ -50,6 +53,7 @@ class Ctx:
     avoid_first: set = field(default_factory=set)
     avoid_color: str | None = None
     avoid_hooks: set = field(default_factory=set)
+    beats: list | None = None  # доли музыки от начала ролика, с (None — сетка 120 BPM)
 
 
 # ------------------------------------------------------------------ помощники
@@ -80,10 +84,28 @@ def text_color(shot: dict) -> str:
     return "ink" if (shot["shot"]["metrics"].get("luma_top") or 0) > 0.6 else "white"
 
 
+SHAKY = 0.0015      # доля ширины кадра: выше — заметная тряска
+
+
 def seg(s: dict, start: float, dur: float) -> Segment:
+    v, m = s["shot"]["vision"], s["shot"]["metrics"]
+    stab = v["setting"] in LIFESTYLE or (m.get("shake") or 0) > SHAKY
     return Segment(file_id=s["file"]["id"], name=s["file"]["name"], shot_id=s["shot"]["id"],
                    src_start=round(start, 3), src_dur=round(dur, 3), hdr=s["file"]["probe"]["hdr"],
-                   bbox=s["shot"]["vision"]["case_bbox"])
+                   bbox=v["case_bbox"], stabilize=stab)
+
+
+def beat_grid(ctx: Ctx) -> list[float]:
+    return ctx.beats or [round(i * 0.5, 3) for i in range(60)]           # без музыки — 120 BPM
+
+
+def snap(t: float, ctx: Ctx, tol: float = 0.35) -> float:
+    """Ближайшая доля музыки, если она рядом."""
+    near = min(beat_grid(ctx), key=lambda b: abs(b - t))
+    return near if abs(near - t) <= tol else t
+
+
+TR_FRAMES = 7       # длительность энергичного перехода, кадров
 
 
 def usable_len(s: dict, margin: float = 0.15) -> float:
@@ -197,16 +219,33 @@ def build_p_one_line(ctx: Ctx) -> Plan | None:
     if sum(durs) < 6.8:
         return None
 
-    fps, dis = ctx.fps, ctx.dissolve
+    fps = ctx.fps
+    # склейки — в долю музыки
+    bounds, acc = [], 0.0
+    for d in durs[:-1]:
+        acc += d
+        bounds.append(snap(acc, ctx))
+    edges = [0.0] + bounds
+    snapped = [b - a for a, b in zip(edges, bounds + [edges[-1] + durs[-1]])]
+    if all(1.6 <= d <= usable_len(s) for d, s in zip(snapped, chosen)):
+        durs = snapped                                   # иначе оставляем как было
+    kinds = ["zoom", "push", "whip"]
+    ctx.rng.shuffle(kinds)
+    trans = [{"type": kinds[i % len(kinds)], "frames": TR_FRAMES} for i in range(len(durs) - 1)]
     segments, clips, t = [], [], 0.0
     for i, (s, d) in enumerate(zip(chosen, durs)):
-        overlap = dis / fps if i > 0 else 0.0
+        overlap = TR_FRAMES / fps if i > 0 else 0.0
         mid = s["shot"]["start"] + s["shot"]["dur"] / 2
         src_start = max(s["shot"]["start"] + 0.15, min(mid - (d + overlap) / 2,
                                                        s["shot"]["end"] - 0.15 - d - overlap))
         segments.append(seg(s, src_start, d + overlap))
-        clips.append({"src": "", "from": frames(t - overlap, fps), "durationInFrames": frames(d + overlap, fps),
-                      "pushIn": brand()["motion"]["push_in_scale"], "dissolveInFrames": dis if i else 0})
+        clip = {"src": "", "from": frames(t - overlap, fps), "durationInFrames": frames(d + overlap, fps),
+                "pushIn": brand()["motion"]["push_in_scale"]}
+        if i > 0:
+            clip["transitionIn"] = trans[i - 1]
+        if i < len(durs) - 1:
+            clip["transitionOut"] = trans[i]
+        clips.append(clip)
         t += d
     total = round(t, 3)
     end_from = total - durs[-1]
@@ -217,7 +256,7 @@ def build_p_one_line(ctx: Ctx) -> Plan | None:
         if cursor + h > end_from - 0.2:                     # не наезжать на финал
             h = max(1.6, end_from - 0.2 - cursor)
         screens.append({"from": frames(cursor, fps), "durationInFrames": frames(h, fps), "text": txt,
-                        "eyebrow": hook.get("eyebrow") if i == 0 else None, "animateIn": i > 0})
+                        "eyebrow": hook.get("eyebrow") if i == 0 else None, "animateIn": True})
         cursor += h
     p = brand()["product"]
     case_top, case_bot = bbox(chosen[-1])
@@ -233,7 +272,7 @@ def build_p_one_line(ctx: Ctx) -> Plan | None:
 
     sfx, last = [], -9.0
     for i in range(1, len(durs)):
-        tt = round(sum(durs[:i]) - dis / fps / 2 - 0.15, 2)
+        tt = round(sum(durs[:i]) - TR_FRAMES / fps - 0.1, 2)          # свист чуть раньше склейки
         if tt - last >= 1.5:
             sfx.append({"t": max(0.0, tt), "kind": "whoosh", "gain_db": -6})
             last = tt
@@ -252,7 +291,8 @@ CUTS = [0.5, 0.7, 0.8, 1.0, 1.0, 1.2]
 
 
 def build_n_statement(ctx: Ctx) -> Plan | None:
-    """Нативный 7–10 с: одна фраза поверх жизни, быстрые прямые склейки 0.4–1.2 с, финал — живой кадр."""
+    """Нативный 7–10 с: одна фраза поверх жизни, склейки 0.4–1.2 с в долю музыки с толчками
+    и одним свайпом (правка владельца 27.11.2026), финал — живой кадр."""
     pool = [s for s in ctx.shots if s["shot"]["vision"]["setting"] in LIFESTYLE]
     # белый текст на светлом кадре не читается (дизайн-система): светлый верх кадра — мимо
     dark = [s for s in pool if (s["shot"]["metrics"].get("luma_top") or 0) <= 0.62]
@@ -276,29 +316,45 @@ def build_n_statement(ctx: Ctx) -> Plan | None:
     hook = pick_hook(ctx, "native")
     target = ctx.rng.uniform(7.5, 9.0)
     final_d = min(1.8, usable_len(final))
+    grid = beat_grid(ctx)
+    ib = sorted(b - a for a, b in zip(grid, grid[1:]))[len(grid) // 2] if len(grid) > 2 else 0.5
+    lengths = [k * ib for k in (1, 2, 3) if 0.4 <= k * ib <= 1.25] or [0.5, 1.0]
     pointer = {s["shot"]["id"]: s["shot"]["start"] + 0.15 for s in order}
     fps = ctx.fps
-    segments, clips, t, i, guard = [], [], 0.0, 0, 0
+    segments, clips, sfx, t, i, guard, whip_done = [], [], [], 0.0, 0, 0, False
     while t < target - final_d - 0.3 and guard < 40:
         guard += 1
         s = order[i % len(order)]
         i += 1
-        d = ctx.rng.choice(CUTS)
+        d = ctx.rng.choice(lengths)
         p0 = pointer[s["shot"]["id"]]
         if p0 + d > s["shot"]["end"] - 0.15:
             if all(pointer[x["shot"]["id"]] + 0.5 > x["shot"]["end"] - 0.15 for x in order):
                 break
             continue
         d = round(math.floor(d * fps) / fps, 3)
-        segments.append(seg(s, p0, d))
-        clips.append({"src": "", "from": frames(t, fps), "durationInFrames": frames(d, fps)})
+        clip = {"src": "", "from": frames(t, fps), "durationInFrames": frames(d, fps)}
+        start = p0
+        if clips:
+            ov = 5 / fps
+            if not whip_done and t > 2.5 and p0 - ov >= s["shot"]["start"] + 0.05:
+                clip = {"src": "", "from": frames(t - ov, fps), "durationInFrames": frames(d + ov, fps),
+                        "transitionIn": {"type": "whip", "frames": 5}}
+                clips[-1]["transitionOut"] = {"type": "whip", "frames": 5}
+                start, whip_done = p0 - ov, True
+                sfx.append({"t": round(max(0.0, t - ov - 0.1), 2), "kind": "whoosh", "gain_db": -4})
+            elif ctx.rng.random() < 0.6:
+                clip["transitionIn"] = {"type": "punch", "frames": 5}
+        segments.append(seg(s, start, d + (p0 - start)))
+        clips.append(clip)
         pointer[s["shot"]["id"]] = p0 + d
         t += d
     if t < 4.0:
         return None
     fs = final["shot"]
     segments.append(seg(final, max(fs["start"] + 0.15, fs["start"] + fs["dur"] / 2 - final_d / 2), final_d))
-    clips.append({"src": "", "from": frames(t, fps), "durationInFrames": frames(final_d, fps)})
+    clips.append({"src": "", "from": frames(t, fps), "durationInFrames": frames(final_d, fps),
+                  "transitionIn": {"type": "punch", "frames": 5}})
     t += final_d
     total = round(t, 3)
 
@@ -313,7 +369,7 @@ def build_n_statement(ctx: Ctx) -> Plan | None:
                         "animateIn": False})
     props = {"template": "n_statement", "style": "native", "fps": fps, "durationInFrames": frames(total, fps),
              "clips": clips, "screens": screens, "textColor": "white", "endFrame": None}
-    return Plan("n_statement", "native", props, segments, [], hook["id"], total,
+    return Plan("n_statement", "native", props, segments, sfx, hook["id"], total,
                 first["shot"]["vision"]["color"], first["shot"]["id"])
 
 

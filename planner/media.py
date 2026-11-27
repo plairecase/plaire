@@ -27,14 +27,27 @@ def crop_filter(bbox: list) -> str:
 
 
 def cut(src: Path, start: float, dur: float, out: Path, fps: int, crf: int, hdr: bool,
-        bbox: list, tonemap: str = "mobius") -> Path:
+        bbox: list, tonemap: str = "mobius", stabilize: bool = False) -> Path:
+    """Отрезок → клип 1080×1920. stabilize: двухпроходная стабилизация vidstab (дрожащая ручная съёмка)."""
     out.parent.mkdir(parents=True, exist_ok=True)
     tms = [TONEMAP[tonemap] + ","] if hdr else [""]
     if hdr:
         tms.append("")                                   # запасной путь без zscale
     err = ""
     for tm in tms:
-        vf = f"{tm}{crop_filter(bbox)},fps={fps},format=yuv420p,setsar=1"
+        base = f"{tm}{crop_filter(bbox)},fps={fps}"
+        stab = ""
+        if stabilize:
+            trf = out.with_suffix(".trf")
+            det = subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{start:.3f}", "-i", str(src),
+                                  "-t", f"{dur:.3f}", "-vf", f"{base},vidstabdetect=shakiness=6:accuracy=12:result={trf}",
+                                  "-f", "null", "-"], capture_output=True, text=True, timeout=300)
+            if det.returncode == 0 and trf.exists():
+                stab = (f",vidstabtransform=input={trf}:smoothing=15:optzoom=1:zoomspeed=0.2:interpol=bicubic,"
+                        f"unsharp=5:5:0.5:3:3:0.0")
+            else:
+                stab = ",deshake=rx=48:ry=48"            # запасной встроенный стабилизатор
+        vf = f"{base}{stab},format=yuv420p,setsar=1"
         cmd = ["ffmpeg", "-v", "error", "-y", "-ss", f"{start:.3f}", "-i", str(src), "-t", f"{dur:.3f}",
                "-vf", vf, "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", str(crf),
                "-pix_fmt", "yuv420p", "-color_primaries", "bt709", "-color_trc", "bt709",
@@ -44,6 +57,7 @@ def cut(src: Path, start: float, dur: float, out: Path, fps: int, crf: int, hdr:
         except subprocess.TimeoutExpired:
             err = "нарезка дольше 5 минут"
             continue
+        out.with_suffix(".trf").unlink(missing_ok=True)
         if res.returncode == 0:
             return out
         err = res.stderr[-400:]

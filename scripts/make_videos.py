@@ -27,6 +27,7 @@ sys.path.insert(0, str(ROOT))
 from analyze import drive                      # noqa: E402
 from analyze.index import thresholds, usable   # noqa: E402
 from audio import mix                          # noqa: E402
+from audio import music as music_mod           # noqa: E402
 from planner import media                      # noqa: E402
 from planner import templates                  # noqa: E402
 from planner.templates import BUILDERS, Ctx    # noqa: E402
@@ -167,12 +168,40 @@ def main(argv=None) -> int:
 
     templates.MEASURE = measure
 
+    # --- музыка (правка владельца 27.11.2026: только версия с музыкой)
+    music_dir = WORK / "music"
+    mlisting = [] if args.local else drive.list_files(dcfg["music"])
+    mids = {f["Name"]: f.get("ID") for f in mlisting}
+    tracks_pool = music_mod.candidates(mlisting)
+    rng.shuffle(tracks_pool)
+    if args.local and (args.local / "_music").exists():
+        tracks_pool = [p.name for p in (args.local / "_music").iterdir()]
+        music_dir = args.local / "_music"
+
+    all_tracks = list(tracks_pool)
+
+    def next_track():
+        if not tracks_pool and all_tracks:               # треков меньше, чем роликов — повторяем
+            tracks_pool.extend(all_tracks)
+            all_tracks.clear()                           # но только один круг, чтобы не зациклиться
+        while tracks_pool:
+            name = tracks_pool.pop()
+            try:
+                path = music_dir / name if args.local else drive.download(dcfg["music"], name, music_dir / name,
+                                                                         file_id=mids.get(name))
+                return music_mod.analyze(path, 13.0, rng), path
+            except Exception as e:                       # noqa: BLE001 — битый трек пропускаем
+                print(f"  трек {name}: {e}", flush=True)
+        return None, None
+
     # --- план на день: по одному ролику каждого стиля
     ctx = Ctx(shots, texts, rng, cfg["render"]["fps"], cfg["render"]["dissolve_frames"])
     plans, skipped = [], []
     for style in ("premium", "native"):
         n = cfg["style_mix"].get(style, 1)
         for _ in range(n):
+            track, tpath = next_track()
+            ctx.beats = track.beats if track else None
             built = None
             for tmpl in cfg["templates"][style]:
                 built = BUILDERS[tmpl](ctx)
@@ -180,6 +209,7 @@ def main(argv=None) -> int:
                     break
                 skipped.append(tmpl)
             if built:
+                built.track, built.track_path = track, tpath
                 plans.append(built)
                 ctx.avoid_first.add(built.first_shot)
                 ctx.avoid_color = built.color
@@ -201,9 +231,11 @@ def main(argv=None) -> int:
     for p in plans:
         for sg, clip in zip(p.segments, p.props["clips"]):
             rel = f"clips/c{k}.mp4"
-            print(f"  нарезка {rel}: {sg.name} {sg.src_start:.1f}+{sg.src_dur:.1f}", flush=True)
+            print(f"  нарезка {rel}: {sg.name} {sg.src_start:.1f}+{sg.src_dur:.1f}"
+                  f"{' +стабилизация' if sg.stabilize else ''}", flush=True)
             media.cut(local_src[sg.name], sg.src_start, sg.src_dur, REMOTION / "public" / rel,
-                      cfg["render"]["fps"], cfg["render"]["crf"], sg.hdr, sg.bbox, cfg["render"]["hdr_tonemap"])
+                      cfg["render"]["fps"], cfg["render"]["crf"], sg.hdr, sg.bbox, cfg["render"]["hdr_tonemap"],
+                      stabilize=sg.stabilize)
             clip["src"] = rel
             sg.out = rel
             k += 1
@@ -234,12 +266,12 @@ def main(argv=None) -> int:
         print(f"  рендер {name}…", flush=True)
         silent = render(p.props, COMP_ID[p.template], d / "_silent.mp4", cfg)
         timing[f"рендер {name}"] = time.time() - t
-        audio = mix.render(p.sfx, sfx_dir, p.duration_s, d / "_clean.wav")
-        final = mix.mux(silent, d / "_clean.wav", d / "video_clean.mp4")
+        audio = music_mod.render(p.track, p.track_path, p.sfx, sfx_dir, p.duration_s, d / "_audio.wav")
+        final = mix.mux(silent, d / "_audio.wav", d / "video.mp4")
         errs = probe_ok(final, p.template)
         contact(final, WORK / f"contact_{name}.jpg")
         print(f"  готово {name}", flush=True)
-        for tmp in (silent, d / "_clean.wav", silent.with_suffix(".props.json")):
+        for tmp in (silent, d / "_audio.wav", silent.with_suffix(".props.json")):
             tmp.unlink(missing_ok=True)
         results.append({"folder": name, "plan": p, "audio": audio, "errors": errs})
         print(f"{name}: {p.duration_s:.1f} с, хук {p.hook_id}, ошибок {len(errs)}", flush=True)
@@ -249,7 +281,7 @@ def main(argv=None) -> int:
         t = time.time()
         for r in results:
             print(f"  на Диск {r['folder']}", flush=True)
-            drive.upload(out_root / r["folder"] / "video_clean.mp4", f"{dcfg['done']}/{folder}/{r['folder']}/video_clean.mp4")
+            drive.upload(out_root / r["folder"] / "video.mp4", f"{dcfg['done']}/{folder}/{r['folder']}/video.mp4")
         timing["загрузка на Диск"] = time.time() - t
     timing["всего"] = time.time() - t0
 
@@ -259,7 +291,10 @@ def main(argv=None) -> int:
     for r in results:
         p = r["plan"]
         a = r["audio"]
-        snd = "тишина (нативный стиль без SFX)" if a.get("silent") else f"{a['lufs']:.1f} LUFS, пик {a['true_peak']:.1f} dBTP"
+        snd = "тишина" if a.get("silent") else f"{a['lufs']:.1f} LUFS, пик {a['true_peak']:.1f} dBTP"
+        mu = a.get("music")
+        snd = (f"музыка «{mu['title']}», {mu['bpm']:.0f} BPM, с {mu['start_s']:.1f} с; " if mu
+               else "⚠️ без музыки (папка Music пустая); ") + snd
         L += [f"## {r['folder']}",
               f"- {p.duration_s:.1f} с, {len(p.segments)} планов, цвет {p.color}",
               f"- текст: «{' / '.join(hooks[p.hook_id]['screens'])}» (`{p.hook_id}`)",

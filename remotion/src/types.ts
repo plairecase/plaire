@@ -1,11 +1,19 @@
 export type TextColor = 'ink' | 'white';
 
+export type TransitionType = 'cut' | 'zoom' | 'push' | 'whip' | 'punch';
+
+export type Transition = {
+  type: TransitionType;
+  frames: number;           // длительность перехода (для zoom/push/whip = перекрытие планов)
+};
+
 export type ClipSpec = {
   src: string;              // путь в public/, например clips/c0.mp4
   from: number;             // кадр начала на таймлайне
-  durationInFrames: number; // включая перекрытие для dissolve
+  durationInFrames: number; // включая перекрытие для перехода
   pushIn?: [number, number];// масштаб в начале и в конце плана (премиум)
-  dissolveInFrames?: number;// плавный вход поверх предыдущего плана
+  transitionIn?: Transition;
+  transitionOut?: Transition;
 };
 
 export type TextScreen = {

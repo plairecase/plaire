@@ -1,3 +1,4 @@
 anthropic==2.14.0
 opencv-python-headless==5.1.0.95
 numpy==2.5.5
+librosa==1.0.1
