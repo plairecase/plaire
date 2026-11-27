@@ -1,4 +1,4 @@
-# Шаг 4. Тестовые ролики (TEST_2026-11-27_1429)
+# Шаг 4. Тестовые ролики (TEST_2026-11-27_1450)
 
 seed: `82594` (повторить тот же монтаж: run с этим seed)
 
@@ -6,7 +6,7 @@ seed: `82594` (повторить тот же монтаж: run с этим seed
 - organic, 7.8 с, 5 планов, цвет black, сетка 123 BPM
 - проверки: первая склейка 1.47 с, склейки на долях ✅, целые такты ✅, самый длинный план 1.95 с, цена на экране: нет
 - текст: «Quiet luxury for your pocket.» (`p_hook_08`)
-- исходники: 6796620381629818176.MP4, IMG_1278.mov, IMG_1384.MOV, IMG_1386.MOV
+- исходники: 6796620381629818176.MP4, IMG_1278.mov, IMG_1384.MOV, IMG_1440.MOV
 - звук: музыка «ssstik.io_1795780760321», 123 BPM, с 0.0 с; -14.0 LUFS, пик -5.5 dBTP; SFX: click «shutter clicks 1.wav» 0.0 с, whoosh «soft whoosh 1.wav» 1.2 с, magnet «air.wav» 3.9 с, whoosh «harsh whoosh 2.wav» 4.6 с
 - проверка: ✅
 
@@ -22,15 +22,15 @@ seed: `82594` (повторить тот же монтаж: run с этим seed
 - promote, 9.7 с, 6 планов, цвет black, сетка 123 BPM
 - проверки: первая склейка 1.47 с, склейки на долях ✅, целые такты ✅, самый длинный план 1.95 с, цена на экране: да
 - текст: «Two condoms. One slim case.» (`p_hook_16`)
-- исходники: 6796620381629818176.MP4, IMG_1278.mov, IMG_1384.MOV, IMG_1386.MOV, IMG_1393.mov
-- звук: музыка «ssstik.io_1795780760321», 123 BPM, с 0.0 с; -14.0 LUFS, пик -5.9 dBTP; SFX: click «clicks x3.wav» 0.0 с, whoosh «air.wav» 3.2 с, magnet «soft whoosh 1.wav» 3.9 с, whoosh «swhoosh.wav» 4.6 с, magnet «swhoosh.wav» 5.4 с
-- проверка: ❌ длительность 8.3 с вне 9–15 с
+- исходники: 6796620381629818176.MP4, IMG_1278.mov, IMG_1293.mov, IMG_1384.MOV, IMG_1393.mov
+- звук: музыка «ssstik.io_1795780760321», 123 BPM, с 0.0 с; -14.0 LUFS, пик -5.4 dBTP; SFX: click «clicks x3.wav» 0.0 с, whoosh «air.wav» 3.2 с, magnet «soft whoosh 1.wav» 3.9 с, whoosh «swhoosh.wav» 4.6 с, magnet «swhoosh.wav» 5.4 с
+- проверка: ✅
 
 ## Время
 
-- нарезка: 2.7 мин
-- рендер 01_premium_p_organic_organic: 0.6 мин
-- рендер 02_premium_p_organic_organic: 0.5 мин
-- рендер 03_premium_p_organic_promote: 0.6 мин
-- загрузка на Диск: 0.3 мин
-- всего: 15.0 мин
+- нарезка: 4.5 мин
+- рендер 01_premium_p_organic_organic: 0.8 мин
+- рендер 02_premium_p_organic_organic: 0.7 мин
+- рендер 03_premium_p_organic_promote: 0.8 мин
+- загрузка на Диск: 0.5 мин
+- всего: 11.4 мин
