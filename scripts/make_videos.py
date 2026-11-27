@@ -34,8 +34,8 @@ from planner.templates import BUILDERS, Ctx    # noqa: E402
 
 WORK = ROOT / "work"
 REMOTION = ROOT / "remotion"
-COMP_ID = {"p_one_line": "p-one-line", "n_statement": "n-statement"}
-DUR_RANGE = {"p_one_line": (7, 12), "n_statement": (7, 10)}
+COMP_ID = {"p_one_line": "p-one-line", "n_statement": "n-statement", "p_organic": "p-one-line"}
+DUR_RANGE = {"p_one_line": (7, 12), "n_statement": (7, 10), "p_organic": (7, 10), "promote": (9, 15)}
 
 
 def tallinn_now() -> dt.datetime:
@@ -179,11 +179,12 @@ def main(argv=None) -> int:
         music_dir = args.local / "_music"
 
     all_tracks = list(tracks_pool)
+    broken: set[str] = set()
 
     def next_track():
-        if not tracks_pool and all_tracks:               # треков меньше, чем роликов — повторяем
-            tracks_pool.extend(all_tracks)
-            all_tracks.clear()                           # но только один круг, чтобы не зациклиться
+        if not tracks_pool:                              # треков меньше, чем роликов — повторяем
+            tracks_pool.extend(t for t in all_tracks if t not in broken)
+            rng.shuffle(tracks_pool)
         while tracks_pool:
             name = tracks_pool.pop()
             try:
@@ -191,20 +192,28 @@ def main(argv=None) -> int:
                                                                          file_id=mids.get(name))
                 return music_mod.analyze(path, 13.0, rng), path
             except Exception as e:                       # noqa: BLE001 — битый трек пропускаем
+                broken.add(name)
                 print(f"  трек {name}: {e}", flush=True)
         return None, None
 
     # --- план на день: по одному ролику каждого стиля
     ctx = Ctx(shots, texts, rng, cfg["render"]["fps"], cfg["render"]["dissolve_frames"])
     plans, skipped = [], []
-    for style in ("premium", "native"):
-        n = cfg["style_mix"].get(style, 1)
-        for _ in range(n):
+    bpm_cycle = cfg.get("beat_grid_bpm", [120])
+    want = [(st, "organic") for st in ("premium", "native") for _ in range(cfg["style_mix"].get(st, 0))]
+    is_promote_day = now.strftime("%a") in cfg.get("promote_days", [])
+    if args.mode == "test" or is_promote_day:
+        want.append(("promote", "promote"))               # fix-02: promote по понедельникам (в тесте — всегда)
+    for vi, (style, purpose) in enumerate(want):
+        if True:
             track, tpath = next_track()
             ctx.beats = track.beats if track else None
             built = None
             for tmpl in cfg["templates"][style]:
-                built = BUILDERS[tmpl](ctx)
+                if tmpl == "p_organic":
+                    built = BUILDERS[tmpl](ctx, purpose, bpm_cycle[vi % len(bpm_cycle)])
+                else:
+                    built = BUILDERS[tmpl](ctx)
                 if built:
                     break
                 skipped.append(tmpl)
@@ -232,10 +241,18 @@ def main(argv=None) -> int:
         for sg, clip in zip(p.segments, p.props["clips"]):
             rel = f"clips/c{k}.mp4"
             print(f"  нарезка {rel}: {sg.name} {sg.src_start:.1f}+{sg.src_dur:.1f}"
-                  f"{' +стабилизация' if sg.stabilize else ''}", flush=True)
+                  f"{' +стабилизация' if sg.stabilize else ''}{' (луп)' if sg.reverse else ''}", flush=True)
+            if sg.reverse and p.segments[0].out:
+                # луп = обратный ход первого клипа: последний кадр ролика точно равен первому
+                media.reverse_head(REMOTION / "public" / p.segments[0].out, sg.src_dur,
+                                   REMOTION / "public" / rel, cfg["render"]["crf"])
+                clip["src"] = rel
+                sg.out = rel
+                k += 1
+                continue
             media.cut(local_src[sg.name], sg.src_start, sg.src_dur, REMOTION / "public" / rel,
                       cfg["render"]["fps"], cfg["render"]["crf"], sg.hdr, sg.bbox, cfg["render"]["hdr_tonemap"],
-                      stabilize=sg.stabilize)
+                      stabilize=sg.stabilize, reverse=sg.reverse)
             clip["src"] = rel
             sg.out = rel
             k += 1
@@ -259,7 +276,7 @@ def main(argv=None) -> int:
     # --- рендер + звук
     results = []
     for i, p in enumerate(plans, 1):
-        name = f"{i:02d}_{p.style}_{p.template}"
+        name = f"{i:02d}_{p.style}_{p.template}" + (f"_{p.purpose}" if p.template == "p_organic" else "")
         d = out_root / name
         d.mkdir(parents=True, exist_ok=True)
         t = time.time()
@@ -268,7 +285,7 @@ def main(argv=None) -> int:
         timing[f"рендер {name}"] = time.time() - t
         audio = music_mod.render(p.track, p.track_path, p.sfx, sfx_dir, p.duration_s, d / "_audio.wav")
         final = mix.mux(silent, d / "_audio.wav", d / "video.mp4")
-        errs = probe_ok(final, p.template)
+        errs = probe_ok(final, "promote" if p.purpose == "promote" else p.template)
         contact(final, WORK / f"contact_{name}.jpg")
         print(f"  готово {name}", flush=True)
         for tmp in (silent, d / "_audio.wav", silent.with_suffix(".props.json")):
@@ -296,7 +313,11 @@ def main(argv=None) -> int:
         snd = (f"музыка «{mu['title']}», {mu['bpm']:.0f} BPM, с {mu['start_s']:.1f} с; " if mu
                else "⚠️ без музыки (папка Music пустая); ") + snd
         L += [f"## {r['folder']}",
-              f"- {p.duration_s:.1f} с, {len(p.segments)} планов, цвет {p.color}",
+              f"- {p.purpose}, {p.duration_s:.1f} с, {len(p.segments)} планов, цвет {p.color}, сетка {p.bpm:.0f} BPM",
+              f"- проверки: первая склейка {p.checks.get('first_cut_s')} с, склейки на долях "
+              f"{'✅' if p.checks.get('cuts_on_beats') else '❌'}, целые такты {'✅' if p.checks.get('whole_bars') else '❌'}, "
+              f"самый длинный план {p.checks.get('max_shot_s')} с, цена на экране: {'да' if p.checks.get('price_on_screen') else 'нет'}"
+              + (f", не хватает: {', '.join(p.missing)}" if p.missing else ""),
               f"- текст: «{' / '.join(hooks[p.hook_id]['screens'])}» (`{p.hook_id}`)",
               f"- исходники: " + ", ".join(sorted({s.name for s in p.segments})),
               f"- звук: {snd}; SFX: " + (", ".join(f"{c['kind']} «{c['file']}» {c['t']:.1f} с" for c in p.sfx) or "нет"),

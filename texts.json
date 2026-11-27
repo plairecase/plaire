@@ -299,6 +299,180 @@
       "screens": [
         "Not a wallet. A condom case."
       ]
+    },
+    {
+      "id": "n_hook_19",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "POV: your condoms finally",
+        "have a home"
+      ],
+      "source": "fix-02"
+    },
+    {
+      "id": "n_hook_20",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Stop keeping condoms in your wallet"
+      ],
+      "source": "fix-02"
+    },
+    {
+      "id": "n_hook_21",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Things I'm glad I bought:"
+      ],
+      "source": "fix-02"
+    },
+    {
+      "id": "n_hook_22",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Why does nobody talk about this"
+      ],
+      "source": "fix-02"
+    },
+    {
+      "id": "n_hook_23",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Your wallet is crushing your condoms"
+      ],
+      "source": "fix-02"
+    },
+    {
+      "id": "n_hook_24",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "The condom case that",
+        "looks like a wallet"
+      ],
+      "source": "fix-02"
+    },
+    {
+      "id": "n_hook_25",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Me after finding out",
+        "wallets ruin condoms"
+      ],
+      "source": "fix-02"
+    },
+    {
+      "id": "n_hook_26",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Small upgrade, huge difference"
+      ],
+      "source": "fix-02"
+    },
+    {
+      "id": "n_hook_27",
+      "style": "native",
+      "kind": "hook",
+      "screens": [
+        "Gift idea he'll actually use"
+      ],
+      "source": "fix-02"
+    },
+    {
+      "id": "p_sec_holds",
+      "style": "premium",
+      "kind": "second",
+      "screens": [
+        "Holds 2."
+      ],
+      "action": "open"
+    },
+    {
+      "id": "p_sec_magnet",
+      "style": "premium",
+      "kind": "second",
+      "screens": [
+        "Hidden magnetic closure."
+      ],
+      "action": "close"
+    },
+    {
+      "id": "p_sec_material",
+      "style": "premium",
+      "kind": "second",
+      "screens": [
+        "Eco-leather. Ultra-slim."
+      ],
+      "action": "any"
+    },
+    {
+      "id": "p_sec_wallet",
+      "style": "premium",
+      "kind": "second",
+      "screens": [
+        "Looks like a mini wallet."
+      ],
+      "action": "closed"
+    },
+    {
+      "id": "p_sec_colours",
+      "style": "premium",
+      "kind": "second",
+      "screens": [
+        "Two colours."
+      ],
+      "action": "colours"
+    },
+    {
+      "id": "n_sec_holds",
+      "style": "native",
+      "kind": "second",
+      "screens": [
+        "it holds 2"
+      ],
+      "action": "open"
+    },
+    {
+      "id": "n_sec_wallet",
+      "style": "native",
+      "kind": "second",
+      "screens": [
+        "looks like a mini wallet"
+      ],
+      "action": "closed"
+    },
+    {
+      "id": "n_sec_magnet",
+      "style": "native",
+      "kind": "second",
+      "screens": [
+        "magnetic closure"
+      ],
+      "action": "close"
+    },
+    {
+      "id": "n_sec_material",
+      "style": "native",
+      "kind": "second",
+      "screens": [
+        "eco-leather"
+      ],
+      "action": "any"
+    },
+    {
+      "id": "n_sec_colours",
+      "style": "native",
+      "kind": "second",
+      "screens": [
+        "2 colours"
+      ],
+      "action": "colours"
     }
   ],
   "caption_ctas": [

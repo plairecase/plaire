@@ -27,7 +27,7 @@ def crop_filter(bbox: list) -> str:
 
 
 def cut(src: Path, start: float, dur: float, out: Path, fps: int, crf: int, hdr: bool,
-        bbox: list, tonemap: str = "mobius", stabilize: bool = False) -> Path:
+        bbox: list, tonemap: str = "mobius", stabilize: bool = False, reverse: bool = False) -> Path:
     """Отрезок → клип 1080×1920. stabilize: двухпроходная стабилизация vidstab (дрожащая ручная съёмка)."""
     out.parent.mkdir(parents=True, exist_ok=True)
     tms = [TONEMAP[tonemap] + ","] if hdr else [""]
@@ -47,7 +47,7 @@ def cut(src: Path, start: float, dur: float, out: Path, fps: int, crf: int, hdr:
                         f"unsharp=5:5:0.5:3:3:0.0")
             else:
                 stab = ",deshake=rx=48:ry=48"            # запасной встроенный стабилизатор
-        vf = f"{base}{stab},format=yuv420p,setsar=1"
+        vf = f"{base}{stab}{',reverse' if reverse else ''},format=yuv420p,setsar=1"
         cmd = ["ffmpeg", "-v", "error", "-y", "-ss", f"{start:.3f}", "-i", str(src), "-t", f"{dur:.3f}",
                "-vf", vf, "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", str(crf),
                "-pix_fmt", "yuv420p", "-color_primaries", "bt709", "-color_trc", "bt709",
@@ -62,6 +62,15 @@ def cut(src: Path, start: float, dur: float, out: Path, fps: int, crf: int, hdr:
             return out
         err = res.stderr[-400:]
     raise RuntimeError(f"нарезка {src.name} {start:.2f}+{dur:.2f}: {err}")
+
+
+def reverse_head(clip: Path, dur: float, out: Path, crf: int) -> Path:
+    """Первые dur секунд готового клипа задом наперёд (для бесшовного лупа)."""
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(clip), "-t", f"{dur:.3f}", "-vf", "reverse",
+                    "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", str(crf), "-pix_fmt", "yuv420p",
+                    "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709",
+                    "-movflags", "+faststart", str(out)], check=True, timeout=300)
+    return out
 
 
 def hdr_compare(src: Path, t: float, out: Path) -> Path:

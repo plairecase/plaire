@@ -1,6 +1,6 @@
 export type TextColor = 'ink' | 'white';
 
-export type TransitionType = 'cut' | 'zoom' | 'push' | 'whip' | 'punch';
+export type TransitionType = 'cut' | 'zoom' | 'push' | 'whip' | 'punch' | 'impact';
 
 export type Transition = {
   type: TransitionType;

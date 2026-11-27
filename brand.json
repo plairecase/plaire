@@ -2,8 +2,16 @@
   "product": {
     "name": "Plaire",
     "what": "slim eco-leather condom case that looks like a mini wallet",
-    "facts": ["Eco-leather", "Holds 2", "Hidden magnetic closure", "Ultra-slim"],
-    "colors": ["Cognac Brown", "Midnight Black"],
+    "facts": [
+      "Eco-leather",
+      "Holds 2",
+      "Hidden magnetic closure",
+      "Ultra-slim"
+    ],
+    "colors": [
+      "Cognac Brown",
+      "Midnight Black"
+    ],
     "price": "€29",
     "shipping": "Free shipping to all EU countries",
     "shipping_short": "Free EU shipping",
@@ -14,35 +22,171 @@
     "instagram": "@plairecase",
     "keyword": "condom case"
   },
-  "forbidden_phrases": ["leather-look", "snap closure", "genuine leather", "real leather",
-                        "discreet packaging", "plain packaging", "best-selling", "#1",
-                        "reviews", "rated", "sold out", "limited stock"],
-  "unverified_claims": ["vegan", "waterproof", "water-resistant", "water resistant", "rfid",
-                        "handmade", "hand-made", "hand-stitched", "lifetime", "warranty",
-                        "guarantee", "guaranteed", "free returns", "discount", "sale", "% off",
-                        "promo", "coupon", "only today", "today only", "hurry", "last chance",
-                        "bestseller", "best seller", "award", "customers love", "everyone loves",
-                        "doctor", "dermatologist", "100%"],
-  "forbidden_hashtags": ["#fyp", "#foryou", "#foryoupage", "#viral", "#xyzbca", "#trending"],
-  "palette": {"paper": "#F5F4F0", "surface": "#FFFFFF", "stone": "#E7E2DA", "ink": "#121212",
-              "ink_muted": "#5C5853", "cognac": "#7D3617", "tan": "#C27F61", "leather": "#202020",
-              "sand": "#BAAC9B", "signal": "#D30909", "on_photo": "#FFFFFF"},
-  "type": {"font": "TikTok Sans",
-           "display": [300, 96], "headline": [400, 64], "eyebrow": [500, 26],
-           "callout": [400, 36], "price": [500, 44], "native": [600, 58], "fine": [400, 26],
-           "subtitle": [500, 46],
-           "eyebrow_tracking_em": 0.3, "eyebrow_stretch_pct": 125},
-  "effects": {"text_on_photo_shadow": "0 2px 18px rgba(0,0,0,0.35)",
-              "hairline_px": 2, "callout_dot_px": 14, "signal_dot_px": 12, "callout_line_px": 300},
-  "motion": {"ease_in": [0.16, 1, 0.3, 1], "ease_out": [0.7, 0, 0.84, 0],
-             "text_in_ms": 700, "text_out_ms": 400, "text_rise_px": 24,
-             "stagger_word_ms": 70, "stagger_line_ms": 140,
-             "push_in_scale": [1.0, 1.04], "crossfade_max_frames": 10,
-             "white_flash_max_per_video": 1},
-  "safe_zone_9x16": {"top": 270, "bottom": 672, "side": 120,
-                     "right_buttons": {"width": 300, "below_y": 840}},
-  "safe_zone_4x5": {"top": 80, "bottom": 80, "side": 80},
-  "cover_center_9x16": {"y_min": 240, "y_max": 1680},
-  "text_rules": {"max_words_per_screen": 6, "min_hold_s": 1.6, "no_exclamation": true,
-                 "no_emoji": true, "allowed_caps_words": ["EU", "POV", "PLAIRE", "PLAIRE.EU"]}
+  "forbidden_phrases": [
+    "leather-look",
+    "snap closure",
+    "genuine leather",
+    "real leather",
+    "discreet packaging",
+    "plain packaging",
+    "best-selling",
+    "#1",
+    "reviews",
+    "rated",
+    "sold out",
+    "limited stock"
+  ],
+  "unverified_claims": [
+    "vegan",
+    "waterproof",
+    "water-resistant",
+    "water resistant",
+    "rfid",
+    "handmade",
+    "hand-made",
+    "hand-stitched",
+    "lifetime",
+    "warranty",
+    "guarantee",
+    "guaranteed",
+    "free returns",
+    "discount",
+    "sale",
+    "% off",
+    "promo",
+    "coupon",
+    "only today",
+    "today only",
+    "hurry",
+    "last chance",
+    "bestseller",
+    "best seller",
+    "award",
+    "customers love",
+    "everyone loves",
+    "doctor",
+    "dermatologist",
+    "100%",
+    "any pocket"
+  ],
+  "forbidden_hashtags": [
+    "#fyp",
+    "#foryou",
+    "#foryoupage",
+    "#viral",
+    "#xyzbca",
+    "#trending"
+  ],
+  "palette": {
+    "paper": "#F5F4F0",
+    "surface": "#FFFFFF",
+    "stone": "#E7E2DA",
+    "ink": "#121212",
+    "ink_muted": "#5C5853",
+    "cognac": "#7D3617",
+    "tan": "#C27F61",
+    "leather": "#202020",
+    "sand": "#BAAC9B",
+    "signal": "#D30909",
+    "on_photo": "#FFFFFF"
+  },
+  "type": {
+    "font": "TikTok Sans",
+    "display": [
+      300,
+      96
+    ],
+    "headline": [
+      400,
+      64
+    ],
+    "eyebrow": [
+      500,
+      26
+    ],
+    "callout": [
+      400,
+      36
+    ],
+    "price": [
+      500,
+      44
+    ],
+    "native": [
+      600,
+      58
+    ],
+    "fine": [
+      400,
+      26
+    ],
+    "subtitle": [
+      500,
+      46
+    ],
+    "eyebrow_tracking_em": 0.3,
+    "eyebrow_stretch_pct": 125
+  },
+  "effects": {
+    "text_on_photo_shadow": "0 2px 18px rgba(0,0,0,0.35)",
+    "hairline_px": 2,
+    "callout_dot_px": 14,
+    "signal_dot_px": 12,
+    "callout_line_px": 300
+  },
+  "motion": {
+    "ease_in": [
+      0.16,
+      1,
+      0.3,
+      1
+    ],
+    "ease_out": [
+      0.7,
+      0,
+      0.84,
+      0
+    ],
+    "text_in_ms": 700,
+    "text_out_ms": 400,
+    "text_rise_px": 24,
+    "stagger_word_ms": 70,
+    "stagger_line_ms": 140,
+    "push_in_scale": [
+      1.0,
+      1.04
+    ],
+    "crossfade_max_frames": 10,
+    "white_flash_max_per_video": 1
+  },
+  "safe_zone_9x16": {
+    "top": 270,
+    "bottom": 672,
+    "side": 120,
+    "right_buttons": {
+      "width": 300,
+      "below_y": 840
+    }
+  },
+  "safe_zone_4x5": {
+    "top": 80,
+    "bottom": 80,
+    "side": 80
+  },
+  "cover_center_9x16": {
+    "y_min": 240,
+    "y_max": 1680
+  },
+  "text_rules": {
+    "max_words_per_screen": 6,
+    "min_hold_s": 1.6,
+    "no_exclamation": true,
+    "no_emoji": true,
+    "allowed_caps_words": [
+      "EU",
+      "POV",
+      "PLAIRE",
+      "PLAIRE.EU"
+    ]
+  }
 }

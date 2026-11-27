@@ -26,9 +26,12 @@ const HookScreen: React.FC<{s: TextScreen; color: TextColor}> = ({s, color}) => 
   const out = disappear(frame, s.durationInFrames, motion.text_out_ms, fps);
   const words = s.text.split(' ');
   const eyeIn = s.animateIn ? appear(frame, 0, motion.text_in_ms, fps) : 1;
+  // хук виден целиком с кадра 0 (обложка), но живой: мягко «оседает» 103 % → 100 %
+  const settle = s.animateIn ? 1 : 1.03 - 0.03 * appear(frame, 0, 600, fps);
   const wordsStart = s.animateIn && s.eyebrow ? msToFrames(200, fps) : 0;
   return (
-    <div style={{position: 'absolute', left: TEXT_LEFT, top: 300, width: TEXT_RIGHT - TEXT_LEFT, opacity: out}}>
+    <div style={{position: 'absolute', left: TEXT_LEFT, top: 300, width: TEXT_RIGHT - TEXT_LEFT, opacity: out,
+      transform: `scale(${settle})`, transformOrigin: 'left top'}}>
       {s.eyebrow ? (
         <div
           style={{

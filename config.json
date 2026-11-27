@@ -9,8 +9,8 @@
     "state": "_autoedit_state"
   },
   "style_mix": {
-    "premium": 1,
-    "native": 1
+    "premium": 2,
+    "native": 0
   },
   "post_days": [
     "Mon",
@@ -42,10 +42,21 @@
   },
   "templates": {
     "premium": [
-      "p_one_line"
+      "p_organic"
     ],
     "native": [
       "n_statement"
+    ],
+    "promote": [
+      "p_organic"
     ]
-  }
+  },
+  "beat_grid_bpm": [
+    120,
+    128,
+    100
+  ],
+  "promote_days": [
+    "Mon"
+  ]
 }

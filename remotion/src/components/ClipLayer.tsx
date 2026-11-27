@@ -35,6 +35,14 @@ const Clip: React.FC<{clip: ClipSpec}> = ({clip}) => {
       scale *= 1.12 - 0.12 * p;
     }
   }
+  if (tin && tin.type === 'impact') {
+    // удар-наезд на первой доле (fix-02 §3.1): 1.00 → 1.12 за 2–3 кадра, затем мягко к 1.05
+    const hit = tin.frames;
+    scale =
+      frame <= hit
+        ? interpolate(frame, [0, hit], [1, 1.12], {extrapolateRight: 'clamp'})
+        : interpolate(frame, [hit, total], [1.12, 1.05], {easing: easeIn, extrapolateRight: 'clamp'});
+  }
   const tout = clip.transitionOut;
   if (tout && (tout.type === 'push' || tout.type === 'whip' || tout.type === 'zoom') && frame >= total - tout.frames) {
     const q = interpolate(frame, [total - tout.frames, total], [0, 1], {easing: easeIn, extrapolateLeft: 'clamp'});

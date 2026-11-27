@@ -24,6 +24,7 @@ class Segment:
     hdr: bool
     bbox: list
     stabilize: bool = False           # ручная/дрожащая съёмка → стабилизация при нарезке
+    reverse: bool = False             # проиграть задом наперёд (луп: последний кадр = первый)
     out: str = ""                     # clips/cN.mp4 — заполняет media.prepare
 
 
@@ -39,6 +40,10 @@ class Plan:
     color: str = ""
     first_shot: str = ""
     notes: list[str] = field(default_factory=list)
+    purpose: str = "organic"           # organic | promote (fix-02)
+    bpm: float = 0.0
+    checks: dict = field(default_factory=dict)
+    missing: list = field(default_factory=list)
     track: object = None               # audio.music.Track
     track_path: object = None
 
@@ -373,4 +378,223 @@ def build_n_statement(ctx: Ctx) -> Plan | None:
                 first["shot"]["vision"]["color"], first["shot"]["id"])
 
 
-BUILDERS = {"p_one_line": build_p_one_line, "n_statement": build_n_statement}
+# ------------------------------------------------------------------ p_organic (fix-02, только премиум)
+OPENING = ("open", "close", "insert")
+
+
+def grid_from(ctx: Ctx, bpm_fallback: float) -> tuple[float, float]:
+    """(первая доля, длительность доли) — из трека, иначе из config.beat_grid_bpm."""
+    if ctx.beats and len(ctx.beats) > 4:
+        diffs = sorted(b - a for a, b in zip(ctx.beats, ctx.beats[1:]))
+        ib = diffs[len(diffs) // 2]
+        return 0.0, ib
+    return 0.0, 60.0 / bpm_fallback
+
+
+def pick_second(ctx: Ctx, action: str, color_pair: bool) -> dict | None:
+    want = "colours" if color_pair else {"open": "open", "insert": "open", "close": "close",
+                                        "static": "closed", "rotate": "closed"}.get(action, "any")
+    pool = [t for t in ctx.texts if t.get("style") == "premium" and t.get("kind") == "second"
+            and not check_item(t) and t["id"] not in ctx.avoid_hooks]
+    exact = [t for t in pool if t.get("action") == want]
+    anyp = [t for t in pool if t.get("action") == "any"]
+    return ctx.rng.choice(exact or anyp or pool) if pool else None
+
+
+def build_p_organic(ctx: Ctx, purpose: str = "organic", bpm_fallback: float = 120.0) -> Plan | None:
+    """Премиум под ленту (fix-02 §5): первый план — действие, удар-наезд на доле 1, склейки на долях,
+    длина — целое число тактов (7–10 с), хук виден с кадра 0, ≤ 3 текстов, концовка — бесшовный луп.
+    promote: те же планы без лупа + карточка с ценой (≤ 20 % длины)."""
+    fps = ctx.fps
+    pool = [s for s in ctx.shots if s["shot"]["vision"]["setting"] in ("studio", "hands", "packaging")
+            or "premium" in s["shot"]["vision"]["style_fit"]]
+    if len(pool) < 3:
+        return None
+    _, ib = grid_from(ctx, bpm_fallback)
+    bar = 4 * ib
+    bars = next((n for n in (4, 5, 3) if 7.0 <= n * bar <= 10.0), 4)
+    beats_total = bars * 4
+    # раскладка по долям (fix-02): первая склейка ≤ 1.5 с, ни один план > 2 с (кроме лупа)
+    first_b = 3 if 3 * ib <= 1.5 + 1e-6 else 2
+    max_b = max(2, int(2.0 / ib + 1e-6))
+    loop_b = (3 if 3 * ib <= 2.0 + 1e-6 else 2) if purpose == "organic" else 0
+    mid_total = beats_total - first_b - loop_b
+    k = math.ceil(mid_total / max_b)
+    mids = [mid_total // k + (1 if i < mid_total % k else 0) for i in range(k)]
+    slots = [first_b] + mids
+    durs = [n * ib for n in slots]
+
+    def fits(s, d):
+        return usable_len(s) >= d
+
+    def score(s, extra=0.0):
+        return s["shot"]["vision"]["hero_score"] / 3 + ctx.rng.random() * 1.5 + extra
+
+    used = []
+
+    def take(cands, d, key):
+        best, bv = None, -1e9
+        for s in cands:
+            if s in used or not fits(s, d):
+                continue
+            v = key(s) - (3 if any(u["file"]["id"] == s["file"]["id"] for u in used) else 0)
+            if v > bv:
+                best, bv = s, v
+        if best:
+            used.append(best)
+        return best
+
+    # 1. первый план — действие (fix-02 §3.1): открытый чехол / руки открывают; чехол ниже хука
+    def first_key(s):
+        v = s["shot"]["vision"]
+        kk = 0.0
+        if v["action"] in OPENING:
+            kk += 6
+        if v["setting"] == "hands":
+            kk += 2
+        if v["action"] == "static" and v["setting"] == "studio":
+            kk -= 6                                  # не начинаем с лежащего закрытого чехла
+        kk += hook_fit(s)
+        if s["shot"]["id"] in ctx.avoid_first:
+            kk -= 20
+        return score(s, kk)
+    first = take(pool, durs[0] + loop_b * ib + 0.2, first_key) or take(pool, durs[0], first_key)
+    if not first:
+        return None
+    c0 = first["shot"]["vision"]["color"]
+    roles = [
+        lambda s: score(s, (2 if s["shot"]["vision"]["color"] == c0 else 0)          # герой, тот же цвет
+                        + (2 if s["shot"]["vision"]["action"] in ("rotate", "static", "reveal") else 0)),
+        lambda s: score(s, (5 if s["shot"]["vision"]["setting"] == "hands" else 0)    # руки (§3.3) / другой цвет
+                        + (2 if s["shot"]["vision"]["color"] != c0 else 0)),
+        lambda s: score(s, 4 if s["shot"]["vision"]["action"] in ("detail_macro", "close", "open") else 0),
+    ]
+    body = [first]
+    for i, d in enumerate(durs[1:]):
+        x = take(pool, d, roles[i % len(roles)])
+        if not x:
+            return None
+        body.append(x)
+    missing = [] if any(x["shot"]["vision"]["setting"] in ("hands", "pocket_bag") for x in body) else ["hands"]
+
+    loop_beats = loop_b
+    segs_d = durs
+
+    segments, clips, sfx = [], [], []
+    t = 0.0
+    kinds = ["zoom", "punch", "whip"]
+    ctx.rng.shuffle(kinds)
+    whip_used = False
+    s0 = first["shot"]
+    first_src = s0["start"] + 0.15
+    for i, (s, d) in enumerate(zip(body, segs_d)):
+        tr = None
+        if i > 0:
+            k = kinds[(i - 1) % len(kinds)]
+            if k == "whip" and whip_used:
+                k = "punch"
+            whip_used |= k == "whip"
+            tr = {"type": k, "frames": 6 if k in ("zoom", "whip") else 4}
+        ov = (tr["frames"] / fps) if tr and tr["type"] in ("zoom", "whip") else 0.0
+        if i == 0:
+            src = first_src
+        else:
+            mid = s["shot"]["start"] + s["shot"]["dur"] / 2
+            src = max(s["shot"]["start"] + 0.15, min(mid - (d + ov) / 2, s["shot"]["end"] - 0.15 - d - ov))
+        segments.append(seg(s, src, d + ov))
+        clip = {"src": "", "from": frames(t - ov, fps), "durationInFrames": frames(t + d, fps) - frames(t - ov, fps),
+                "pushIn": [1.0, 1.05] if i else [1.05, 1.05]}
+        if i == 0:
+            clip["transitionIn"] = {"type": "impact", "frames": 3}
+        if tr:
+            clip["transitionIn"] = tr
+            clips[-1]["transitionOut"] = tr
+            if tr["type"] in ("zoom", "whip"):
+                sfx.append({"t": round(max(0.0, t - ov - 0.05), 2), "kind": "whoosh", "gain_db": -4})
+        if s["shot"]["vision"]["action"] in ("open", "close") and i > 0:
+            sfx.append({"t": round(t + ib, 2), "kind": "magnet", "gain_db": -6})
+        clips.append(clip)
+        t += d
+    sfx.insert(0, {"t": 0.0, "kind": "click", "gain_db": -4})          # акцент на кадре 0
+
+    end = None
+    if purpose == "organic":
+        # луп: последний план заканчивается ровно на кадре 0 — это обратный ход того же клипа,
+        # что и первый план (поэтому первый клип режем длиннее: на всю длину лупа)
+        ld = loop_beats * ib
+        segments[0].src_dur = round(max(segments[0].src_dur, ld + 0.05), 3)
+        segments.append(Segment(file_id=first["file"]["id"], name=first["file"]["name"], shot_id=s0["id"] + "#loop",
+                                src_start=round(first_src, 3), src_dur=round(ld, 3), hdr=first["file"]["probe"]["hdr"],
+                                bbox=first["shot"]["vision"]["case_bbox"], stabilize=segments[0].stabilize,
+                                reverse=True))
+        clips.append({"src": "", "from": frames(t, fps), "durationInFrames": frames(t + ld, fps) - frames(t, fps),
+                      "pushIn": [1.08, 1.0], "transitionIn": {"type": "punch", "frames": 4}})
+        t += ld
+    else:
+        # promote: карточка 1 такт на компактном плане
+        cd = bar
+        if cd > 0.2 * (t + cd) + 1e-6:
+            cd = round(0.2 * t / 0.8, 3)
+        cands = [x for x in pool if x not in body and end_fit(x) > 0] or [x for x in pool if x not in body]
+        last = max(cands, key=lambda x: end_fit(x) + score(x)) if cands else body[1]
+        ls = last["shot"]
+        segments.append(seg(last, max(ls["start"] + 0.15, ls["start"] + ls["dur"] / 2 - cd / 2), cd))
+        clips.append({"src": "", "from": frames(t, fps), "durationInFrames": frames(t + cd, fps) - frames(t, fps),
+                      "pushIn": [1.0, 1.04], "transitionIn": {"type": "punch", "frames": 4}})
+        case_top, case_bot = bbox(last)
+        if case_bot * 1920 + 40 <= 1130:
+            tag_top = int(max(1090, case_bot * 1920 + 40))
+        elif case_top >= 0.33:
+            tag_top = 500
+        else:
+            tag_top = 1130
+        p = brand()["product"]
+        end = {"from": frames(t, fps), "durationInFrames": frames(t + cd, fps) - frames(t, fps),
+               "color": text_color(last), "eyebrow": "The condom case", "price": p["price"],
+               "site": p["site"].upper(), "shipping": p["shipping"], "tagTop": tag_top}
+        t += cd
+    total = round(t, 3)
+
+    # тексты: хук с кадра 0 (виден целиком), второй — на сильной доле у действия, исчезает за долю до конца
+    hook = pick_hook(ctx, "premium")
+    h_end = sum(segs_d[:2])                                   # хук на первых двух планах
+    screens = [{"from": 0, "durationInFrames": frames(h_end, fps), "text": hook["screens"][0],
+                "eyebrow": hook.get("eyebrow"), "animateIn": False}]
+    if len(hook["screens"]) > 1:
+        half = frames(segs_d[0], fps)
+        screens = [{"from": 0, "durationInFrames": half, "text": hook["screens"][0], "eyebrow": hook.get("eyebrow"),
+                    "animateIn": False},
+                   {"from": half, "durationInFrames": frames(h_end, fps) - half, "text": hook["screens"][1],
+                    "animateIn": True}]
+    sec_shot = body[2] if len(body) > 2 else body[-1]
+    sec = pick_second(ctx, sec_shot["shot"]["vision"]["action"],
+                      sec_shot["shot"]["vision"]["color"] != c0)
+    body_end = sum(segs_d)
+    if sec and len(screens) < 3:
+        s_from = frames(h_end, fps)
+        s_to = frames(min(body_end, total - ib), fps)             # исчезает за 1 долю до конца
+        if s_to - s_from >= fps:                                  # держится ≥ 1 с
+            screens.append({"from": s_from, "durationInFrames": s_to - s_from, "text": sec["screens"][0],
+                            "animateIn": True})
+    if purpose == "promote" and end:
+        screens = [x for x in screens if x["from"] + x["durationInFrames"] <= end["from"]] or screens[:1]
+
+    # проверки fix-02 §7
+    cuts = [c["from"] + (c.get("transitionIn", {}).get("frames", 0)
+                         if c.get("transitionIn", {}).get("type") in ("zoom", "whip") else 0) for c in clips[1:]]
+    beat_frames = [frames(k * ib, fps) for k in range(beats_total + 8)]
+    checks = {
+        "first_cut_s": round(cuts[0] / fps, 2) if cuts else None,
+        "cuts_on_beats": all(min(abs(c - b) for b in beat_frames) <= 1 for c in cuts),
+        "whole_bars": abs(total / bar - round(total / bar)) * bar * fps <= 1 if purpose == "organic" else True,
+        "max_shot_s": round(max(segs_d), 2),
+        "price_on_screen": end is not None,
+    }
+    props = {"template": "p_organic", "style": "premium", "fps": fps, "durationInFrames": frames(total, fps),
+             "clips": clips, "screens": screens, "textColor": text_color(first), "endFrame": end}
+    plan = Plan("p_organic", "premium", props, segments, sfx, hook["id"], total, c0, s0["id"])
+    plan.purpose, plan.bpm, plan.checks, plan.missing = purpose, round(60 / ib, 1), checks, missing
+    return plan
+
+
+BUILDERS = {"p_one_line": build_p_one_line, "n_statement": build_n_statement, "p_organic": build_p_organic}
