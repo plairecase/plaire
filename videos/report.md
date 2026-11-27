@@ -1,25 +1,25 @@
-# Шаг 4. Тестовые ролики (TEST_2026-11-26_2327)
+# Шаг 4. Тестовые ролики (TEST_2026-11-27_1116)
 
-seed: `20208` (повторить тот же монтаж: run с этим seed)
+seed: `71010` (повторить тот же монтаж: run с этим seed)
 
 ## 01_premium_p_one_line
-- 7.5 с, 3 планов, цвет black
-- текст: «Designed to carry two.» (`p_hook_13`)
+- 7.3 с, 3 планов, цвет black
+- текст: «Small case. Calm mind.» (`p_hook_14`)
 - исходники: IMG_1384.MOV, IMG_1386.MOV, IMG_1438.MOV
-- звук: -14.4 LUFS, пик -1.6 dBTP; SFX: whoosh «swoosh 1.wav» 2.2 с, whoosh «swoosh 2.wav» 4.4 с
+- звук: ⚠️ без музыки (папка Music пустая); -15.6 LUFS, пик -1.6 dBTP; SFX: whoosh «air.wav» 2.2 с, whoosh «swoosh 2.wav» 4.2 с
 - проверка: ✅
 
 ## 02_native_n_statement
-- 8.5 с, 8 планов, цвет cognac
-- текст: «POV: finally, a proper condom case» (`n_hook_10`)
+- 7.8 с, 10 планов, цвет cognac
+- текст: «The underrated thing I always carry» (`n_hook_13`)
 - исходники: -6741131299191009673.MP4, 4811470066641041424.MP4, 6796620381629818176.MP4, IMG_1293.mov
-- звук: тишина (нативный стиль без SFX); SFX: нет
+- звук: ⚠️ без музыки (папка Music пустая); -14.3 LUFS, пик -1.6 dBTP; SFX: whoosh «soft whoosh 2.wav» 3.2 с
 - проверка: ✅
 
 ## Время
 
-- нарезка: 1.0 мин
-- рендер 01_premium_p_one_line: 0.6 мин
-- рендер 02_native_n_statement: 0.5 мин
-- загрузка на Диск: 2.9 мин
-- всего: 6.2 мин
+- нарезка: 1.8 мин
+- рендер 01_premium_p_one_line: 0.7 мин
+- рендер 02_native_n_statement: 0.6 мин
+- загрузка на Диск: 1.0 мин
+- всего: 5.1 мин
