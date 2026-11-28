@@ -52,7 +52,7 @@ Answer strictly in JSON:
 - issues: short list of concrete problems, in Russian."""
 
 
-def check(sheet: Path, purpose: str = "organic", client=None, usage=None) -> dict:
+def check(sheet: Path, purpose: str = "organic", client=None, usage=None, intent: str = "") -> dict:
     from analyze import vision as vis
 
     client = client or vis.make_client()
@@ -62,7 +62,9 @@ def check(sheet: Path, purpose: str = "organic", client=None, usage=None) -> dic
         model=model, max_tokens=3000, system=SYSTEM,
         messages=[{"role": "user", "content": [
             {"type": "image", "source": {"type": "base64", "media_type": "image/jpeg", "data": data}},
-            {"type": "text", "text": f"Purpose: {purpose}. Review this video."}]}],
+            {"type": "text", "text": f"Purpose: {purpose}. Editor's intent: {intent or 'one world, one colour'}. "
+                                     "One colour per video is intentional (do not ask for the second colour). "
+                                     "A planned single world change explained by its text is allowed. Review this video."}]}],
         output_config={"effort": "medium", "format": {"type": "json_schema", "schema": SCHEMA}},
         betas=["server-side-fallback-2026-07-01"], fallbacks="default")
     if usage:

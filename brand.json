@@ -128,7 +128,7 @@
     "eyebrow_stretch_pct": 125
   },
   "effects": {
-    "text_on_photo_shadow": "0 2px 18px rgba(0,0,0,0.35)",
+    "text_on_photo_shadow": "0 2px 10px rgba(0,0,0,0.45), 0 0 2px rgba(0,0,0,0.35)",
     "hairline_px": 2,
     "callout_dot_px": 14,
     "signal_dot_px": 12,

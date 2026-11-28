@@ -59,8 +59,10 @@ TEMPLATES = {
 }
 
 
-def pick_text(ctx: Ctx, role: str, used: set) -> dict | None:
+def pick_text(ctx: Ctx, role: str, used: set, shot: dict | None = None) -> dict | None:
     key = TEXT_FOR_ROLE.get(role)
+    if key == "inside" and not (shot and v(shot).get("two_visible")):
+        return None
     pool = [t for t in ctx.texts if t.get("style") == "premium" and t.get("kind") == "second"
             and t.get("action") == key and t["id"] not in used and not check_item(t)]
     return ctx.rng.choice(pool) if pool else None
@@ -70,11 +72,17 @@ def pick_hook(ctx: Ctx, first: dict, purpose: str, template: str) -> dict:
     pool = [t for t in ctx.texts if t.get("style") == "premium" and t.get("kind") == "hook"
             and t["id"] not in ctx.avoid_hooks and not check_item(t)
             and (purpose == "promote" or t.get("purpose") != "promote")]      # бренд-хук — не в organic
+    # «Holds 2 / Two condoms» — только если в кадре видно обе штуки (fix-03, правило 2).
+    # В текущих исходниках внутри виден один, поэтому хуки «про два» не берём, пока нет такого кадра.
+    two_visible = bool(v(first).get("two_visible"))
     if template == "p_studio_to_life":
         pref = [t for t in pool if t["id"] == "p_hook_05"]                # «The condom case, redesigned.»
+    elif two_visible:
+        pref = [t for t in pool if t.get("shot") == "inside" and len(t["screens"]) == 1]
     else:
-        pref = [t for t in pool if t.get("shot") == "inside" and len(t["screens"]) == 1] if is_inside(first) else []
-    return ctx.rng.choice(pref or pool)
+        pref = [t for t in pool if t.get("shot") != "inside" and len(t["screens"]) == 1
+                and t["id"] in ("p_hook_02", "p_hook_05", "p_hook_17", "p_hook_06")]
+    return ctx.rng.choice(pref or [t for t in pool if t.get("shot") != "inside"] or pool)
 
 
 # ------------------------------------------------------------------ сборка
@@ -224,7 +232,7 @@ def _build_color(ctx, template, purpose, bpm_fallback, spec, in_world, C):
             want_id = "p_sec_cognac" if v(s)["color"] == "cognac" else "p_sec_black"     # текст = цвет в кадре
             tt = next((x for x in ctx.texts if x["id"] == want_id), None)
         else:
-            tt = pick_text(ctx, role, used_texts)
+            tt = pick_text(ctx, role, used_texts, s)
         if i > 0:
             txt = {"text": tt["screens"][0], "id": tt["id"], "action": tt.get("action")} if tt else None
         if txt:
@@ -282,7 +290,7 @@ def _build_color(ctx, template, purpose, bpm_fallback, spec, in_world, C):
         lum, det = m.get("text_luma") or m.get("luma_top") or 0.5, m.get("text_detail")
         busy = det is not None and det > 0.02
         sc["color"] = "ink" if (lum > 0.75 and not busy) else "white"
-        sc["plate"] = bool(busy and sc["color"] == "white") or (0.45 < lum <= 0.75)
+        sc["plate"] = False                       # плашки выглядят шаблонно (визуальная проверка) — без них
 
     plan = Plan(template, "premium", {
         "template": template, "style": "premium", "fps": fps, "durationInFrames": frames(total, fps),

@@ -50,7 +50,7 @@ const HookScreen: React.FC<{s: TextScreen; color: TextColor}> = ({s, color}) => 
           background: s.plate ? 'rgba(18,18,18,0.85)' : undefined,
           padding: s.plate ? '16px 24px' : undefined,
           fontFamily: FONT,
-          fontWeight: s.plate || color === 'white' ? 400 : type.display[0],
+          fontWeight: color === 'white' ? 500 : 400,          // fix-03: тонкий Light не читается
           fontSize: type.display[1],
           lineHeight: '100px',
           letterSpacing: '-0.02em',

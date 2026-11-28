@@ -314,7 +314,10 @@ def main(argv=None) -> int:
         vq = None
         if vision_client is not None:
             try:
-                vq = vision_check.check(sheet, p.purpose, vision_client, vision_usage)
+                intent = {"p_gloves_pov": "one world: white gloves on grey; one colour; open → close → edge → on palm → loop",
+                          "p_studio_to_life": "studio paper, then ONE planned change to street with bare hands "
+                                              "(text 'Made to carry.'), then back to the first frame (loop)"}.get(p.template, "")
+                vq = vision_check.check(sheet, p.purpose, vision_client, vision_usage, intent)
                 if not vq["pass"]:
                     errs.append("визуально: " + ", ".join(vq["failed"]))
             except Exception as e:                       # noqa: BLE001 — нет ответа → не блокируем
@@ -357,6 +360,8 @@ def main(argv=None) -> int:
             name = f"{len(results) + 1:02d}_{p.template}_{p.purpose}"
             r = produce(p, name)
             r["attempts"] = attempt + 1
+            if best is not None:
+                r["attempts"] = attempt + 1
             ctx.avoid_hooks.add(p.hook_id)
             if not r["errors"]:
                 best = r
@@ -365,6 +370,7 @@ def main(argv=None) -> int:
             if best is None or len(r["errors"]) < len(best["errors"]):
                 best = r
         if best:
+            best["attempts_total"] = attempt + 1 if p else attempt
             results.append(best)
             ctx.avoid_first.add(best["plan"].first_shot)
             ctx.avoid_color = best["plan"].color
@@ -407,7 +413,7 @@ def main(argv=None) -> int:
               f"- текст: «{' / '.join(hooks[p.hook_id]['screens'])}» (`{p.hook_id}`)",
               f"- исходники: " + ", ".join(sorted({s.name for s in p.segments})),
               f"- звук: {snd}; SFX: " + (", ".join(f"{c['kind']} «{c['file']}» {c['t']:.1f} с" for c in p.sfx) or "нет"),
-              f"- попыток: {r.get('attempts', 1)}; луп SSIM: {p.checks.get('loop_ssim', '—')}",
+              f"- попыток: {r.get('attempts_total', r.get('attempts', 1))} (взята {r.get('attempts', 1)}-я); луп SSIM: {p.checks.get('loop_ssim', '—')}",
               "- визуально (Claude): " + ("—" if not r.get("visual") else
                                           ("✅" if r["visual"]["pass"] else "❌ " + ", ".join(r["visual"]["failed"]))
                                           + ("; " + "; ".join(r["visual"].get("issues", [])[:3]) if r["visual"].get("issues") else "")),

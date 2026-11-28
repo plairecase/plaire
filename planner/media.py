@@ -19,6 +19,32 @@ TONEMAP = {
 }
 
 
+def band_crop(src: Path, t: float) -> str:
+    """Однотонная тёмная полоса сверху/снизу кадра (например, синяя плашка в исходнике) → обрезать.
+    Возвращает фильтр crop=… или пустую строку."""
+    import numpy as np
+
+    res = subprocess.run(["ffmpeg", "-v", "error", "-ss", f"{t:.2f}", "-i", str(src), "-frames:v", "1",
+                          "-vf", "scale=270:480", "-f", "rawvideo", "-pix_fmt", "gray", "-"],
+                         capture_output=True, timeout=60)
+    if res.returncode != 0 or len(res.stdout) != 270 * 480:
+        return ""
+    g = np.frombuffer(res.stdout, np.uint8).reshape(480, 270).astype(float)
+    def band(rows):
+        n = 0
+        for r in rows:
+            if g[r].std() < 6 and g[r].mean() < 70:
+                n += 1
+            else:
+                break
+        return n
+    top, bot = band(range(0, 200)), band(range(479, 280, -1))
+    if top < 6 and bot < 6:
+        return ""
+    top, bot = (top + 2) / 480, (bot + 2) / 480
+    return f"crop=iw:ih*{1 - top - bot:.4f}:0:ih*{top:.4f},"
+
+
 def crop_filter(bbox: list) -> str:
     """Заполнить 9:16; если исходник шире — центр кадра по чехлу."""
     cx = (bbox[0] + bbox[2] / 2) if bbox and bbox[2] > 0 else 0.5
@@ -35,7 +61,7 @@ def cut(src: Path, start: float, dur: float, out: Path, fps: int, crf: int, hdr:
         tms.append("")                                   # запасной путь без zscale
     err = ""
     for tm in tms:
-        base = f"{tm}{crop_filter(bbox)},fps={fps}"
+        base = f"{tm}{band_crop(src, start + dur / 2)}{crop_filter(bbox)},fps={fps}"
         stab = ""
         if stabilize:
             trf = out.with_suffix(".trf")
