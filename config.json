@@ -75,11 +75,13 @@
     "material": {
       "black": {
         "roughness": null,
-        "tint": 1.0
+        "tint": 1.0,
+        "normalScale": null
       },
       "cognac": {
         "roughness": null,
-        "tint": 1.0
+        "tint": 1.0,
+        "normalScale": null
       }
     }
   }

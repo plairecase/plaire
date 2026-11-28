@@ -116,6 +116,11 @@ def mean_lab_real(path: Path, bbox: list) -> np.ndarray:
     return _lab(crop).reshape(-1, 3).mean(0)
 
 
+def lab3d(views: dict) -> np.ndarray:
+    """Средний цвет 3D по виду сверху и 3/4 (на реальных кадрах чехол то плоско, то под углом)."""
+    return (mean_lab_3d(views["top"]) + mean_lab_3d(views["three_quarter"])) / 2
+
+
 def mean_lab_3d(path: Path) -> np.ndarray:
     import cv2
     im = cv2.imread(str(path))
@@ -182,9 +187,10 @@ MATCH_SCHEMA = {
                    "texture_match": {"type": "boolean"}, "gloss_match": {"type": "boolean"},
                    "thickness_match": {"type": "boolean"}, "emboss_match": {"type": "boolean"},
                    "too_light": {"type": "boolean"}, "too_dark": {"type": "boolean"}, "too_shiny": {"type": "boolean"},
+                   "too_matte": {"type": "boolean"}, "texture_too_rough": {"type": "boolean"},
                    "issues": {"type": "array", "items": {"type": "string"}}},
     "required": ["match", "color_match", "texture_match", "gloss_match", "thickness_match", "emboss_match",
-                 "too_light", "too_dark", "too_shiny", "issues"],
+                 "too_light", "too_dark", "too_shiny", "too_matte", "texture_too_rough", "issues"],
     "additionalProperties": False,
 }
 
@@ -199,8 +205,8 @@ def ask_claude(client, usage, row: Path, model_cfg: dict) -> dict:
             {"type": "image", "source": {"type": "base64", "media_type": "image/jpeg", "data": data}},
             {"type": "text", "text": "Tile 1 is a real video frame, tiles 2-5 are 3D renders (top, 3/4, edge, back) on "
                                      "paper. Is it the same object? Do colour, leather texture, gloss, thickness and "
-                                     "the PLAIRE emboss match? Also say if the 3D is too light, too dark or too shiny "
-                                     "compared with the real one. Issues in Russian, short."}]}],
+                                     "the PLAIRE emboss match? Also say if the 3D is too light, too dark, too shiny, too "
+                                     "matte, or if its leather grain is too rough compared with the real one. Issues in Russian, short."}]}],
         output_config={"effort": "medium", "format": {"type": "json_schema", "schema": MATCH_SCHEMA}},
         betas=["server-side-fallback-2026-07-01"], fallbacks="default")
     usage.add(resp)
@@ -261,19 +267,28 @@ def main(argv=None) -> int:
               f"- **можно показать открытым: {'да' if info['can_open'] else 'нет'}** (нужны анимация или отдельный узел клапана)"]
         real, bbox = (None, None) if a.local else real_frame(col, index, cfg, get_src)
         tune = dict(tunes.get(col) or {"roughness": None, "tint": 1.0})
-        result = None
+        result, row = None, None
         for attempt in range(1, 4):
-            views = {v: render_view(f"models/{col}.glb", v, tune, WORK / f"{col}_{v}.png") for v in VIEWS}
             import cv2 as _cv
-            blank = all(float(np.abs(_cv.imread(str(views[v])).astype(int) - _cv.imread(str(views[v]))[10, 10].astype(int)).sum(2).max()) < 30
-                        for v in VIEWS)
+
+            def is_blank(p):
+                im = _cv.imread(str(p)).astype(int)
+                return float(np.abs(im - im[10, 10]).sum(2).max()) < 30
+
+            views = {}
+            for v in VIEWS:
+                for _ in range(3):  # пустой кадр рендера — перерисовать
+                    views[v] = render_view(f"models/{col}.glb", v, tune, WORK / f"{col}_{v}.png")
+                    if not is_blank(views[v]):
+                        break
+            blank = any(is_blank(views[v]) for v in VIEWS)
             if blank:
                 L.append(f"- попытка {attempt}: ❌ рендер пустой (модель не отрисовалась) — это ошибка рендера, не модели")
                 result = None
                 break
             de = None
             if real:
-                de = round(delta_e2000(mean_lab_real(real, bbox), mean_lab_3d(views["three_quarter"])), 1)
+                de = round(delta_e2000(mean_lab_real(real, bbox), lab3d(views)), 1)
             row = sheet_row(real, views, f"{col} attempt {attempt} dE={de}", WORK / f"row_{col}_{attempt}.jpg")
             result = ask_claude(client, usage, row, cfg["claude"]) if client else {"match": None, "issues": []}
             L.append(f"- попытка {attempt}: материал {tune}; ΔE2000 = {de}; Claude: совпадает = {result.get('match')}"
@@ -281,14 +296,20 @@ def main(argv=None) -> int:
             ok = (result.get("match") is not False) and (de is None or de <= 6)
             if ok:
                 break
-            # подстройка только 3D: светлее/темнее и матовость эко-кожи
-            if result.get("too_shiny") or result.get("gloss_match") is False:
-                tune["roughness"] = 0.7
-            if result.get("too_light") or (de and mean_lab_3d(views["three_quarter"])[0] > mean_lab_real(real, bbox)[0] + 3):
-                tune["tint"] = round(tune.get("tint", 1.0) * 0.8, 3)
-            elif result.get("too_dark") or (de and mean_lab_3d(views["three_quarter"])[0] < mean_lab_real(real, bbox)[0] - 3):
-                tune["tint"] = round(tune.get("tint", 1.0) * 1.25, 3)
-        rows.append(row)
+            # подстройка только 3D (исходники не трогаем): блеск, фактура, светлота эко-кожи
+            if result.get("too_shiny"):
+                tune["roughness"] = 0.72
+            elif result.get("too_matte") or (result.get("gloss_match") is False and not result.get("too_shiny")):
+                tune["roughness"] = 0.45
+            if result.get("texture_too_rough") or result.get("texture_match") is False:
+                tune["normalScale"] = round((tune.get("normalScale") or 1.0) * 0.5, 2)
+            l3, lr = lab3d(views)[0], (mean_lab_real(real, bbox)[0] if real else None)
+            if result.get("too_light") or (lr is not None and l3 > lr + 3):
+                tune["tint"] = round(tune.get("tint", 1.0) * 0.85, 3)
+            elif result.get("too_dark") or (lr is not None and l3 < lr - 3):
+                tune["tint"] = round(tune.get("tint", 1.0) * 1.2, 3)
+        if row:
+            rows.append(row)
         tunes[col] = tune
         if result is None:
             L.append(f"- ⚠️ проверку цвета {col} повторить после исправления рендера (3D пока не выключаю)")
