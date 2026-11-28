@@ -381,8 +381,18 @@ def main(argv=None) -> int:
     if not args.local:
         t = time.time()
         for r in results:
-            print(f"  на Диск {r['folder']}", flush=True)
-            drive.upload(out_root / r["folder"] / "video.mp4", f"{dcfg['done']}/{folder}/{r['folder']}/video.mp4")
+            # решение владельца 28.11.2026: не прошедший проверку ролик всё равно кладём — с пометкой
+            remote = r["folder"] + ("_CHECK" if r["errors"] else "")
+            print(f"  на Диск {remote}", flush=True)
+            drive.upload(out_root / r["folder"] / "video.mp4", f"{dcfg['done']}/{folder}/{remote}/video.mp4")
+            if r["errors"]:
+                note = out_root / r["folder"] / "qc.txt"
+                vis_issues = (r.get("visual") or {}).get("issues", [])
+                note.write_text("Ролик НЕ прошёл проверку качества — посмотрите перед публикацией.\n\n"
+                                "Причины:\n" + "\n".join(f"- {e}" for e in r["errors"])
+                                + ("\n\nЗамечания визуальной проверки:\n" + "\n".join(f"- {i}" for i in vis_issues)
+                                   if vis_issues else "") + "\n", encoding="utf-8")
+                drive.upload(note, f"{dcfg['done']}/{folder}/{remote}/qc.txt")
         timing["загрузка на Диск"] = time.time() - t
     timing["всего"] = time.time() - t0
 
