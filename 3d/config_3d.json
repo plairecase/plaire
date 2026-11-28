@@ -1,0 +1,16 @@
+{
+  "enabled_colors": [],
+  "transition_rate": 0.5,
+  "segment_rate": 0.35,
+  "max_share_of_duration": 0.3,
+  "material": {
+    "black": {
+      "roughness": 0.7,
+      "tint": 0.512
+    },
+    "cognac": {
+      "roughness": 0.7,
+      "tint": 0.512
+    }
+  }
+}
