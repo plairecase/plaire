@@ -155,3 +155,39 @@ def fg_extent(src: Path, start: float, end: float, hdr: bool, n: int = 5) -> tup
     if not tops:
         return None
     return round(float(min(tops)), 3), round(float(max(bots)), 3)
+
+
+def scene_light(clip: Path) -> dict:
+    """Фон, свет и зерно реального плана рядом с 3D (инструкция 3D, раздел 4).
+
+    Берём последний кадр клипа: фон — медиана кольца по краю кадра; свет — с какой стороны фон ярче
+    (слева/справа/сверху); тёплый — если фон уходит в жёлтый (b* в Lab); зерно — шум на ровном фоне.
+    """
+    import cv2
+    import numpy as np
+    cap = cv2.VideoCapture(str(clip))
+    n = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    cap.set(cv2.CAP_PROP_POS_FRAMES, max(0, n - 2))
+    ok, fr = cap.read()
+    cap.release()
+    if not ok:
+        return {}
+    h, w = fr.shape[:2]
+    ring = np.zeros((h, w), bool)
+    bh, bw = int(h * 0.12), int(w * 0.12)
+    ring[:bh], ring[-bh:], ring[:, :bw], ring[:, -bw:] = True, True, True, True
+    bgr = np.median(fr[ring], axis=0)
+    lab = cv2.cvtColor(fr, cv2.COLOR_BGR2LAB)
+    L = lab[..., 0].astype(float)
+    left, right = L[:, :bw].mean(), L[:, -bw:].mean()
+    top, bottom = L[:bh].mean(), L[-bh:].mean()
+    x = -1.0 if left > right + 4 else (1.0 if right > left + 4 else -0.4)
+    y = 1.0 if top >= bottom - 2 else 0.5
+    warm = float(np.median(lab[..., 2][ring])) - 128 > 5
+    gray = cv2.cvtColor(fr, cv2.COLOR_BGR2GRAY).astype(float)
+    hp = gray - cv2.GaussianBlur(gray, (0, 0), 2)
+    sigma = float(np.median(np.abs(hp[ring]))) * 1.4826
+    grain = round(min(0.15, max(0.03, sigma / 30)), 3)
+    lum = float(np.median(L[ring])) / 255
+    return {"bg": "#%02x%02x%02x" % (int(bgr[2]), int(bgr[1]), int(bgr[0])), "lum": round(lum, 3),
+            "light": {"x": x, "y": y, "warm": bool(warm)}, "grain": grain}

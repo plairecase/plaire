@@ -60,6 +60,9 @@ class Ctx:
     avoid_hooks: set = field(default_factory=set)
     beats: list | None = None  # доли музыки от начала ролика, с (None — сетка 120 BPM)
     models: dict = field(default_factory=dict)   # 3D: цвет → путь в remotion/public (models/cognac.glb)
+    tunes: dict = field(default_factory=dict)    # 3D: подстройка материала по цвету (этап 1 проверки моделей)
+    force3d: list = field(default_factory=list)  # 3D-планы, которые обязательно вставить (тест этапа: s_two_colours…)
+    max3d_share: float = 0.3                     # доля 3D в ролике, не больше
 
 
 # ------------------------------------------------------------------ помощники

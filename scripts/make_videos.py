@@ -159,6 +159,9 @@ def main(argv=None) -> int:
     ap.add_argument("--seed", type=int)
     ap.add_argument("--local", type=Path)
     ap.add_argument("--hdr-compare", action="store_true")
+    ap.add_argument("--force3d", default="", help="3D-планы через запятую для теста этапа: s_two_colours,s_profile")
+    ap.add_argument("--only", default="all", choices=["all", "premium", "promote"],
+                    help="собрать только один ролик (тест этапа 3D)")
     args = ap.parse_args(argv)
 
     cfg = json.loads((ROOT / "config.json").read_text())
@@ -282,6 +285,26 @@ def main(argv=None) -> int:
                           stabilize=sg.stabilize, reverse=sg.reverse)
             clip["src"] = rel
             sg.out = rel
+        # 3D-планы: фон, свет и зерно — по реальному плану перед ними (инструкция 3D, раздел 4)
+        for l in p.props.get("threeD") or []:
+            if "afterClip" not in l:
+                continue
+            try:
+                sl = media.scene_light(REMOTION / "public" / p.props["clips"][l["afterClip"]]["src"])
+            except Exception as e:                       # noqa: BLE001
+                print(f"  свет для 3D: {e}", flush=True)
+                sl = {}
+            l["light"] = sl.get("light", {"x": -1, "y": 1, "warm": False})
+            l["grain"] = sl.get("grain", 0.05)
+            if not l.get("bg"):
+                l["bg"] = sl.get("bg", "#d9d8d4")
+            lum = sl.get("lum", 0.8) if l["bg"] == sl.get("bg") else 0.95
+            for sc in p.props["screens"]:
+                if sc.get("three") == l.get("scene"):
+                    sc["color"] = "ink" if lum > 0.55 else "white"
+            if lum <= 0.55:
+                l["ink"] = "#ffffff"
+            print(f"  3D {l.get('scene')}: фон {l['bg']}, свет {l['light']}, зерно {l['grain']}", flush=True)
         timing["нарезка"] = timing.get("нарезка", 0) + time.time() - t1
         p.sfx = mix.pick(lib, p.sfx, rng)
         for c in p.sfx:
@@ -316,7 +339,15 @@ def main(argv=None) -> int:
             import numpy as np
             idxs = []
             for l in p.props["threeD"]:
-                idxs += [l["from"] + 3, l["from"] + 7, l["from"] + 10] if l["type"] == "fly" else [l["from"] + l["durationInFrames"] // 2]
+                f0, f1 = l["from"], l["from"] + l["durationInFrames"]
+                if l["type"] == "fly":
+                    idxs += [f0 + 3, f0 + 7, f0 + 10]
+                elif l["type"] in ("two_colours", "profile"):
+                    # раскадровка 3D-плана: до, вход (кросс-фейд), середина, стоп, выход, после
+                    idxs += [f0 - 2, f0 + 1, f0 + 4, (f0 + f1) // 2, f1 - 6, f1 - 2, f1 + 2]
+                else:
+                    idxs += [f0 + l["durationInFrames"] // 2]
+            idxs = [max(0, min(p.props["durationInFrames"] - 1, i)) for i in idxs]
             fr, _ = _frames(final, idxs)
             if fr:
                 cv2.imwrite(str(WORK / f"3d_{name}.jpg"), np.hstack([cv2.resize(f, (360, 640)) for f in fr]),
@@ -324,8 +355,13 @@ def main(argv=None) -> int:
         vq = None
         if vision_client is not None:
             try:
+                segs = (getattr(p, "three", {}) or {}).get("segment") or []
                 intent = ("A 3D model of the same case (rendered, not filmed) is used intentionally: a quick fly-through "
                           "transition and/or a slow 3D turn on paper in the price card. " if getattr(p, "uses3d", False) else "") + \
+                    ("Short 3D shots inside the video are intentional: " + ", ".join(
+                        {"s_two_colours": "both colours side by side (3D, text 'Two colours.')",
+                         "s_profile": "the case turning to its edge with a thin callout line (3D, text 'Ultra-slim.')"}[x]
+                        for x in segs) + ". The rest stays in one world. " if segs else "") + \
                     {"p_gloves_pov": "one world: white gloves on grey; one colour; open → close → edge → on palm → loop",
                           "p_studio_to_life": "studio paper, then ONE planned change to street with bare hands "
                                               "(text 'Made to carry.'), then back to the first frame (loop)"}.get(p.template, "")
@@ -376,13 +412,19 @@ def main(argv=None) -> int:
     print(f"  3D-модели: {', '.join(models) or 'нет'}", flush=True)
 
     # --- ролики дня: каждый слот — до 3 попыток (раздел 13)
-    ctx = Ctx(shots, texts, rng, cfg["render"]["fps"], cfg["render"]["dissolve_frames"], models=models)
+    c3 = cfg.get("3d", {})
+    models = {c: m for c, m in models.items() if c in c3.get("enabled_colors", ["black", "cognac"])}
+    ctx = Ctx(shots, texts, rng, cfg["render"]["fps"], cfg["render"]["dissolve_frames"], models=models,
+              tunes=c3.get("material", {}), force3d=[x for x in args.force3d.split(",") if x.strip()],
+              max3d_share=c3.get("max_share_of_duration", 0.3))
     skipped: list[str] = []
     bpm_cycle = cfg.get("beat_grid_bpm", [120])
     want = [(st, "organic") for st in ("premium", "native") for _ in range(cfg["style_mix"].get(st, 0))]
     is_promote_day = now.strftime("%a") in cfg.get("promote_days", [])
     if args.mode == "test" or is_promote_day:
         want.append(("promote", "promote"))               # fix-02: promote по понедельникам (в тесте — всегда)
+    if args.only != "all":                                # тест этапа 3D: один ролик
+        want = [("premium", "organic")] if args.only == "premium" else [("promote", "promote")]
     results = []
     for vi, (style, purpose) in enumerate(want):
         best = None
@@ -449,6 +491,9 @@ def main(argv=None) -> int:
               "- планы: " + " → ".join(f"{x['role']} ({x['world']}, {x['color']}{', руки ' + x['hands'] if x['hands'] != 'none' else ''})"
                                        for x in getattr(p, 'shots', [])),
               "- тексты: " + " → ".join(f"«{sc['text']}»" for sc in p.props['screens']),
+              "- 3D: " + (lambda th: (f"переход {th.get('transition') or 'нет'}, 3D-планы "
+                                      f"{', '.join(th.get('segment') or []) or 'нет'}, модель {th.get('model')}, "
+                                      f"доля 3D {int(th.get('share', 0) * 100)} %") if th else "нет")(getattr(p, "three", None)),
               f"- проверки: первая склейка {p.checks.get('first_cut_s')} с, склейки на долях "
               f"{'✅' if p.checks.get('cuts_on_beats', True) else '❌'}, целые такты {'✅' if p.checks.get('whole_bars', True) else '❌'}, "
               f"самый длинный план {p.checks.get('max_shot_s')} с, цена на экране: {'да' if p.checks.get('price_on_screen') else 'нет'}"

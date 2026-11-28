@@ -13,7 +13,8 @@ export const Video: React.FC<VideoProps> = (p) => (
     <ClipLayer clips={p.clips} />
     {(p.threeD ?? []).map((l, i) => (
       <Sequence key={`3d${i}`} from={l.from} durationInFrames={l.durationInFrames} layout="none">
-        <Case3D src={l.model} scene={l.type} total={l.durationInFrames} />
+        <Case3D src={l.model} scene={l.type} total={l.durationInFrames} src2={l.model2} tune={l.tune}
+          tune2={l.tune2} bg={l.bg} light={l.light} grain={l.grain} fade={l.fade} ink={l.ink} />
       </Sequence>
     ))}
     {p.style === 'premium' ? <Hook screens={p.screens} color={p.textColor} /> : <NativeText screens={p.screens} />}

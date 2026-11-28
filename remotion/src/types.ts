@@ -40,8 +40,18 @@ export type EndFrameSpec = {
 };
 
 export type Layer3D = {
-  type: 'fly' | 'hero';      // fly — переход-пролёт; hero — финал promote на бумаге
+  // fly — переход-пролёт; hero — финал promote на бумаге;
+  // two_colours / profile — 3D-планы внутри ролика (s_two_colours, s_profile)
+  type: 'fly' | 'hero' | 'two_colours' | 'profile';
   model: string;             // путь в public/, например models/cognac.glb
+  model2?: string;           // второй чехол (two_colours)
+  tune?: {roughness?: number | null; tint?: number; normalScale?: number | null};
+  tune2?: {roughness?: number | null; tint?: number; normalScale?: number | null};
+  bg?: string;               // фон мира (из соседнего реального плана)
+  light?: {x: number; y: number; warm: boolean};
+  grain?: number;            // зерно под исходники, 0…0.2
+  fade?: number;             // кадров кросс-фейда на входе и выходе
+  ink?: string;              // цвет выноски
   from: number;
   durationInFrames: number;
 };

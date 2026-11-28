@@ -9,6 +9,15 @@ on:
         description: "Число, чтобы повторить конкретный монтаж (пусто = случайно)"
         required: false
         default: ""
+      force3d:
+        description: "3D-планы для теста этапа (через запятую): s_two_colours,s_profile"
+        required: false
+        default: ""
+      only:
+        description: "Какие ролики собрать"
+        type: choice
+        options: [all, premium, promote]
+        default: all
       check_old:
         description: "Прогнать визуальную проверку на старых роликах теста 1450 (должны не пройти)"
         type: boolean
@@ -79,7 +88,10 @@ jobs:
       - name: Собрать ролики
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python -m scripts.make_videos --mode test ${{ inputs.seed != '' && format('--seed {0}', inputs.seed) || '' }}
+        run: >-
+          python -m scripts.make_videos --mode test --only ${{ inputs.only || 'all' }}
+          ${{ inputs.seed != '' && format('--seed {0}', inputs.seed) || '' }}
+          ${{ inputs.force3d != '' && format('--force3d {0}', inputs.force3d) || '' }}
 
       - name: Превью (артефакт)
         if: always()

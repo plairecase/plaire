@@ -26,6 +26,28 @@ TEXT_FOR_ROLE = {"inside": "inside", "close": "close", "profile": "profile", "pa
                  "both": "both_colors", "macro": "macro"}
 
 
+# 3D-планы (инструкция 3D, раздел 3): роль в монтаже и текст = план
+SEG3D = {"s_two_colours": {"role": "both", "text": "p_sec_colours", "layer": "two_colours"},
+         "s_profile": {"role": "profile", "text": "p_sec_slim", "layer": "profile"}}
+FADE3D = 3                      # кадров кросс-фейда реальный ↔ 3D
+
+
+def pseudo3d(scene: str, W: str, C: str) -> dict:
+    """Псевдо-план 3D: занимает место в монтаже, но не режется из исходника."""
+    return {"three": scene, "file": {"name": "3D", "id": "3d"},
+            "shot": {"id": f"3d_{scene}", "start": 0.0, "dur": 0.0, "end": 0.0, "metrics": {},
+                     "vision": {"world": W, "color": C, "hands": "none", "shows_inside": False, "action": "3d",
+                                "both_colors_in_frame": scene == "s_two_colours", "hero_score": 0}}}
+
+
+def nb3d(ib: float) -> int:
+    """3D-план 1.2–1.8 с, целое число долей."""
+    best = max(2, int(round(1.5 / ib)))
+    while best * ib > 1.8 + 1e-6 and best > 2:
+        best -= 1
+    return best
+
+
 def v(s: dict) -> dict:
     return s["shot"]["vision"]
 
@@ -133,7 +155,11 @@ def _build_color(ctx, template, purpose, bpm_fallback, spec, in_world, C):
     else:
         ib = 60.0 / bpm_fallback
     bar = 4 * ib
-    bars = next((n for n in (4, 3, 5) if 7.0 <= n * bar <= 10.0), 4)
+    scenes3d = [sc for sc in ctx.force3d if sc in SEG3D and W != "street_hands"
+                and (ctx.models.get(C) if sc != "s_two_colours" else (ctx.models.get("black") and ctx.models.get("cognac")))]
+    seg3d_s = len(scenes3d) * nb3d(ib) * ib
+    fits = [n for n in (4, 3, 5) if 7.0 <= n * bar <= 10.0]
+    bars = next((n for n in fits if seg3d_s <= ctx.max3d_share * n * bar + 1e-6), max(fits) if fits else 4)
     B = bars * 4
     steps = list(spec["steps"])
     first_b = 3 if 3 * ib <= 1.5 + 1e-6 else 2
@@ -180,6 +206,40 @@ def _build_color(ctx, template, purpose, bpm_fallback, spec, in_world, C):
         chosen.append((best, role, nb))
     if len(chosen) < 3:
         return None
+
+    # 3D-планы (раздел 3): внутри ролика — после хука и до лупа/карточки, не подряд; хук всегда реальный
+    for sc in sorted(scenes3d, key=lambda x: x != "s_profile"):   # торец — на место реального торца, потом остальные
+        e = (pseudo3d(sc, W, C), SEG3D[sc]["role"], nb3d(ib))
+        k = next((j for j, (s_, r_, _) in enumerate(chosen) if j > 0 and r_ == SEG3D[sc]["role"]
+                  and not s_.get("three")), None)
+        if k is not None:                                # 3D заменяет реальный план той же роли (торец)
+            used.remove(chosen[k][0])
+            chosen[k] = e
+            continue
+        pos = min(2, len(chosen))
+        while pos < len(chosen) and (chosen[pos - 1][0].get("three") or chosen[pos][0].get("three")):
+            pos += 1
+        if chosen[pos - 1][0].get("three"):
+            continue
+        chosen.insert(pos, e)
+    # длина — целые такты: укорачиваем реальные планы середины, при нехватке убираем последний
+    limit = B - tail_min
+    while sum(nb for _, _, nb in chosen) > limit:
+        reals = [j for j, (s_, _, _) in enumerate(chosen) if j > 0 and not s_.get("three")]
+        big = [j for j in reals if chosen[j][2] > 2]
+        if big:
+            j = max(big, key=lambda j: chosen[j][2])
+            chosen[j] = (chosen[j][0], chosen[j][1], chosen[j][2] - 1)
+        elif len(reals) > 1:
+            used.remove(chosen[reals[-1]][0])
+            chosen.pop(reals[-1])
+        else:
+            break
+    for j in range(len(chosen) - 1, 0, -1):              # два 3D-плана подряд — второй убираем
+        if chosen[j][0].get("three") and chosen[j - 1][0].get("three"):
+            chosen.pop(j)
+    if sum(nb for _, _, nb in chosen) > limit:
+        return None
     if purpose == "organic":
         loop_b = B - sum(nb for _, _, nb in chosen)
 
@@ -199,14 +259,46 @@ def _build_color(ctx, template, purpose, bpm_fallback, spec, in_world, C):
     used_texts = set()
     hook = pick_hook(ctx, chosen[0][0], purpose, template)
     t = 0.0
+    seg3d_layers, clip_roles, after3d = [], [], []
+    pal = brand()["palette"]
     for i, (s, role, nb) in enumerate(chosen):
         d = nb * ib
+        if s.get("three"):
+            sc3 = s["three"]
+            # предыдущий реальный план уходит под 3D на 3 кадра (кросс-фейд реальный → 3D)
+            clips[-1]["durationInFrames"] += FADE3D
+            segments[-1].src_dur = round(segments[-1].src_dur + FADE3D / fps, 3)
+            other = "black" if C == "cognac" else "cognac"
+            layer = {"type": SEG3D[sc3]["layer"], "scene": sc3, "from": frames(t, fps),
+                     "durationInFrames": frames(t + d, fps) - frames(t, fps), "fade": FADE3D,
+                     "afterClip": len(clips) - 1, "ink": pal.get("ink", "#1d1d1b"),
+                     "bg": pal.get("paper", "#F5F4F0") if W == "studio_paper" else None}
+            if sc3 == "s_two_colours":
+                layer.update(model=ctx.models["cognac"], model2=ctx.models["black"],
+                             tune=ctx.tunes.get("cognac"), tune2=ctx.tunes.get("black"))
+            else:
+                layer.update(model=ctx.models[C], tune=ctx.tunes.get(C))
+            seg3d_layers.append(layer)
+            tt = next((x for x in ctx.texts if x["id"] == SEG3D[sc3]["text"]), None)
+            if tt:
+                used_texts.add(tt["id"])
+                screens.append({"from": frames(t, fps), "durationInFrames": frames(t + d, fps) - frames(t, fps),
+                                "text": tt["screens"][0], "eyebrow": None, "animateIn": True, "role": role,
+                                "shot": s["shot"]["id"], "action": tt.get("action"), "three": sc3})
+            sfx.append({"t": round(t, 2), "kind": "whoosh", "gain_db": -8})
+            t += d
+            continue
         tr = None
+        prev3d = i > 0 and bool(chosen[i - 1][0].get("three"))
         if i > 0:
             # смена мира — на сильной доле, энергично; внутри мира — короткий толчок (match on action)
             changed = v(s).get("world") != v(chosen[i - 1][0]).get("world")
             tr = {"type": "zoom", "frames": 6} if changed else {"type": "punch", "frames": 4}
-        ov = (tr["frames"] / fps) if tr and tr["type"] == "zoom" else 0.0
+            if prev3d:
+                tr = {"type": "cut", "frames": 0}          # 3D растворяется поверх (кросс-фейд 3 кадра)
+        ov = (tr["frames"] / fps) if tr and tr["type"] == "zoom" else (FADE3D / fps if prev3d else 0.0)
+        clip_roles.append(role)
+        after3d.append(prev3d)
         if i == 0:
             src = s["shot"]["start"] + 0.15
         else:
@@ -247,13 +339,17 @@ def _build_color(ctx, template, purpose, bpm_fallback, spec, in_world, C):
     end = None
     if purpose == "organic":
         ld = loop_b * ib
-        segments[0].src_dur = round(max(segments[0].src_dur, ld + 0.05), 3)
+        lov = FADE3D / fps if chosen[-1][0].get("three") else 0.0    # луп заходит под растворяющийся 3D
+        segments[0].src_dur = round(max(segments[0].src_dur, ld + lov + 0.05), 3)
         segments.append(Segment(file_id=first["file"]["id"], name=first["file"]["name"],
                                 shot_id=first["shot"]["id"] + "#loop", src_start=segments[0].src_start,
-                                src_dur=round(ld, 3), hdr=first["file"]["probe"]["hdr"],
+                                src_dur=round(ld + lov, 3), hdr=first["file"]["probe"]["hdr"],
                                 bbox=v(first)["case_bbox"], stabilize=segments[0].stabilize, reverse=True))
-        clips.append({"src": "", "from": frames(t, fps), "durationInFrames": frames(t + ld, fps) - frames(t, fps),
-                      "pushIn": [1.08, 1.0], "transitionIn": {"type": "punch", "frames": 4}})
+        clips.append({"src": "", "from": frames(t - lov, fps), "durationInFrames": frames(t + ld, fps) - frames(t - lov, fps),
+                      "pushIn": [1.08, 1.0],
+                      "transitionIn": {"type": "cut", "frames": 0} if lov else {"type": "punch", "frames": 4}})
+        clip_roles.append("loop")
+        after3d.append(bool(chosen[-1][0].get("three")))
         chosen.append((first, "loop", loop_b))
         t += ld
     else:
@@ -277,6 +373,8 @@ def _build_color(ctx, template, purpose, bpm_fallback, spec, in_world, C):
                 shift_px += 30
         clips.append({"src": "", "from": frames(t, fps), "durationInFrames": frames(t + cd, fps) - frames(t, fps),
                       "pushIn": [scale, scale], "offsetY": round(shift_px), "transitionIn": {"type": "punch", "frames": 4}})
+        clip_roles.append("card")
+        after3d.append(bool(chosen[-1][0].get("three")))
         end = {"from": frames(t, fps), "durationInFrames": frames(t + cd, fps) - frames(t, fps),
                "color": text_color(last), "eyebrow": "The condom case", "price": p["price"],
                "site": p["site"].upper(), "shipping": p["shipping"], "tagTop": tag_top}
@@ -285,30 +383,40 @@ def _build_color(ctx, template, purpose, bpm_fallback, spec, in_world, C):
     total = round(t, 3)
 
     # 3D-модель чехла (раздел 8 + правка владельца 28.11.2026): цвет модели = цвет ролика
-    three = []
+    three = list(seg3d_layers)
     model = ctx.models.get(C)
+    fly_used = False
     if model:
-        body_clips = clips[1:len([x for x in chosen if x[1] not in ("loop", "card")])]
-        if body_clips:
+        seg_s = sum(l["durationInFrames"] for l in seg3d_layers) / fps
+        cands = [k for k in range(1, len(clips)) if clip_roles[k] not in ("loop", "card") and not after3d[k]
+                 and not any(l["afterClip"] == k for l in seg3d_layers)]
+        street = next((k for k in cands if clip_roles[k] == "street"), None)
+        idx = street if street is not None else (2 if 2 in cands else (cands[0] if cands else None))
+        # 3D не больше max_share длины (раздел 1); пролёт ≈ 0.4 с
+        if idx is not None and (seg_s + 12 / fps) <= ctx.max3d_share * total + 1e-6:
             # пролёт на сильной склейке в середине (для студия→улица — ровно на смене мира)
-            idx = next((i for i, (s_, r_, _) in enumerate(chosen) if r_ == "street"), None) \
-                or min(len(body_clips), 2)
             cut = clips[idx]["from"] + (clips[idx].get("transitionIn", {}).get("frames", 0)
                                         if clips[idx].get("transitionIn", {}).get("type") == "zoom" else 0)
             if clips[idx].get("transitionIn", {}).get("type") == "zoom":
                 clips[idx]["transitionIn"] = {"type": "punch", "frames": 4}       # 3D заменяет зум-переход
                 clips[idx - 1].pop("transitionOut", None)
             fly = 12                                       # кадр закрыт целиком на 8–10-м кадре — там склейка
-            three.append({"type": "fly", "model": model, "from": max(0, cut - 9), "durationInFrames": fly})
+            three.append({"type": "fly", "model": model, "tune": ctx.tunes.get(C), "from": max(0, cut - 9),
+                          "durationInFrames": fly})
             sfx.append({"t": round(max(0.0, (cut - 9) / fps), 2), "kind": "whoosh", "gain_db": -3})
+            fly_used = True
         if end:
             # финал promote: 3D-чехол медленно поворачивается на бумаге под вордмарком и ценой
-            three.append({"type": "hero", "model": model, "from": end["from"], "durationInFrames": end["durationInFrames"]})
+            three.append({"type": "hero", "model": model, "tune": ctx.tunes.get(C), "from": end["from"],
+                          "durationInFrames": end["durationInFrames"]})
             end["color"] = "ink"
             end["tagTop"] = 500
 
     # цвет текста по зоне текста плана (fix-03): ink — только светло и спокойно, иначе белый (+ плашка на пёстром)
     for sc in screens:
+        if sc.get("three"):
+            sc["color"], sc["plate"] = "ink", False        # уточняется по фону мира в make_videos
+            continue
         sh = next(s for s, _, _ in chosen if s["shot"]["id"] == sc["shot"])
         m = sh["shot"]["metrics"]
         lum = m.get("text_luma") or m.get("luma_top") or 0.5
@@ -333,10 +441,14 @@ def _build_color(ctx, template, purpose, bpm_fallback, spec, in_world, C):
         hook["id"], total, C, first["shot"]["id"])
     plan.purpose, plan.bpm = purpose, round(60 / ib, 1)
     plan.uses3d = bool(three)
+    plan.three = {"transition": "fly" if fly_used else None,
+                  "segment": [l["scene"] for l in seg3d_layers] or None, "model": C,
+                  "share": round(sum(l["durationInFrames"] for l in three if l["type"] != "hero") / fps / total, 2)}
     plan.world = W
     plan.shots = [{"shot": s["shot"]["id"], "file": s["file"]["name"], "role": r, "world": v(s).get("world"),
                    "hands": v(s).get("hands"), "color": v(s)["color"], "inside": bool(v(s).get("shows_inside")),
-                   "both": bool(v(s).get("both_colors_in_frame")), "dur": round(nb * ib, 3) if nb else None}
+                   "both": bool(v(s).get("both_colors_in_frame")), "dur": round(nb * ib, 3) if nb else None,
+                   "three": s.get("three")}
                   for s, r, nb in chosen]
     plan.missing = [] if any(x["hands"] in ("bare", "gloves") for x in plan.shots) else ["hands"]
     plan.checks = plan_qc(plan, ib)
@@ -388,4 +500,7 @@ def plan_qc(plan: Plan, ib: float) -> dict:
         "first_cut_s": round(cuts[0] / fps, 2) if cuts else None,
         "max_shot_s": round(max((x["dur"] or 0) for x in shots), 2),
         "price_on_screen": plan.props.get("endFrame") is not None,
+        "3d_share": getattr(plan, "three", {}).get("share", 0),
+        "3d_share_ok": getattr(plan, "three", {}).get("share", 0) <= 0.3 + 1e-6,
+        "3d_not_first": not (shots and shots[0].get("three")),
     }
