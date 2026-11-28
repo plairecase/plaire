@@ -485,3 +485,16 @@ plaire-autoedit/
 - Сетка темпа: из трека (librosa), без трека — `beat_grid_bpm` [120, 128, 100] по кругу.
 - Музыкальная версия остаётся (решение владельца выше), clean не делаем — пункт fix-02 §3.7 про clean не применяется.
 - Не сделано из fix-02 (шаг 5): подписи с `cut grid` и `PINNED:`, `manifest.json` (`purpose`, `beat_grid_bpm`, `missing`), `cover.jpg`/`cover_grid.jpg`, визуальный QC (`looks_like_ad` и др.), выбор promote по `performance.json`. fix-01 владелец ещё не прислал.
+
+**28.11.2026 (fix-03: логика кадров)**
+- **Индекс (раздел 5):** разметка зрением дополнена полями `world` (gloves | studio_paper | street_hands | packaging | lifestyle_other), `hands` (none | bare | gloves), `background`, `both_colors_in_frame`, `shows_inside`, `shows_profile`, `start_state` / `end_state` (open | closed | opening | closing), `focus_ok`; метрики зоны текста `text_luma`, `text_detail`. Годный план: `focus_ok` и резкость выше 35-го перцентиля библиотеки.
+- **Правила (раздел 6):**
+  - «один мир»: ≥ 75 % длительности из основного мира, ≤ 1 осмысленной смены (на сильной доле, с текстом, который её объясняет); голые руки и перчатки не чередуются;
+  - «один цвет»: второй цвет — только один план (promote или план с обоими цветами);
+  - «текст = план»: Holds 2 / Two condoms — только когда видно 2 шт.; Magnetic closure — на закрытии; Ultra-slim — на торце; Two colours — только если оба цвета в кадре; Also in Cognac/Black — на плане этого цвета; Made to carry — на улице; текст живёт ровно свой план;
+  - «непрерывное действие»: хук (открытый чехол) → действие (закрывает, щелчок) → доказательство (торец, ладонь) → [второй цвет] → луп/карточка; соседние планы совместимы по состоянию open/closed;
+  - в первые 3 с видно, что внутри; хуки с названием бренда (Introducing/Meet Plaire) — только promote.
+- **Шаблоны (раздел 7):** `p_gloves_pov` (эталон A, премиум-подача), `p_studio_to_life` (эталон B), promote на базе `p_gloves_pov` (эталон C). `p_organic` и `p_one_line` отключены (смешивают миры).
+- **Рендер:** последний кадр никогда не чёрный (держим последний кадр исходника), цена — прямые углы, кадр карточки сдвигается так, чтобы чехол не заходил под текст; текст белый 500 с тенью, тёмный — только на светлом спокойном фоне; тёмные полосы исходника обрезаются.
+- **Проверки (раздел 13):** world/hands/color consistency, text_shot_match, inside_early, нет чёрных кадров в конце, луп SSIM ≥ 0.85 + визуальный чек-лист Claude (`looks_like_ad`, `first_frame_explains_product`, `shots_feel_continuous`, `text_matches_shot`, `one_location`, …); провал → пересборка, до 3 попыток. Контрольный пример: `qc/fixtures/test_1450` — старые ролики, которые проверка обязана отклонить (`python -m qc.vision_check --fixtures`).
+- Решения владельца главнее fix-03: только премиум; файл `video.mp4` с музыкой (без clean).
