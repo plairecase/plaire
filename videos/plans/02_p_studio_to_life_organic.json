@@ -6,7 +6,7 @@
   "durationInFrames": 234,
   "clips": [
    {
-    "src": "clips/c17.mp4",
+    "src": "clips/c23.mp4",
     "from": 0,
     "durationInFrames": 44,
     "pushIn": [
@@ -19,7 +19,7 @@
     }
    },
    {
-    "src": "clips/c18.mp4",
+    "src": "clips/c24.mp4",
     "from": 44,
     "durationInFrames": 58,
     "pushIn": [
@@ -32,7 +32,7 @@
     }
    },
    {
-    "src": "clips/c19.mp4",
+    "src": "clips/c25.mp4",
     "from": 96,
     "durationInFrames": 65,
     "pushIn": [
@@ -45,7 +45,7 @@
     }
    },
    {
-    "src": "clips/c20.mp4",
+    "src": "clips/c26.mp4",
     "from": 161,
     "durationInFrames": 73,
     "pushIn": [
@@ -66,7 +66,7 @@
     "eyebrow": "MATERIAL",
     "animateIn": false,
     "role": "inside",
-    "shot": "1DFSz6wnZTszcmRtlhy_OjJ_41iQAR8Q8#0.00-4.15",
+    "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
     "action": null,
     "color": "ink",
     "plate": false,
@@ -79,11 +79,10 @@
     "eyebrow": null,
     "animateIn": true,
     "role": "studio_closed",
-    "shot": "1Bh6WFDcjLYDM7jEQOgkxhdRiU5eNA73W#0.00-4.69",
+    "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#3.10-6.19",
     "action": "studio_closed",
     "color": "ink",
-    "plate": false,
-    "top": 270
+    "plate": false
    },
    {
     "from": 102,
@@ -92,9 +91,9 @@
     "eyebrow": null,
     "animateIn": true,
     "role": "street",
-    "shot": "16x49qmlKM8dPjzC2RR5ZW4q7277S9kN7#5.39-10.78",
+    "shot": "1ZeTBdL8TXdvsnZjMZFk40oVO2rV6vmDx#4.03-8.07",
     "action": "street",
-    "color": "ink",
+    "color": "white",
     "plate": false
    }
   ],
@@ -103,53 +102,53 @@
   "threeD": [
    {
     "type": "fly",
-    "model": "models/cognac.glb",
-    "from": 94,
-    "durationInFrames": 14
+    "model": "models/black.glb",
+    "from": 93,
+    "durationInFrames": 12
    }
   ]
  },
  "shots": [
   {
-   "shot": "1DFSz6wnZTszcmRtlhy_OjJ_41iQAR8Q8#0.00-4.15",
-   "file": "IMG_1440.MOV",
+   "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
+   "file": "IMG_1386.MOV",
    "role": "inside",
    "world": "studio_paper",
    "hands": "none",
-   "color": "cognac",
+   "color": "black",
    "inside": true,
    "both": false,
    "dur": 1.461
   },
   {
-   "shot": "1Bh6WFDcjLYDM7jEQOgkxhdRiU5eNA73W#0.00-4.69",
-   "file": "IMG_1444.MOV",
+   "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#3.10-6.19",
+   "file": "IMG_1386.MOV",
    "role": "studio_closed",
    "world": "studio_paper",
    "hands": "none",
-   "color": "cognac",
-   "inside": false,
+   "color": "black",
+   "inside": true,
    "both": false,
    "dur": 1.948
   },
   {
-   "shot": "16x49qmlKM8dPjzC2RR5ZW4q7277S9kN7#5.39-10.78",
-   "file": "-6741131299191009673.MP4",
+   "shot": "1ZeTBdL8TXdvsnZjMZFk40oVO2rV6vmDx#4.03-8.07",
+   "file": "6796620381629818176.MP4",
    "role": "street",
    "world": "street_hands",
    "hands": "bare",
-   "color": "cognac",
+   "color": "black",
    "inside": false,
    "both": false,
    "dur": 1.948
   },
   {
-   "shot": "1DFSz6wnZTszcmRtlhy_OjJ_41iQAR8Q8#0.00-4.15",
-   "file": "IMG_1440.MOV",
+   "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
+   "file": "IMG_1386.MOV",
    "role": "loop",
    "world": "studio_paper",
    "hands": "none",
-   "color": "cognac",
+   "color": "black",
    "inside": true,
    "both": false,
    "dur": 2.435
@@ -167,18 +166,19 @@
   "first_cut_s": 1.47,
   "max_shot_s": 1.95,
   "price_on_screen": false,
-  "loop_ssim": 0.983
+  "loop_ssim": 0.992
  },
  "visual": {
   "issues": [
-   "Текст «Made from soft eco-leather» в кадрах 1–2 перекрывается корпусом чехла: слова «eco-leather» залезают на изделие, из-за этого плохо читаются",
-   "Текст «Eco-leather. Ultra-slim.» в кадрах 3–4 накладывается на чёрную коробку, тёмный текст на тёмном фоне почти не читается, перекрывает тиснение PLAIRE",
-   "Текст «Made to carry.» в кадрах 5–6 тёмный на фоне города и сумки, низкий контраст, плохо читается",
-   "В кадрах 3–4 чехол закрыт, а текст «Ultra-slim» не показывает толщину, соответствие слабое",
-   "Первый кадр не показывает два презерватива внутри, видна только жёлтая упаковка в прорези, без текста о продукте непонятно, что это",
-   "Кадры 7–9 без текста, финал просто повторяет первый кадр, нет призыва или названия",
-   "Резкий переход из студии на улицу с бликами и яркой цветовой гаммой, но он заявлен как запланированный",
-   "Тень и пересвет на уличных кадрах, лёгкая пересыщенность неба"
+   "В кадрах 1–2 текст «Made from soft eco-leather.» перекрыт кейсом: слова «eco-leather» частично закрыты продуктом",
+   "Кейс в кадрах 1–2 слишком высоко, он заходит на текст и выглядит как ошибка вёрстки",
+   "Первый кадр не объясняет продукт: кейс показан под углом, внутри виден только один жёлтый предмет с чёрной полосой, а не 2 презерватива",
+   "Текст «Made to carry.» в кадрах 5–6 белый на светлых шортах и руке, контраст слабый, читается плохо",
+   "В кадрах 5–6 кейс почти полностью закрыт пальцами и сливается с чёрным цветом, продукт плохо виден",
+   "Резкий скачок от студийной бумаги к улице с живыми руками: переход не плавный, кадры 4 и 5 не связаны действием",
+   "3D-рендер на бумаге выглядит искусственно рядом с живой съёмкой, различие по свету и качеству заметно",
+   "Текст «Eco-leather. Ultra-slim.» стоит на кадре, где толщина не демонстрируется, это общий кадр сверху без показа тонкости",
+   "Кадры 1–2 и 7–9 почти одинаковые, мало динамики, ощущение затянутого повтора"
   ],
   "text_readable": false,
   "text_not_cut": false,
@@ -187,22 +187,24 @@
   "no_black_endcard": true,
   "first_frame_explains_product": false,
   "hand_present": true,
-  "shots_feel_continuous": true,
+  "shots_feel_continuous": false,
   "text_matches_shot": false,
   "one_location": true,
-  "looks_like_ad": false,
+  "looks_like_ad": true,
   "looks_cheap": true,
   "matches_style": "native",
   "pass": false,
   "failed": [
    "text_readable",
    "text_not_cut",
+   "shots_feel_continuous",
    "text_matches_shot",
    "first_frame_explains_product",
+   "looks_like_ad",
    "looks_cheap"
   ]
  },
  "errors": [
-  "визуально: text_readable, text_not_cut, text_matches_shot, first_frame_explains_product, looks_cheap"
+  "визуально: text_readable, text_not_cut, shots_feel_continuous, text_matches_shot, first_frame_explains_product, looks_like_ad, looks_cheap"
  ]
 }

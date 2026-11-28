@@ -6,7 +6,7 @@
   "durationInFrames": 234,
   "clips": [
    {
-    "src": "clips/c9.mp4",
+    "src": "clips/c4.mp4",
     "from": 0,
     "durationInFrames": 44,
     "pushIn": [
@@ -19,7 +19,7 @@
     }
    },
    {
-    "src": "clips/c10.mp4",
+    "src": "clips/c5.mp4",
     "from": 44,
     "durationInFrames": 58,
     "pushIn": [
@@ -32,7 +32,7 @@
     }
    },
    {
-    "src": "clips/c11.mp4",
+    "src": "clips/c6.mp4",
     "from": 96,
     "durationInFrames": 65,
     "pushIn": [
@@ -45,7 +45,7 @@
     }
    },
    {
-    "src": "clips/c12.mp4",
+    "src": "clips/c7.mp4",
     "from": 161,
     "durationInFrames": 73,
     "pushIn": [
@@ -62,11 +62,11 @@
    {
     "from": 0,
     "durationInFrames": 44,
-    "text": "Eco-leather. Magnetic. Ultra-slim.",
+    "text": "Body heat. Friction. Cards.",
     "eyebrow": null,
     "animateIn": false,
     "role": "inside",
-    "shot": "1DFSz6wnZTszcmRtlhy_OjJ_41iQAR8Q8#0.00-4.15",
+    "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
     "action": null,
     "color": "ink",
     "plate": false,
@@ -79,11 +79,10 @@
     "eyebrow": null,
     "animateIn": true,
     "role": "studio_closed",
-    "shot": "1Bh6WFDcjLYDM7jEQOgkxhdRiU5eNA73W#0.00-4.69",
+    "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#3.10-6.19",
     "action": "studio_closed",
     "color": "ink",
-    "plate": false,
-    "top": 270
+    "plate": false
    },
    {
     "from": 102,
@@ -92,9 +91,9 @@
     "eyebrow": null,
     "animateIn": true,
     "role": "street",
-    "shot": "16x49qmlKM8dPjzC2RR5ZW4q7277S9kN7#5.39-10.78",
+    "shot": "1ZeTBdL8TXdvsnZjMZFk40oVO2rV6vmDx#4.03-8.07",
     "action": "street",
-    "color": "ink",
+    "color": "white",
     "plate": false
    }
   ],
@@ -103,53 +102,53 @@
   "threeD": [
    {
     "type": "fly",
-    "model": "models/cognac.glb",
-    "from": 94,
-    "durationInFrames": 14
+    "model": "models/black.glb",
+    "from": 93,
+    "durationInFrames": 12
    }
   ]
  },
  "shots": [
   {
-   "shot": "1DFSz6wnZTszcmRtlhy_OjJ_41iQAR8Q8#0.00-4.15",
-   "file": "IMG_1440.MOV",
+   "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
+   "file": "IMG_1386.MOV",
    "role": "inside",
    "world": "studio_paper",
    "hands": "none",
-   "color": "cognac",
+   "color": "black",
    "inside": true,
    "both": false,
    "dur": 1.461
   },
   {
-   "shot": "1Bh6WFDcjLYDM7jEQOgkxhdRiU5eNA73W#0.00-4.69",
-   "file": "IMG_1444.MOV",
+   "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#3.10-6.19",
+   "file": "IMG_1386.MOV",
    "role": "studio_closed",
    "world": "studio_paper",
    "hands": "none",
-   "color": "cognac",
-   "inside": false,
+   "color": "black",
+   "inside": true,
    "both": false,
    "dur": 1.948
   },
   {
-   "shot": "16x49qmlKM8dPjzC2RR5ZW4q7277S9kN7#5.39-10.78",
-   "file": "-6741131299191009673.MP4",
+   "shot": "1ZeTBdL8TXdvsnZjMZFk40oVO2rV6vmDx#4.03-8.07",
+   "file": "6796620381629818176.MP4",
    "role": "street",
    "world": "street_hands",
    "hands": "bare",
-   "color": "cognac",
+   "color": "black",
    "inside": false,
    "both": false,
    "dur": 1.948
   },
   {
-   "shot": "1DFSz6wnZTszcmRtlhy_OjJ_41iQAR8Q8#0.00-4.15",
-   "file": "IMG_1440.MOV",
+   "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
+   "file": "IMG_1386.MOV",
    "role": "loop",
    "world": "studio_paper",
    "hands": "none",
-   "color": "cognac",
+   "color": "black",
    "inside": true,
    "both": false,
    "dur": 2.435
@@ -167,18 +166,19 @@
   "first_cut_s": 1.47,
   "max_shot_s": 1.95,
   "price_on_screen": false,
-  "loop_ssim": 0.983
+  "loop_ssim": 0.992
  },
  "visual": {
   "issues": [
-   "Текст «Eco-leather. Magnetic. Ultra-slim.» налезает на кейс в кадрах 1–2: слова «Ultra-slim» перекрыты изделием",
-   "В кадрах 3–4 текст пересекается с коробкой (логотип PLAIRE), читается плохо",
-   "Тёмный текст на тёмной коробке и на коричневой коже имеет низкий контраст",
-   "В первом кадре кейс закрыт, видна жёлтая вставка, но двух презервативов нет — непонятно, что это за продукт",
-   "Текст «Made to carry.» на фоне города и сумки теряется, контраст слабый",
-   "В кадрах 3–4 кейс выглядит как обычный кошелёк без раскрытия, нет показа «Holds 2»",
-   "Смена студия → улица резкая, хотя она запланирована; в целом допустима",
-   "Финальные кадры без текста и без CTA, но чёрной плашки нет"
+   "Текст «Body heat. Friction. Cards.» в кадрах 1–2 перекрыт корпусом кейса — слово «Friction» обрезано/закрыто продуктом",
+   "Текст чёрный на светло-бежевом фоне, но частично уходит на тёмный кейс — плохая читаемость в местах наложения",
+   "В кадрах 1–3 кейс — это 3D-рендер, он выглядит искусственно и заметно отличается от реальной съёмки в кадрах 5–6 (другой свет, резкость)",
+   "Резкий переход от студии к улице без плавной связки — кадры 4→5 ощущаются как два разных клипа",
+   "Первый кадр не показывает чётко 2 презерватива: виден только один жёлтый презерватив под чёрной полосой, понятно не сразу что это за продукт",
+   "Тексты «Eco-leather. Ultra-slim.» и «Body heat. Friction. Cards.» не соответствуют показанному: нет демонстрации толщины или карт, кейс просто лежит",
+   "Кадры 7–9 без текста, почти идентичны друг другу — статичный повтор, мало действия",
+   "Кейс чёрный на тёмной одежде/руке в кадрах 5–6 — слабый контраст, продукт теряется",
+   "Текст «Made to carry.» белый на светлых штанах — низкий контраст"
   ],
   "text_readable": false,
   "text_not_cut": false,
@@ -187,7 +187,7 @@
   "no_black_endcard": true,
   "first_frame_explains_product": false,
   "hand_present": true,
-  "shots_feel_continuous": true,
+  "shots_feel_continuous": false,
   "text_matches_shot": false,
   "one_location": true,
   "looks_like_ad": false,
@@ -197,12 +197,13 @@
   "failed": [
    "text_readable",
    "text_not_cut",
+   "shots_feel_continuous",
    "text_matches_shot",
    "first_frame_explains_product",
    "looks_cheap"
   ]
  },
  "errors": [
-  "визуально: text_readable, text_not_cut, text_matches_shot, first_frame_explains_product, looks_cheap"
+  "визуально: text_readable, text_not_cut, shots_feel_continuous, text_matches_shot, first_frame_explains_product, looks_cheap"
  ]
 }

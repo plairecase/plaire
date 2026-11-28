@@ -3,12 +3,12 @@
   "template": "p_gloves_pov",
   "style": "premium",
   "fps": 30,
-  "durationInFrames": 274,
+  "durationInFrames": 202,
   "clips": [
    {
-    "src": "clips/c36.mp4",
+    "src": "clips/c37.mp4",
     "from": 0,
-    "durationInFrames": 44,
+    "durationInFrames": 40,
     "pushIn": [
      1.0,
      1.05
@@ -19,22 +19,9 @@
     }
    },
    {
-    "src": "clips/c37.mp4",
-    "from": 44,
-    "durationInFrames": 58,
-    "pushIn": [
-     1.0,
-     1.05
-    ],
-    "transitionIn": {
-     "type": "punch",
-     "frames": 4
-    }
-   },
-   {
     "src": "clips/c38.mp4",
-    "from": 102,
-    "durationInFrames": 59,
+    "from": 40,
+    "durationInFrames": 41,
     "pushIn": [
      1.0,
      1.05
@@ -46,8 +33,8 @@
    },
    {
     "src": "clips/c39.mp4",
-    "from": 161,
-    "durationInFrames": 58,
+    "from": 81,
+    "durationInFrames": 40,
     "pushIn": [
      1.0,
      1.05
@@ -59,8 +46,21 @@
    },
    {
     "src": "clips/c40.mp4",
-    "from": 219,
-    "durationInFrames": 55,
+    "from": 121,
+    "durationInFrames": 41,
+    "pushIn": [
+     1.0,
+     1.05
+    ],
+    "transitionIn": {
+     "type": "punch",
+     "frames": 4
+    }
+   },
+   {
+    "src": "clips/c41.mp4",
+    "from": 162,
+    "durationInFrames": 40,
     "pushIn": [
      1.55125,
      1.55125
@@ -75,8 +75,8 @@
   "screens": [
    {
     "from": 0,
-    "durationInFrames": 44,
-    "text": "Introducing Plaire.",
+    "durationInFrames": 40,
+    "text": "Hidden magnetic closure.",
     "eyebrow": "PLAIRE — ECO-LEATHER CASE",
     "animateIn": false,
     "role": "inside",
@@ -86,8 +86,8 @@
     "plate": false
    },
    {
-    "from": 44,
-    "durationInFrames": 58,
+    "from": 40,
+    "durationInFrames": 41,
     "text": "Hidden magnetic closure.",
     "eyebrow": null,
     "animateIn": true,
@@ -98,8 +98,8 @@
     "plate": false
    },
    {
-    "from": 102,
-    "durationInFrames": 59,
+    "from": 81,
+    "durationInFrames": 40,
     "text": "Ultra-slim.",
     "eyebrow": null,
     "animateIn": true,
@@ -111,8 +111,8 @@
     "top": 270
    },
    {
-    "from": 161,
-    "durationInFrames": 58,
+    "from": 121,
+    "durationInFrames": 41,
     "text": "Looks like a mini wallet.",
     "eyebrow": null,
     "animateIn": true,
@@ -126,8 +126,8 @@
   ],
   "textColor": "white",
   "endFrame": {
-   "from": 219,
-   "durationInFrames": 55,
+   "from": 162,
+   "durationInFrames": 40,
    "color": "ink",
    "eyebrow": "The condom case",
    "price": "€29",
@@ -139,14 +139,14 @@
    {
     "type": "fly",
     "model": "models/black.glb",
-    "from": 94,
-    "durationInFrames": 14
+    "from": 72,
+    "durationInFrames": 12
    },
    {
     "type": "hero",
     "model": "models/black.glb",
-    "from": 219,
-    "durationInFrames": 55
+    "from": 162,
+    "durationInFrames": 40
    }
   ]
  },
@@ -160,7 +160,7 @@
    "color": "black",
    "inside": true,
    "both": false,
-   "dur": 1.461
+   "dur": 1.348
   },
   {
    "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
@@ -171,7 +171,7 @@
    "color": "black",
    "inside": false,
    "both": false,
-   "dur": 1.948
+   "dur": 1.348
   },
   {
    "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#14.25-19.00",
@@ -182,7 +182,7 @@
    "color": "black",
    "inside": false,
    "both": false,
-   "dur": 1.948
+   "dur": 1.348
   },
   {
    "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#9.50-14.25",
@@ -193,7 +193,7 @@
    "color": "black",
    "inside": false,
    "both": false,
-   "dur": 1.948
+   "dur": 1.348
   },
   {
    "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
@@ -216,27 +216,28 @@
   "color_consistency": true,
   "text_shot_match": true,
   "inside_early": true,
-  "first_cut_s": 1.47,
-  "max_shot_s": 1.95,
+  "first_cut_s": 1.33,
+  "max_shot_s": 1.35,
   "price_on_screen": true
  },
  "visual": {
   "issues": [
-   "Кадр 4: полностью чёрный кадр с текстурой кожи (макро-переход) — case не виден, выглядит как чёрный провал, без текста",
-   "В кадре 6 текст «Looks like a mini wallet.» частично перекрыт кошельком/уходит в серый и плохо читается (обрезан продуктом)",
-   "Кадры 1–2: презерватив в открытом кейсе виден, но кейс открыт странно (плоско, с кнопками по краям), не очевидно, что вмещает 2 штуки — в кадре виден только один",
-   "Кадр 1: текст «Introducing Plaire.» совпадает с кадром, но маленький эйброу-текст очень мелкий и плохо читается",
-   "Финальная карточка (кадры 8–9) выглядит как каталожная реклама, а не нативный контент; мелкий текст «Free shipping» нечитаем",
-   "Белые перчатки и серый фон дают студийный вид, а не нативный; резкий переход к белой карточке с 3D-рендером",
-   "Кадр 5: текст «Ultra-slim.» не подтверждается картинкой — кейс держат плашмя, толщина не видна",
-   "Кадр 7: кейс почти не виден (закрыт перчатками, виден только торец), текст «Looks like a mini wallet.» не подкреплён"
+   "Frame 1: у футляра открыт только один презерватив, второй не виден, поэтому «вмещает 2» не читается с первого кадра",
+   "Текст «Hidden magnetic closure» остаётся в кадрах 3 и 4, где футляр закрыт и магнит не виден — подпись не совпадает с кадром",
+   "В кадре 6 текст «Looks like» обрезан/недописан, а фраза «mini wallet» появляется только в кадре 7",
+   "Мелкий серый текст «Free shipping to all EU countries» и «THE CONDOM CASE» на финальной карточке трудно прочитать",
+   "Кадр 5: футляр частично закрыт пальцами и размыт, текст «Ultra-slim» не подтверждается видом (толщину не видно)",
+   "Кадр 4: надпись PLAIRE на футляре перекрыта чёрной планкой — логотип обрезан",
+   "Белые перчатки и серый фон выглядят стерильно и по-студийному, как рекламный каталог",
+   "Резкая смена света и фона в кадрах 5-7 (холодный голубоватый тон) по сравнению с кадрами 1-4",
+   "Финальные два кадра — одинаковая 3D-карточка с ценой, статичная, не живой контент; 3D-рендер заметно отличается от реальной съёмки"
   ],
   "text_readable": false,
   "text_not_cut": false,
-  "case_visible": false,
+  "case_visible": true,
   "no_filters_look": true,
   "no_black_endcard": true,
-  "first_frame_explains_product": true,
+  "first_frame_explains_product": false,
   "hand_present": true,
   "shots_feel_continuous": true,
   "text_matches_shot": false,
@@ -248,11 +249,11 @@
   "failed": [
    "text_readable",
    "text_not_cut",
-   "case_visible",
    "text_matches_shot"
   ]
  },
  "errors": [
-  "визуально: text_readable, text_not_cut, case_visible, text_matches_shot"
+  "длительность 6.7 с вне 9–15 с",
+  "визуально: text_readable, text_not_cut, text_matches_shot"
  ]
 }
