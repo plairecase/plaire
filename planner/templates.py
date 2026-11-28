@@ -59,6 +59,7 @@ class Ctx:
     avoid_color: str | None = None
     avoid_hooks: set = field(default_factory=set)
     beats: list | None = None  # доли музыки от начала ролика, с (None — сетка 120 BPM)
+    models: dict = field(default_factory=dict)   # 3D: цвет → путь в remotion/public (models/cognac.glb)
 
 
 # ------------------------------------------------------------------ помощники

@@ -103,6 +103,7 @@ jobs:
           rm -rf rep/videos && mkdir -p rep/videos
           cp work/videos_report.md rep/videos/report.md
           cp work/contact_*.jpg rep/videos/ 2>/dev/null || true
+          cp work/3d_*.jpg rep/videos/ 2>/dev/null || true
           cp work/hdr_compare.jpg rep/videos/ 2>/dev/null || true
           mkdir -p rep/videos/plans && cp work/plans/*.json rep/videos/plans/ 2>/dev/null || true
           cp work_qc_old.txt rep/videos/qc_old.txt 2>/dev/null || true

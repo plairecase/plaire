@@ -311,10 +311,22 @@ def main(argv=None) -> int:
                 errs.append(f"план: {k}")
         sheet = WORK / f"contact_{name}.jpg"
         contact(final, sheet)
+        if p.props.get("threeD"):
+            import cv2
+            import numpy as np
+            idxs = []
+            for l in p.props["threeD"]:
+                idxs += [l["from"] + 3, l["from"] + 7, l["from"] + 10] if l["type"] == "fly" else [l["from"] + l["durationInFrames"] // 2]
+            fr, _ = _frames(final, idxs)
+            if fr:
+                cv2.imwrite(str(WORK / f"3d_{name}.jpg"), np.hstack([cv2.resize(f, (360, 640)) for f in fr]),
+                            [cv2.IMWRITE_JPEG_QUALITY, 85])
         vq = None
         if vision_client is not None:
             try:
-                intent = {"p_gloves_pov": "one world: white gloves on grey; one colour; open → close → edge → on palm → loop",
+                intent = ("A 3D model of the same case (rendered, not filmed) is used intentionally: a quick fly-through "
+                          "transition and/or a slow 3D turn on paper in the price card. " if getattr(p, "uses3d", False) else "") + \
+                    {"p_gloves_pov": "one world: white gloves on grey; one colour; open → close → edge → on palm → loop",
                           "p_studio_to_life": "studio paper, then ONE planned change to street with bare hands "
                                               "(text 'Made to carry.'), then back to the first frame (loop)"}.get(p.template, "")
                 vq = vision_check.check(sheet, p.purpose, vision_client, vision_usage, intent)
@@ -342,8 +354,29 @@ def main(argv=None) -> int:
         except Exception as e:                           # noqa: BLE001
             print(f"  визуальная проверка недоступна: {e}", flush=True)
 
+    # --- 3D-модели чехла из Plaire／3D (по имени файла: cognac / black)
+    models: dict[str, str] = {}
+    try:
+        mlist = [] if args.local else drive.list_files(dcfg["models3d"])
+        for f in mlist:
+            if not f["Name"].lower().endswith(".glb"):
+                continue
+            col = "cognac" if "cognac" in f["Name"].lower() else ("black" if "black" in f["Name"].lower() else None)
+            if col:
+                dst = REMOTION / "public" / "models" / f"{col}.glb"
+                drive.download(dcfg["models3d"], f["Name"], dst, f.get("Size"), f.get("ID"))
+                models[col] = f"models/{col}.glb"
+        if args.local and (REMOTION / "public" / "models").exists():
+            for p3 in (REMOTION / "public" / "models").glob("*.glb"):
+                col = "cognac" if "cognac" in p3.name else ("black" if "black" in p3.name else None)
+                if col:
+                    models[col] = f"models/{p3.name}"
+    except Exception as e:                               # noqa: BLE001 — без 3D ролик всё равно собираем
+        print(f"  3D-модели недоступны: {e}", flush=True)
+    print(f"  3D-модели: {', '.join(models) or 'нет'}", flush=True)
+
     # --- ролики дня: каждый слот — до 3 попыток (раздел 13)
-    ctx = Ctx(shots, texts, rng, cfg["render"]["fps"], cfg["render"]["dissolve_frames"])
+    ctx = Ctx(shots, texts, rng, cfg["render"]["fps"], cfg["render"]["dissolve_frames"], models=models)
     skipped: list[str] = []
     bpm_cycle = cfg.get("beat_grid_bpm", [120])
     want = [(st, "organic") for st in ("premium", "native") for _ in range(cfg["style_mix"].get(st, 0))]

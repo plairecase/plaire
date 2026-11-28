@@ -1,5 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, Sequence} from 'remotion';
+import {Case3D} from '../components/Case3D';
 import {ClipLayer} from '../components/ClipLayer';
 import {EndFrame} from '../components/EndFrame';
 import {Hook} from '../components/Hook';
@@ -10,6 +11,11 @@ import type {VideoProps} from '../types';
 export const Video: React.FC<VideoProps> = (p) => (
   <AbsoluteFill style={{backgroundColor: '#000'}}>
     <ClipLayer clips={p.clips} />
+    {(p.threeD ?? []).map((l, i) => (
+      <Sequence key={`3d${i}`} from={l.from} durationInFrames={l.durationInFrames} layout="none">
+        <Case3D src={l.model} scene={l.type} total={l.durationInFrames} />
+      </Sequence>
+    ))}
     {p.style === 'premium' ? <Hook screens={p.screens} color={p.textColor} /> : <NativeText screens={p.screens} />}
     {p.endFrame ? (
       <Sequence from={p.endFrame.from} durationInFrames={p.endFrame.durationInFrames} layout="none">

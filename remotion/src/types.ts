@@ -39,6 +39,13 @@ export type EndFrameSpec = {
   tagTop?: number;          // y ценника: ниже чехла, выше 1248
 };
 
+export type Layer3D = {
+  type: 'fly' | 'hero';      // fly — переход-пролёт; hero — финал promote на бумаге
+  model: string;             // путь в public/, например models/cognac.glb
+  from: number;
+  durationInFrames: number;
+};
+
 export type VideoProps = {
   template: string;
   style: 'premium' | 'native';
@@ -48,4 +55,5 @@ export type VideoProps = {
   screens: TextScreen[];
   textColor: TextColor;
   endFrame?: EndFrameSpec | null;
+  threeD?: Layer3D[];
 };

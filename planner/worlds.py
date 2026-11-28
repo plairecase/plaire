@@ -283,6 +283,29 @@ def _build_color(ctx, template, purpose, bpm_fallback, spec, in_world, C):
         t += cd
     total = round(t, 3)
 
+    # 3D-модель чехла (раздел 8 + правка владельца 28.11.2026): цвет модели = цвет ролика
+    three = []
+    model = ctx.models.get(C)
+    if model:
+        body_clips = clips[1:len([x for x in chosen if x[1] not in ("loop", "card")])]
+        if body_clips:
+            # пролёт на сильной склейке в середине (для студия→улица — ровно на смене мира)
+            idx = next((i for i, (s_, r_, _) in enumerate(chosen) if r_ == "street"), None) \
+                or min(len(body_clips), 2)
+            cut = clips[idx]["from"] + (clips[idx].get("transitionIn", {}).get("frames", 0)
+                                        if clips[idx].get("transitionIn", {}).get("type") == "zoom" else 0)
+            if clips[idx].get("transitionIn", {}).get("type") == "zoom":
+                clips[idx]["transitionIn"] = {"type": "punch", "frames": 4}       # 3D заменяет зум-переход
+                clips[idx - 1].pop("transitionOut", None)
+            fly = 14
+            three.append({"type": "fly", "model": model, "from": max(0, cut - 8), "durationInFrames": fly})
+            sfx.append({"t": round(max(0.0, (cut - 8) / fps), 2), "kind": "whoosh", "gain_db": -3})
+        if end:
+            # финал promote: 3D-чехол медленно поворачивается на бумаге под вордмарком и ценой
+            three.append({"type": "hero", "model": model, "from": end["from"], "durationInFrames": end["durationInFrames"]})
+            end["color"] = "ink"
+            end["tagTop"] = 500
+
     # цвет текста по зоне текста плана (fix-03): ink — только светло и спокойно, иначе белый (+ плашка на пёстром)
     for sc in screens:
         sh = next(s for s, _, _ in chosen if s["shot"]["id"] == sc["shot"])
@@ -305,9 +328,10 @@ def _build_color(ctx, template, purpose, bpm_fallback, spec, in_world, C):
 
     plan = Plan(template, "premium", {
         "template": template, "style": "premium", "fps": fps, "durationInFrames": frames(total, fps),
-        "clips": clips, "screens": screens, "textColor": "white", "endFrame": end}, segments, sfx,
+        "clips": clips, "screens": screens, "textColor": "white", "endFrame": end, "threeD": three}, segments, sfx,
         hook["id"], total, C, first["shot"]["id"])
     plan.purpose, plan.bpm = purpose, round(60 / ib, 1)
+    plan.uses3d = bool(three)
     plan.world = W
     plan.shots = [{"shot": s["shot"]["id"], "file": s["file"]["name"], "role": r, "world": v(s).get("world"),
                    "hands": v(s).get("hands"), "color": v(s)["color"], "inside": bool(v(s).get("shows_inside")),
