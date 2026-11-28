@@ -16,3 +16,4 @@ __pycache__/
 # рендер
 remotion/public/clips/
 remotion/public/models/
+reports_preview/
