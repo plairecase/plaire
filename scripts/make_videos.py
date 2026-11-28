@@ -473,7 +473,9 @@ def main(argv=None) -> int:
     if os.environ.get("GITHUB_STEP_SUMMARY"):
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as fh:
             fh.write(md + "\n")
-    return 1 if any(r["errors"] for r in results) else 0
+    # решение владельца (вариант Б): ролик с замечаниями проверки — не сбой, он лежит в Done с пометкой _CHECK.
+    # Сбой (письмо от GitHub) — только если роликов меньше, чем нужно на день.
+    return 0 if len(results) >= len(want) else 1
 
 
 if __name__ == "__main__":
