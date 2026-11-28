@@ -287,10 +287,21 @@ def _build_color(ctx, template, purpose, bpm_fallback, spec, in_world, C):
     for sc in screens:
         sh = next(s for s, _, _ in chosen if s["shot"]["id"] == sc["shot"])
         m = sh["shot"]["metrics"]
-        lum, det = m.get("text_luma") or m.get("luma_top") or 0.5, m.get("text_detail")
-        busy = det is not None and det > 0.02
-        sc["color"] = "ink" if (lum > 0.75 and not busy) else "white"
+        lum = m.get("text_luma") or m.get("luma_top") or 0.5
+        # светлый фон (серая бумага, перчатки, небо) — тёмный текст; тёмный — белый с тенью
+        sc["color"] = "ink" if lum > 0.55 else "white"
         sc["plate"] = False                       # плашки выглядят шаблонно (визуальная проверка) — без них
+        # текст не ложится на чехол и руки: если предмет высоко, текст уходит под него (в безопасной зоне)
+        top, bot = bbox(sh)
+        block = 120 if not sc.get("eyebrow") else 180       # высота блока текста, px (1–2 строки)
+        if top * 1920 < 300 + block + 30:
+            y_below = int(bot * 1920 + 40)
+            if y_below + block <= 1248:
+                sc["top"] = y_below
+            elif top * 1920 > 300:
+                sc["top"] = 300
+            else:
+                sc["top"] = 270                               # выше уже нельзя (интерфейс TikTok)
 
     plan = Plan(template, "premium", {
         "template": template, "style": "premium", "fps": fps, "durationInFrames": frames(total, fps),

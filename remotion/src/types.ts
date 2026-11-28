@@ -25,6 +25,7 @@ export type TextScreen = {
   animateIn: boolean;       // первый экран = обложка, виден с кадра 0
   color?: TextColor;        // цвет по кадру под текстом (иначе общий textColor)
   plate?: boolean;          // тёмная плашка под текстом на пёстром/среднем фоне (fix-03)
+  top?: number;             // y блока текста, px (по умолчанию 300; ниже чехла, если он высоко)
 };
 
 export type EndFrameSpec = {
