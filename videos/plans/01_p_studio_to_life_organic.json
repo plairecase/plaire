@@ -3,12 +3,12 @@
   "template": "p_studio_to_life",
   "style": "premium",
   "fps": 30,
-  "durationInFrames": 234,
+  "durationInFrames": 243,
   "clips": [
    {
-    "src": "clips/c4.mp4",
+    "src": "clips/c0.mp4",
     "from": 0,
-    "durationInFrames": 44,
+    "durationInFrames": 40,
     "pushIn": [
      1.0,
      1.05
@@ -19,9 +19,9 @@
     }
    },
    {
-    "src": "clips/c5.mp4",
-    "from": 44,
-    "durationInFrames": 58,
+    "src": "clips/c1.mp4",
+    "from": 40,
+    "durationInFrames": 44,
     "pushIn": [
      1.0,
      1.05
@@ -32,38 +32,38 @@
     }
    },
    {
-    "src": "clips/c6.mp4",
-    "from": 96,
-    "durationInFrames": 65,
+    "src": "clips/c2.mp4",
+    "from": 118,
+    "durationInFrames": 47,
     "pushIn": [
      1.0,
      1.05
     ],
     "transitionIn": {
-     "type": "punch",
-     "frames": 4
+     "type": "cut",
+     "frames": 0
     }
    },
    {
-    "src": "clips/c7.mp4",
-    "from": 161,
-    "durationInFrames": 73,
+    "src": "clips/c3.mp4",
+    "from": 199,
+    "durationInFrames": 44,
     "pushIn": [
      1.08,
      1.0
     ],
     "transitionIn": {
-     "type": "punch",
-     "frames": 4
+     "type": "cut",
+     "frames": 0
     }
    }
   ],
   "screens": [
    {
     "from": 0,
-    "durationInFrames": 44,
-    "text": "Body heat. Friction. Cards.",
-    "eyebrow": null,
+    "durationInFrames": 40,
+    "text": "The condom case, redesigned.",
+    "eyebrow": "PLAIRE",
     "animateIn": false,
     "role": "inside",
     "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
@@ -73,8 +73,8 @@
     "top": 300
    },
    {
-    "from": 44,
-    "durationInFrames": 58,
+    "from": 40,
+    "durationInFrames": 41,
     "text": "Eco-leather. Ultra-slim.",
     "eyebrow": null,
     "animateIn": true,
@@ -85,8 +85,21 @@
     "plate": false
    },
    {
-    "from": 102,
-    "durationInFrames": 59,
+    "from": 81,
+    "durationInFrames": 40,
+    "text": "Ultra-slim.",
+    "eyebrow": null,
+    "animateIn": true,
+    "role": "profile",
+    "shot": "3d_s_profile",
+    "action": "profile",
+    "three": "s_profile",
+    "color": "ink",
+    "plate": false
+   },
+   {
+    "from": 121,
+    "durationInFrames": 41,
     "text": "Made to carry.",
     "eyebrow": null,
     "animateIn": true,
@@ -95,16 +108,73 @@
     "action": "street",
     "color": "white",
     "plate": false
+   },
+   {
+    "from": 162,
+    "durationInFrames": 40,
+    "text": "Two colours.",
+    "eyebrow": null,
+    "animateIn": true,
+    "role": "both",
+    "shot": "3d_s_two_colours",
+    "action": "both_colors",
+    "three": "s_two_colours",
+    "color": "ink",
+    "plate": false
    }
   ],
   "textColor": "white",
   "endFrame": null,
   "threeD": [
    {
-    "type": "fly",
+    "type": "profile",
+    "scene": "s_profile",
+    "from": 81,
+    "durationInFrames": 40,
+    "fade": 3,
+    "afterClip": 1,
+    "ink": "#121212",
+    "bg": "#F5F4F0",
     "model": "models/black.glb",
-    "from": 93,
-    "durationInFrames": 12
+    "tune": {
+     "roughness": null,
+     "tint": 1.0,
+     "normalScale": null
+    },
+    "light": {
+     "x": -1.0,
+     "y": 1.0,
+     "warm": true
+    },
+    "grain": 0.03
+   },
+   {
+    "type": "two_colours",
+    "scene": "s_two_colours",
+    "from": 162,
+    "durationInFrames": 40,
+    "fade": 3,
+    "afterClip": 2,
+    "ink": "#121212",
+    "bg": "#F5F4F0",
+    "model": "models/cognac.glb",
+    "model2": "models/black.glb",
+    "tune": {
+     "roughness": 0.45,
+     "tint": 0.85,
+     "normalScale": 0.5
+    },
+    "tune2": {
+     "roughness": null,
+     "tint": 1.0,
+     "normalScale": null
+    },
+    "light": {
+     "x": -1.0,
+     "y": 1.0,
+     "warm": true
+    },
+    "grain": 0.03
    }
   ]
  },
@@ -118,7 +188,8 @@
    "color": "black",
    "inside": true,
    "both": false,
-   "dur": 1.461
+   "dur": 1.348,
+   "three": null
   },
   {
    "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#3.10-6.19",
@@ -129,7 +200,20 @@
    "color": "black",
    "inside": true,
    "both": false,
-   "dur": 1.948
+   "dur": 1.348,
+   "three": null
+  },
+  {
+   "shot": "3d_s_profile",
+   "file": "3D",
+   "role": "profile",
+   "world": "studio_paper",
+   "hands": "none",
+   "color": "black",
+   "inside": false,
+   "both": false,
+   "dur": 1.348,
+   "three": "s_profile"
   },
   {
    "shot": "1ZeTBdL8TXdvsnZjMZFk40oVO2rV6vmDx#4.03-8.07",
@@ -140,7 +224,20 @@
    "color": "black",
    "inside": false,
    "both": false,
-   "dur": 1.948
+   "dur": 1.348,
+   "three": null
+  },
+  {
+   "shot": "3d_s_two_colours",
+   "file": "3D",
+   "role": "both",
+   "world": "studio_paper",
+   "hands": "none",
+   "color": "black",
+   "inside": false,
+   "both": true,
+   "dur": 1.348,
+   "three": "s_two_colours"
   },
   {
    "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
@@ -151,59 +248,62 @@
    "color": "black",
    "inside": true,
    "both": false,
-   "dur": 2.435
+   "dur": 1.348,
+   "three": null
   }
  ],
  "checks": {
   "world": "studio_paper",
-  "world_share": 0.75,
-  "world_changes": 1,
-  "world_consistency": true,
+  "world_share": 0.83,
+  "world_changes": 2,
+  "world_consistency": false,
   "hands_consistency": true,
   "color_consistency": true,
   "text_shot_match": true,
   "inside_early": true,
-  "first_cut_s": 1.47,
-  "max_shot_s": 1.95,
+  "first_cut_s": 1.33,
+  "max_shot_s": 1.35,
   "price_on_screen": false,
-  "loop_ssim": 0.992
+  "3d_share": 0.33,
+  "3d_share_ok": false,
+  "3d_not_first": true,
+  "loop_ssim": 0.996
  },
  "visual": {
   "issues": [
-   "Текст «Body heat. Friction. Cards.» в кадрах 1–2 перекрыт корпусом кейса — слово «Friction» обрезано/закрыто продуктом",
-   "Текст чёрный на светло-бежевом фоне, но частично уходит на тёмный кейс — плохая читаемость в местах наложения",
-   "В кадрах 1–3 кейс — это 3D-рендер, он выглядит искусственно и заметно отличается от реальной съёмки в кадрах 5–6 (другой свет, резкость)",
-   "Резкий переход от студии к улице без плавной связки — кадры 4→5 ощущаются как два разных клипа",
-   "Первый кадр не показывает чётко 2 презерватива: виден только один жёлтый презерватив под чёрной полосой, понятно не сразу что это за продукт",
-   "Тексты «Eco-leather. Ultra-slim.» и «Body heat. Friction. Cards.» не соответствуют показанному: нет демонстрации толщины или карт, кейс просто лежит",
-   "Кадры 7–9 без текста, почти идентичны друг другу — статичный повтор, мало действия",
-   "Кейс чёрный на тёмной одежде/руке в кадрах 5–6 — слабый контраст, продукт теряется",
-   "Текст «Made to carry.» белый на светлых штанах — низкий контраст"
+   "В кадрах 1–2 заголовок «The condom case, redesigned.» перекрыт продуктом: слова «case, re» закрыты чехлом, текст обрезан и нечитаем",
+   "В кадре 1 текст наложен на изделие, нет безопасной зоны под заголовок",
+   "В кадрах 5–6 чехол частично закрыт пальцами и почти не виден, содержимое не показано",
+   "Текст «Made to carry.» в кадре 6 лежит на белой одежде и руке, контраст низкий",
+   "Чёрный чехол на тёмном фоне в кадрах 5–6 сливается, плохо читается",
+   "Резкая смена света и мира между студийной бумагой и уличным кадром с руками, студийные 3D-кадры контрастируют с живым видео",
+   "Кадр 4 (ребро) и кадр 7 (два цвета) — чистые 3D-рендеры на белом фоне, выглядят как каталожные, а не как нативный контент",
+   "Чёрная полоса поверх презерватива выглядит как артефакт/цензура и портит вид первого кадра",
+   "Нет руки в студийных кадрах, начало выглядит как реклама из каталога"
   ],
   "text_readable": false,
   "text_not_cut": false,
   "case_visible": true,
   "no_filters_look": true,
   "no_black_endcard": true,
-  "first_frame_explains_product": false,
+  "first_frame_explains_product": true,
   "hand_present": true,
   "shots_feel_continuous": false,
-  "text_matches_shot": false,
+  "text_matches_shot": true,
   "one_location": true,
-  "looks_like_ad": false,
-  "looks_cheap": true,
-  "matches_style": "native",
+  "looks_like_ad": true,
+  "looks_cheap": false,
+  "matches_style": "premium",
   "pass": false,
   "failed": [
    "text_readable",
    "text_not_cut",
    "shots_feel_continuous",
-   "text_matches_shot",
-   "first_frame_explains_product",
-   "looks_cheap"
+   "looks_like_ad"
   ]
  },
  "errors": [
-  "визуально: text_readable, text_not_cut, shots_feel_continuous, text_matches_shot, first_frame_explains_product, looks_cheap"
+  "план: world_consistency",
+  "визуально: text_readable, text_not_cut, shots_feel_continuous, looks_like_ad"
  ]
 }

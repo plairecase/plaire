@@ -3,12 +3,12 @@
   "template": "p_gloves_pov",
   "style": "premium",
   "fps": 30,
-  "durationInFrames": 234,
+  "durationInFrames": 243,
   "clips": [
    {
     "src": "clips/c8.mp4",
     "from": 0,
-    "durationInFrames": 44,
+    "durationInFrames": 40,
     "pushIn": [
      1.0,
      1.05
@@ -20,8 +20,8 @@
    },
    {
     "src": "clips/c9.mp4",
-    "from": 44,
-    "durationInFrames": 58,
+    "from": 40,
+    "durationInFrames": 44,
     "pushIn": [
      1.0,
      1.05
@@ -33,50 +33,37 @@
    },
    {
     "src": "clips/c10.mp4",
-    "from": 102,
-    "durationInFrames": 59,
+    "from": 118,
+    "durationInFrames": 47,
     "pushIn": [
      1.0,
      1.05
     ],
     "transitionIn": {
-     "type": "punch",
-     "frames": 4
+     "type": "cut",
+     "frames": 0
     }
    },
    {
     "src": "clips/c11.mp4",
-    "from": 161,
+    "from": 199,
     "durationInFrames": 44,
-    "pushIn": [
-     1.0,
-     1.05
-    ],
-    "transitionIn": {
-     "type": "punch",
-     "frames": 4
-    }
-   },
-   {
-    "src": "clips/c12.mp4",
-    "from": 205,
-    "durationInFrames": 29,
     "pushIn": [
      1.08,
      1.0
     ],
     "transitionIn": {
-     "type": "punch",
-     "frames": 4
+     "type": "cut",
+     "frames": 0
     }
    }
   ],
   "screens": [
    {
     "from": 0,
-    "durationInFrames": 44,
-    "text": "Looks like a wallet.",
-    "eyebrow": "THE CONDOM CASE",
+    "durationInFrames": 40,
+    "text": "Stop keeping condoms in your wallet.",
+    "eyebrow": null,
     "animateIn": false,
     "role": "inside",
     "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#0.00-3.20",
@@ -85,8 +72,8 @@
     "plate": false
    },
    {
-    "from": 44,
-    "durationInFrames": 58,
+    "from": 40,
+    "durationInFrames": 41,
     "text": "Hidden magnetic closure.",
     "eyebrow": null,
     "animateIn": true,
@@ -97,21 +84,21 @@
     "plate": false
    },
    {
-    "from": 102,
-    "durationInFrames": 59,
+    "from": 81,
+    "durationInFrames": 40,
     "text": "Ultra-slim.",
     "eyebrow": null,
     "animateIn": true,
     "role": "profile",
-    "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#14.25-19.00",
+    "shot": "3d_s_profile",
     "action": "profile",
+    "three": "s_profile",
     "color": "ink",
-    "plate": false,
-    "top": 270
+    "plate": false
    },
    {
-    "from": 161,
-    "durationInFrames": 44,
+    "from": 121,
+    "durationInFrames": 41,
     "text": "Looks like a mini wallet.",
     "eyebrow": null,
     "animateIn": true,
@@ -121,16 +108,73 @@
     "color": "ink",
     "plate": false,
     "top": 270
+   },
+   {
+    "from": 162,
+    "durationInFrames": 40,
+    "text": "Two colours.",
+    "eyebrow": null,
+    "animateIn": true,
+    "role": "both",
+    "shot": "3d_s_two_colours",
+    "action": "both_colors",
+    "three": "s_two_colours",
+    "color": "ink",
+    "plate": false
    }
   ],
   "textColor": "white",
   "endFrame": null,
   "threeD": [
    {
-    "type": "fly",
+    "type": "profile",
+    "scene": "s_profile",
+    "from": 81,
+    "durationInFrames": 40,
+    "fade": 3,
+    "afterClip": 1,
+    "ink": "#121212",
+    "bg": "#d2cbc8",
     "model": "models/black.glb",
-    "from": 93,
-    "durationInFrames": 12
+    "tune": {
+     "roughness": null,
+     "tint": 1.0,
+     "normalScale": null
+    },
+    "light": {
+     "x": -0.4,
+     "y": 0.5,
+     "warm": false
+    },
+    "grain": 0.03
+   },
+   {
+    "type": "two_colours",
+    "scene": "s_two_colours",
+    "from": 162,
+    "durationInFrames": 40,
+    "fade": 3,
+    "afterClip": 2,
+    "ink": "#121212",
+    "bg": "#b9c6cc",
+    "model": "models/cognac.glb",
+    "model2": "models/black.glb",
+    "tune": {
+     "roughness": 0.45,
+     "tint": 0.85,
+     "normalScale": 0.5
+    },
+    "tune2": {
+     "roughness": null,
+     "tint": 1.0,
+     "normalScale": null
+    },
+    "light": {
+     "x": -0.4,
+     "y": 0.5,
+     "warm": false
+    },
+    "grain": 0.03
    }
   ]
  },
@@ -144,7 +188,8 @@
    "color": "black",
    "inside": true,
    "both": false,
-   "dur": 1.461
+   "dur": 1.348,
+   "three": null
   },
   {
    "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
@@ -155,18 +200,20 @@
    "color": "black",
    "inside": false,
    "both": false,
-   "dur": 1.948
+   "dur": 1.348,
+   "three": null
   },
   {
-   "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#14.25-19.00",
-   "file": "IMG_1293.mov",
+   "shot": "3d_s_profile",
+   "file": "3D",
    "role": "profile",
    "world": "gloves",
-   "hands": "gloves",
+   "hands": "none",
    "color": "black",
    "inside": false,
    "both": false,
-   "dur": 1.948
+   "dur": 1.348,
+   "three": "s_profile"
   },
   {
    "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#9.50-14.25",
@@ -177,7 +224,20 @@
    "color": "black",
    "inside": false,
    "both": false,
-   "dur": 1.461
+   "dur": 1.348,
+   "three": null
+  },
+  {
+   "shot": "3d_s_two_colours",
+   "file": "3D",
+   "role": "both",
+   "world": "gloves",
+   "hands": "none",
+   "color": "black",
+   "inside": false,
+   "both": true,
+   "dur": 1.348,
+   "three": "s_two_colours"
   },
   {
    "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#0.00-3.20",
@@ -188,7 +248,8 @@
    "color": "black",
    "inside": true,
    "both": false,
-   "dur": 0.974
+   "dur": 1.348,
+   "three": null
   }
  ],
  "checks": {
@@ -200,24 +261,27 @@
   "color_consistency": true,
   "text_shot_match": true,
   "inside_early": true,
-  "first_cut_s": 1.47,
-  "max_shot_s": 1.95,
+  "first_cut_s": 1.33,
+  "max_shot_s": 1.35,
   "price_on_screen": false,
-  "loop_ssim": 0.863
+  "3d_share": 0.33,
+  "3d_share_ok": false,
+  "3d_not_first": true,
+  "loop_ssim": 0.988
  },
  "visual": {
   "issues": [
-   "Кадр 7: текст «Looks like a mini wallet.» перекрыт верхним краем кейса, нижняя строка частично закрыта продуктом",
-   "Кадр 9 (последний) без текста и без призыва к действию, нет цены или финального оффера",
-   "Кадры 1 и 9: показан только 1 презерватив, а не 2, поэтому первый кадр не показывает вместимость",
-   "Белые перчатки выглядят как студийная съёмка, а не как личный контент",
-   "Текст «Looks like a wallet» и «Looks like a mini wallet» повторяются, тексты дублируются в соседних кадрах",
-   "Кадр 8: текст светлее и менее контрастный на сером фоне, читается хуже",
-   "Кадр 5 и 6: на кадре «Ultra-slim» кейс показан плашмя или с торца, толщина видна слабо, текст не подтверждается картинкой",
-   "Заметное изменение фона и света между кадрами 4 и 5 (более холодный серый)"
+   "Кадр 1: открытый кейс показывает только один презерватив, а не два, поэтому «Holds 2» не подтверждается",
+   "Кадр 1: текст «Stop keeping condoms in your wallet.» стоит близко к краю и частично перекрыт перчаткой, из-за чего заголовок хуже читается",
+   "Кадры 4 и 8: 3D-рендеры с чистым фоном заметно отличаются по свету и фактуре от съёмки в белых перчатках, это даёт резкий стык",
+   "Кадр 5: нет текста, кадр с кейсом в руках и фоновой коробкой выглядит случайным и слабо связан с предыдущим",
+   "Кадр 6: подпись «Looks like a mini wallet.» стоит над кейсом, который зажат в руках и показан в боковом ракурсе, поэтому подпись плохо соответствует кадру",
+   "Белые перчатки и сухой серый фон выглядят как студийная съёмка, а не как нативный органический контент",
+   "Кадры 4 и 8: чёрный кейс на сером фоне 3D-рендера слабо контрастирует, детали теряются",
+   "Кадры 2 и 7 почти не отличаются от кадра 1, поэтому ритм монтажа однообразный"
   ],
   "text_readable": true,
-  "text_not_cut": false,
+  "text_not_cut": true,
   "case_visible": true,
   "no_filters_look": true,
   "no_black_endcard": true,
@@ -231,13 +295,12 @@
   "matches_style": "premium",
   "pass": false,
   "failed": [
-   "text_not_cut",
    "text_matches_shot",
    "first_frame_explains_product",
    "looks_like_ad"
   ]
  },
  "errors": [
-  "визуально: text_not_cut, text_matches_shot, first_frame_explains_product, looks_like_ad"
+  "визуально: text_matches_shot, first_frame_explains_product, looks_like_ad"
  ]
 }
