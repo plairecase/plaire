@@ -6,7 +6,7 @@
   "durationInFrames": 234,
   "clips": [
    {
-    "src": "clips/c18.mp4",
+    "src": "clips/c24.mp4",
     "from": 0,
     "durationInFrames": 44,
     "pushIn": [
@@ -19,7 +19,7 @@
     }
    },
    {
-    "src": "clips/c19.mp4",
+    "src": "clips/c25.mp4",
     "from": 44,
     "durationInFrames": 58,
     "pushIn": [
@@ -36,7 +36,7 @@
     }
    },
    {
-    "src": "clips/c20.mp4",
+    "src": "clips/c26.mp4",
     "from": 96,
     "durationInFrames": 65,
     "pushIn": [
@@ -49,7 +49,7 @@
     }
    },
    {
-    "src": "clips/c21.mp4",
+    "src": "clips/c27.mp4",
     "from": 161,
     "durationInFrames": 73,
     "pushIn": [
@@ -66,14 +66,15 @@
    {
     "from": 0,
     "durationInFrames": 44,
-    "text": "Small case. Calm mind.",
-    "eyebrow": null,
+    "text": "Cognac Brown. Midnight Black.",
+    "eyebrow": "TWO COLOURS",
     "animateIn": false,
     "role": "inside",
-    "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
+    "shot": "1DFSz6wnZTszcmRtlhy_OjJ_41iQAR8Q8#0.00-4.15",
     "action": null,
-    "color": "white",
-    "plate": false
+    "color": "ink",
+    "plate": false,
+    "top": 300
    },
    {
     "from": 44,
@@ -82,10 +83,11 @@
     "eyebrow": null,
     "animateIn": true,
     "role": "studio_closed",
-    "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#3.10-6.19",
+    "shot": "1Bh6WFDcjLYDM7jEQOgkxhdRiU5eNA73W#0.00-4.69",
     "action": "studio_closed",
-    "color": "white",
-    "plate": false
+    "color": "ink",
+    "plate": false,
+    "top": 270
    },
    {
     "from": 102,
@@ -94,9 +96,9 @@
     "eyebrow": null,
     "animateIn": true,
     "role": "street",
-    "shot": "1ZeTBdL8TXdvsnZjMZFk40oVO2rV6vmDx#4.03-8.07",
+    "shot": "16x49qmlKM8dPjzC2RR5ZW4q7277S9kN7#5.39-10.78",
     "action": "street",
-    "color": "white",
+    "color": "ink",
     "plate": false
    }
   ],
@@ -105,45 +107,45 @@
  },
  "shots": [
   {
-   "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
-   "file": "IMG_1386.MOV",
+   "shot": "1DFSz6wnZTszcmRtlhy_OjJ_41iQAR8Q8#0.00-4.15",
+   "file": "IMG_1440.MOV",
    "role": "inside",
    "world": "studio_paper",
    "hands": "none",
-   "color": "black",
+   "color": "cognac",
    "inside": true,
    "both": false,
    "dur": 1.461
   },
   {
-   "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#3.10-6.19",
-   "file": "IMG_1386.MOV",
+   "shot": "1Bh6WFDcjLYDM7jEQOgkxhdRiU5eNA73W#0.00-4.69",
+   "file": "IMG_1444.MOV",
    "role": "studio_closed",
    "world": "studio_paper",
    "hands": "none",
-   "color": "black",
-   "inside": true,
-   "both": false,
-   "dur": 1.948
-  },
-  {
-   "shot": "1ZeTBdL8TXdvsnZjMZFk40oVO2rV6vmDx#4.03-8.07",
-   "file": "6796620381629818176.MP4",
-   "role": "street",
-   "world": "street_hands",
-   "hands": "bare",
-   "color": "black",
+   "color": "cognac",
    "inside": false,
    "both": false,
    "dur": 1.948
   },
   {
-   "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
-   "file": "IMG_1386.MOV",
+   "shot": "16x49qmlKM8dPjzC2RR5ZW4q7277S9kN7#5.39-10.78",
+   "file": "-6741131299191009673.MP4",
+   "role": "street",
+   "world": "street_hands",
+   "hands": "bare",
+   "color": "cognac",
+   "inside": false,
+   "both": false,
+   "dur": 1.948
+  },
+  {
+   "shot": "1DFSz6wnZTszcmRtlhy_OjJ_41iQAR8Q8#0.00-4.15",
+   "file": "IMG_1440.MOV",
    "role": "loop",
    "world": "studio_paper",
    "hands": "none",
-   "color": "black",
+   "color": "cognac",
    "inside": true,
    "both": false,
    "dur": 2.435
@@ -161,19 +163,20 @@
   "first_cut_s": 1.47,
   "max_shot_s": 1.95,
   "price_on_screen": false,
-  "loop_ssim": 0.992
+  "loop_ssim": 0.983
  },
  "visual": {
   "issues": [
-   "Текст «Small case. Calm mind.» в кадрах 1–2 перекрывается корпусом: слово «mind» заходит на кейс",
-   "Текст белый на светло-бежевом фоне, низкий контраст, читается слабо",
-   "В кадре 1 презентация продукта слабая: кейс чёрный, на нём видны только один презерватив и чёрная полоса, а не два презерватива",
-   "В кадрах 5–6 текст «Made to carry.» лежит на белых шортах, контраст очень низкий",
-   "В кадрах 5–6 кейс закрыт пальцами и затемнён, содержимое не видно, руки заслоняют продукт",
-   "Смена студии на улицу резкая, свет и цвет сильно отличаются, но она запланирована и допустима",
-   "Кадры 7–9 без текста, ролик заканчивается без призыва или итоговой надписи",
-   "Текст «Eco-leather. Ultra-slim.» нельзя подтвердить визуально, кейс показан сверху без указания на толщину",
-   "Статичные ракурсы студийных кадров почти одинаковы, мало динамики"
+   "Текст «Cognac Brown. Midnight Black.» перекрывается кейсом в кадрах 1–2: слова «Midnight Black» частично закрыты продуктом, а чёрного цвета в кадре нет",
+   "Текст «Eco-leather. Ultra-slim.» в кадрах 3–4 наезжает на чёрную коробку, «Ultra-slim» плохо читается на тёмном фоне и перекрывается логотипом PLAIRE",
+   "Текст «Made to carry.» в кадрах 5–6 лежит на пёстком фоне города и частично сливается с ним, читаемость средняя",
+   "В кадрах 1–2 надпись «Two colours» не подтверждена кадром: виден только один цвет (коричневый)",
+   "В кадре 1 кейс закрыт или полуоткрыт, видны только жёлтая фольга и клапан, не видно двух презервативов внутри — продукт сразу не считывается",
+   "В кадрах 3–4 кейс закрыт и выглядит как обычный кошелёк, без пояснения что это",
+   "Резкая смена локации студия → улица (допустимо по замыслу), но переход между кадрами 4 и 5 жёсткий",
+   "В кадрах 7–9 нет текста и нет финального CTA, концовка слабая (зациклена на начальный кадр)",
+   "Текст в кадрах 1–2 с мелким заголовком «TWO COLOURS» слишком мелкий",
+   "Тёмный жирный шрифт на светло-сером фоне выглядит шаблонно, без студийной аккуратности"
   ],
   "text_readable": false,
   "text_not_cut": false,
@@ -186,17 +189,18 @@
   "text_matches_shot": false,
   "one_location": true,
   "looks_like_ad": false,
-  "looks_cheap": false,
+  "looks_cheap": true,
   "matches_style": "native",
   "pass": false,
   "failed": [
    "text_readable",
    "text_not_cut",
    "text_matches_shot",
-   "first_frame_explains_product"
+   "first_frame_explains_product",
+   "looks_cheap"
   ]
  },
  "errors": [
-  "визуально: text_readable, text_not_cut, text_matches_shot, first_frame_explains_product"
+  "визуально: text_readable, text_not_cut, text_matches_shot, first_frame_explains_product, looks_cheap"
  ]
 }

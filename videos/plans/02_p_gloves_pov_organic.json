@@ -3,12 +3,12 @@
   "template": "p_gloves_pov",
   "style": "premium",
   "fps": 30,
-  "durationInFrames": 243,
+  "durationInFrames": 234,
   "clips": [
    {
-    "src": "clips/c22.mp4",
+    "src": "clips/c15.mp4",
     "from": 0,
-    "durationInFrames": 40,
+    "durationInFrames": 44,
     "pushIn": [
      1.0,
      1.05
@@ -19,9 +19,9 @@
     }
    },
    {
-    "src": "clips/c23.mp4",
-    "from": 40,
-    "durationInFrames": 41,
+    "src": "clips/c16.mp4",
+    "from": 44,
+    "durationInFrames": 58,
     "pushIn": [
      1.0,
      1.05
@@ -32,9 +32,9 @@
     }
    },
    {
-    "src": "clips/c24.mp4",
-    "from": 81,
-    "durationInFrames": 40,
+    "src": "clips/c17.mp4",
+    "from": 102,
+    "durationInFrames": 59,
     "pushIn": [
      1.0,
      1.05
@@ -45,9 +45,9 @@
     }
    },
    {
-    "src": "clips/c25.mp4",
-    "from": 121,
-    "durationInFrames": 41,
+    "src": "clips/c18.mp4",
+    "from": 161,
+    "durationInFrames": 44,
     "pushIn": [
      1.0,
      1.05
@@ -58,9 +58,9 @@
     }
    },
    {
-    "src": "clips/c26.mp4",
-    "from": 162,
-    "durationInFrames": 81,
+    "src": "clips/c19.mp4",
+    "from": 205,
+    "durationInFrames": 29,
     "pushIn": [
      1.08,
      1.0
@@ -74,51 +74,53 @@
   "screens": [
    {
     "from": 0,
-    "durationInFrames": 40,
+    "durationInFrames": 44,
     "text": "Looks like a wallet.",
     "eyebrow": "THE CONDOM CASE",
     "animateIn": false,
     "role": "inside",
     "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#0.00-3.20",
     "action": null,
-    "color": "white",
+    "color": "ink",
     "plate": false
    },
    {
-    "from": 40,
-    "durationInFrames": 41,
+    "from": 44,
+    "durationInFrames": 58,
     "text": "Hidden magnetic closure.",
     "eyebrow": null,
     "animateIn": true,
     "role": "close",
     "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
     "action": "close",
-    "color": "white",
+    "color": "ink",
     "plate": false
    },
    {
-    "from": 81,
-    "durationInFrames": 40,
+    "from": 102,
+    "durationInFrames": 59,
     "text": "Ultra-slim.",
     "eyebrow": null,
     "animateIn": true,
     "role": "profile",
     "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#14.25-19.00",
     "action": "profile",
-    "color": "white",
-    "plate": false
+    "color": "ink",
+    "plate": false,
+    "top": 270
    },
    {
-    "from": 121,
-    "durationInFrames": 41,
+    "from": 161,
+    "durationInFrames": 44,
     "text": "Looks like a mini wallet.",
     "eyebrow": null,
     "animateIn": true,
     "role": "palm",
     "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#9.50-14.25",
     "action": "palm",
-    "color": "white",
-    "plate": false
+    "color": "ink",
+    "plate": false,
+    "top": 270
    }
   ],
   "textColor": "white",
@@ -134,7 +136,7 @@
    "color": "black",
    "inside": true,
    "both": false,
-   "dur": 1.348
+   "dur": 1.461
   },
   {
    "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
@@ -145,7 +147,7 @@
    "color": "black",
    "inside": false,
    "both": false,
-   "dur": 1.348
+   "dur": 1.948
   },
   {
    "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#14.25-19.00",
@@ -156,7 +158,7 @@
    "color": "black",
    "inside": false,
    "both": false,
-   "dur": 1.348
+   "dur": 1.948
   },
   {
    "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#9.50-14.25",
@@ -167,7 +169,7 @@
    "color": "black",
    "inside": false,
    "both": false,
-   "dur": 1.348
+   "dur": 1.461
   },
   {
    "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#0.00-3.20",
@@ -178,7 +180,7 @@
    "color": "black",
    "inside": true,
    "both": false,
-   "dur": 2.696
+   "dur": 0.974
   }
  ],
  "checks": {
@@ -190,25 +192,24 @@
   "color_consistency": true,
   "text_shot_match": true,
   "inside_early": true,
-  "first_cut_s": 1.33,
-  "max_shot_s": 1.35,
+  "first_cut_s": 1.47,
+  "max_shot_s": 1.95,
   "price_on_screen": false,
-  "loop_ssim": 0.988
+  "loop_ssim": 0.863
  },
  "visual": {
   "issues": [
-   "В первом кадре раскрытый кейс показывает только один презерватив, а не два, поэтому «Holds 2» не подтверждается",
-   "Мелкая надпись «THE CONDOM CASE» в кадрах 1–2 слишком маленькая и бледная на сером фоне, её почти не прочитать",
-   "Белый текст на светло-сером фоне даёт слабый контраст, особенно «Ultra-slim.» и «Looks like a mini wallet.»",
-   "Текст «Looks like a wallet.» повторяется в кадрах 1 и 2 и снова почти повторяется в кадре 6 («Looks like a mini wallet.»), это избыточно",
-   "Кадры 4 и 5 смазаны и снимаются крупно с неудачным ракурсом, кейс частично закрыт белыми перчатками и плохо читается",
-   "Текст «Ultra-slim.» не подтверждается кадром: тонкость кейса не видна, виден лишь смазанный торец",
-   "Кадры 7–9 без текста и без CTA, концовка просто зацикливается на открытом кейсе без финального посыла",
-   "Белые перчатки выглядят нетипично и по-студийному, как для демонстрации, а не как личный контент",
-   "Кадр 1 не явно объясняет продукт: чёрный кейс с презервативом в вырезе легко принять за кошелёк с фольгой"
+   "Кадр 8: текст «Looks like a mini wallet.» светло-серый на светлом фоне, контраст низкий, читается плохо",
+   "Кадр 7: текст «Looks like a mini wallet.» перекрыт кейсом — слово «wallet.» наезжает на верхний край продукта",
+   "Кадр 1: в открытом кейсе видна одна обёртка презерватива, а не два, поэтому первый кадр не показывает, что вмещает 2 штуки",
+   "Кадр 9: финальный кадр без текста и без логотипа/CTA, концовка слабая",
+   "Тексты «Looks like a wallet» в кадрах 1–2 и «Looks like a mini wallet» в кадрах 7–8 повторяются и заметно дублируют друг друга",
+   "Текст «Ultra-slim.» стоит на кадре 5, где кейс раскрыт и виден не его тонкий профиль; торец показан неясно, текст соответствует кадру лишь частично",
+   "Кадры 5–6 и 8: фон холоднее и темнее, чем в первых кадрах, а на заднем плане видны посторонние предметы, что слегка нарушает единство сцены",
+   "Перчатки и резкие повороты в кадрах 5 и 8 создают лёгкую суету, продукт частично закрыт пальцами"
   ],
   "text_readable": false,
-  "text_not_cut": true,
+  "text_not_cut": false,
   "case_visible": true,
   "no_filters_look": true,
   "no_black_endcard": true,
@@ -218,17 +219,17 @@
   "text_matches_shot": false,
   "one_location": true,
   "looks_like_ad": false,
-  "looks_cheap": true,
+  "looks_cheap": false,
   "matches_style": "native",
   "pass": false,
   "failed": [
    "text_readable",
+   "text_not_cut",
    "text_matches_shot",
-   "first_frame_explains_product",
-   "looks_cheap"
+   "first_frame_explains_product"
   ]
  },
  "errors": [
-  "визуально: text_readable, text_matches_shot, first_frame_explains_product, looks_cheap"
+  "визуально: text_readable, text_not_cut, text_matches_shot, first_frame_explains_product"
  ]
 }

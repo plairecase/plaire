@@ -6,7 +6,7 @@
   "durationInFrames": 243,
   "clips": [
    {
-    "src": "clips/c4.mp4",
+    "src": "clips/c10.mp4",
     "from": 0,
     "durationInFrames": 40,
     "pushIn": [
@@ -19,7 +19,7 @@
     }
    },
    {
-    "src": "clips/c5.mp4",
+    "src": "clips/c11.mp4",
     "from": 40,
     "durationInFrames": 41,
     "pushIn": [
@@ -32,7 +32,7 @@
     }
    },
    {
-    "src": "clips/c6.mp4",
+    "src": "clips/c12.mp4",
     "from": 81,
     "durationInFrames": 40,
     "pushIn": [
@@ -45,7 +45,7 @@
     }
    },
    {
-    "src": "clips/c7.mp4",
+    "src": "clips/c13.mp4",
     "from": 121,
     "durationInFrames": 41,
     "pushIn": [
@@ -58,7 +58,7 @@
     }
    },
    {
-    "src": "clips/c8.mp4",
+    "src": "clips/c14.mp4",
     "from": 162,
     "durationInFrames": 81,
     "pushIn": [
@@ -81,7 +81,7 @@
     "role": "inside",
     "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#0.00-3.20",
     "action": null,
-    "color": "white",
+    "color": "ink",
     "plate": false
    },
    {
@@ -93,7 +93,7 @@
     "role": "close",
     "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
     "action": "close",
-    "color": "white",
+    "color": "ink",
     "plate": false
    },
    {
@@ -105,8 +105,9 @@
     "role": "profile",
     "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#14.25-19.00",
     "action": "profile",
-    "color": "white",
-    "plate": false
+    "color": "ink",
+    "plate": false,
+    "top": 270
    },
    {
     "from": 121,
@@ -117,8 +118,9 @@
     "role": "palm",
     "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#9.50-14.25",
     "action": "palm",
-    "color": "white",
-    "plate": false
+    "color": "ink",
+    "plate": false,
+    "top": 270
    }
   ],
   "textColor": "white",
@@ -197,21 +199,20 @@
  },
  "visual": {
   "issues": [
-   "Белый текст на светло-сером фоне имеет низкий контраст, особенно \"Ultra-slim.\" и \"Looks like a mini wallet.\" — читается плохо",
-   "В первом кадре виден только один презерватив, а не два, поэтому не ясно, что кейс вмещает 2 штуки",
-   "Кадр 1 и кадр 7 показывают открытый кейс, но текст \"Stop keeping condoms in your wallet\" в первом кадре не объясняет сам продукт, у кейса нет видимого логотипа",
-   "В кадре 4 (\"Ultra-slim.\") продукт частично закрыт пальцами и размыт, тонкость кейса не показана",
-   "В кадре 6 кейс частично закрыт рукой и в тени, подпись \"Looks like a mini wallet\" читается плохо",
-   "Нет текста в последних трёх кадрах: зацикленная концовка выглядит без финального призыва или бренда",
-   "Белые перчатки выглядят как студийная демонстрация, а не как обычный пользовательский контент",
-   "Резкие смены ракурса между кадрами 3–6 ослабляют ощущение единого действия"
+   "В кадре 1 открытый кейс показан с одним презервативом, а не с двумя, поэтому «holds 2» не считывается",
+   "Белые перчатки выглядят как студийная или демонстрационная съёмка, а не как личный контент, что снижает нативность",
+   "Серый текст на светло-сером фоне в кадрах 4 и 6 имеет слабый контраст и мелкий размер",
+   "В кадрах 7–9 нет текста, из-за чего последние кадры выглядят неоконченными",
+   "Кадр 4 (ультратонкий) смазан, ракурс неясен, края не видно, а текст не показывает тонкость",
+   "Чёрный кейс на сером фоне слабо контрастирует, детали кожи плохо различимы",
+   "Кадры 1 и 2 почти дублируют друг друга, поэтому динамика слабая"
   ],
-  "text_readable": false,
+  "text_readable": true,
   "text_not_cut": true,
   "case_visible": true,
   "no_filters_look": true,
   "no_black_endcard": true,
-  "first_frame_explains_product": false,
+  "first_frame_explains_product": true,
   "hand_present": true,
   "shots_feel_continuous": true,
   "text_matches_shot": false,
@@ -221,12 +222,10 @@
   "matches_style": "native",
   "pass": false,
   "failed": [
-   "text_readable",
-   "text_matches_shot",
-   "first_frame_explains_product"
+   "text_matches_shot"
   ]
  },
  "errors": [
-  "визуально: text_readable, text_matches_shot, first_frame_explains_product"
+  "визуально: text_matches_shot"
  ]
 }
