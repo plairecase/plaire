@@ -1,0 +1,61 @@
+# 3D, этап 1: проверка моделей и контрольный лист (plaire-autoedit-3d.md, раздел 0).
+name: 3D — проверка моделей
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: plaire-autoedit
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # только для отчёта в ветку autoedit-reports
+
+jobs:
+  check3d:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: remotion/package-lock.json
+      - name: Установить ffmpeg и rclone
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg rclone
+      - name: Пакеты Python и Remotion
+        run: |
+          pip install -q -r requirements.txt
+          cd remotion && npm ci --no-audit --no-fund && npx remotion browser ensure
+      - name: Кеш исходников
+        uses: actions/cache@v4
+        with:
+          path: work/src
+          key: sources-v1-${{ github.run_id }}
+          restore-keys: sources-v1-
+      - name: Подключить Google Диск
+        env:
+          GDRIVE_ROOT_ID: ${{ secrets.GDRIVE_ROOT_ID }}
+          GDRIVE_OAUTH_TOKEN: ${{ secrets.GDRIVE_OAUTH_TOKEN }}
+        run: bash scripts/setup_rclone.sh
+      - name: Проверка моделей
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python -m render3d.check_models
+      - name: Отчёт в ветку autoedit-reports
+        if: always()
+        run: |
+          [ -f work/3d/report.md ] || exit 0
+          git config user.name "plaire-autoedit"
+          git config user.email "plaire-autoedit@users.noreply.github.com"
+          git fetch -q origin autoedit-reports && git worktree add -q rep FETCH_HEAD && git -C rep checkout -q -B autoedit-reports
+          rm -rf rep/3d && mkdir -p rep/3d
+          cp work/3d/report.md work/3d/sheet.jpg work/3d/row_*.jpg rep/3d/ 2>/dev/null || true
+          cp work/3d/config_3d.json rep/3d/ 2>/dev/null || true
+          cd rep && git add -A
+          git commit -q -m "3D проверка $(date -u +%F\ %H:%M) (run ${{ github.run_id }})" && git push -q origin autoedit-reports || echo "нечего коммитить"

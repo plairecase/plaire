@@ -5,9 +5,25 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {palette} from '../brand';
 
-export type Scene3D = 'hero' | 'fly';
+export type Scene3D = 'hero' | 'fly' | 'view';
+export type View = 'top' | 'three_quarter' | 'edge' | 'back';
 
 /** Модель .glb: нормируем по наибольшей стороне, центрируем, Y вверх (раздел 8 инструкции). */
+export type MaterialTune = {roughness?: number | null; tint?: number};
+
+const tuneMaterials = (obj: THREE.Object3D, tune?: MaterialTune) => {
+  if (!tune) return;
+  obj.traverse((o) => {
+    const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial | undefined;
+    if (!m || !(m as THREE.MeshStandardMaterial).isMeshStandardMaterial) return;
+    const name = (m.name || '').toLowerCase();
+    if (name.includes('metal') || name.includes('magnet') || m.metalness > 0.5) return;   // магниты не трогаем
+    if (tune.roughness != null) m.roughness = tune.roughness;
+    if (tune.tint != null && tune.tint !== 1) m.color.multiplyScalar(tune.tint);
+    m.needsUpdate = true;
+  });
+};
+
 const useModel = (src: string) => {
   const [obj, setObj] = useState<THREE.Object3D | null>(null);
   const [handle] = useState(() => delayRender(`3D ${src}`));
@@ -21,8 +37,13 @@ const useModel = (src: string) => {
         const center = box.getCenter(new THREE.Vector3());
         const s = 1 / Math.max(size.x, size.y, size.z);
         root.position.sub(center.multiplyScalar(1));
+        const face = new THREE.Group();          // разворот: самая тонкая ось чехла → к камере (Z)
+        face.add(root);
+        const thin = Math.min(size.x, size.y, size.z);
+        if (thin === size.y) face.rotation.x = Math.PI / 2;
+        else if (thin === size.x) face.rotation.y = Math.PI / 2;
         const wrap = new THREE.Group();
-        wrap.add(root);
+        wrap.add(face);
         wrap.scale.setScalar(s);
         root.traverse((o) => {
           if ((o as THREE.Mesh).isMesh) {
@@ -41,12 +62,28 @@ const useModel = (src: string) => {
   return obj;
 };
 
-const Model: React.FC<{obj: THREE.Object3D; scene: Scene3D; total: number; frame: number}> = ({obj, scene, total, frame}) => {
-  const clone = useMemo(() => obj.clone(true), [obj]);
+const Model: React.FC<{obj: THREE.Object3D; scene: Scene3D; total: number; frame: number; view?: View;
+  tune?: MaterialTune}> = ({obj, scene, total, frame, view, tune}) => {
+  const clone = useMemo(() => {
+    const c = obj.clone(true);
+    c.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (mesh.isMesh && mesh.material) mesh.material = (mesh.material as THREE.Material).clone();
+    });
+    tuneMaterials(c, tune);
+    return c;
+  }, [obj, tune]);
   if (!clone) return null;
   const ease = Easing.bezier(0.16, 1, 0.3, 1);
   let rotY = 0, rotX = 0.35, scale = 1, y = 0, z = 0;
-  if (scene === 'hero') {
+  if (scene === 'view') {
+    // контрольный лист: фиксированные ракурсы
+    const deg = Math.PI / 180;
+    const V: Record<View, [number, number]> = {top: [0, 0], three_quarter: [18 * deg, 38 * deg],
+      edge: [8 * deg, 88 * deg], back: [0, 180 * deg]};
+    [rotX, rotY] = V[view ?? 'top'];
+    scale = 0.85;
+  } else if (scene === 'hero') {
     // финал: медленный поворот 0 → 200°, лёгкое парение; чехол ниже текста
     const p = interpolate(frame, [0, total], [0, 1], {easing: ease, extrapolateRight: 'clamp'});
     rotY = -0.6 + p * (200 * Math.PI) / 180;
@@ -68,25 +105,26 @@ const Model: React.FC<{obj: THREE.Object3D; scene: Scene3D; total: number; frame
   );
 };
 
-export const Case3D: React.FC<{src: string; scene: Scene3D; total: number}> = ({src, scene, total}) => {
+export const Case3D: React.FC<{src: string; scene: Scene3D; total: number; view?: View; tune?: MaterialTune}> = (
+  {src, scene, total, view, tune}) => {
   const {width, height} = useVideoConfig();
   const frame = useCurrentFrame();
   const obj = useModel(src);
   return (
-    <div style={{position: 'absolute', inset: 0, background: scene === 'hero' ? palette.paper : 'transparent'}}>
+    <div style={{position: 'absolute', inset: 0, background: scene === 'fly' ? 'transparent' : palette.paper}}>
       <ThreeCanvas width={width} height={height} shadows camera={{fov: 30, position: [0, 0, 4]}}
         gl={{alpha: true, antialias: true, preserveDrawingBuffer: true}}>
         <ambientLight intensity={0.55} />
         <directionalLight position={[-2.5, 3, 3]} intensity={2.2} castShadow
           shadow-mapSize-width={1024} shadow-mapSize-height={1024} />
         <directionalLight position={[3, 1, 2]} intensity={0.6} />
-        {scene === 'hero' ? (
+        {scene !== 'fly' ? (
           <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]} receiveShadow>
             <planeGeometry args={[10, 10]} />
             <shadowMaterial opacity={0.18} />
           </mesh>
         ) : null}
-        {obj ? <Model obj={obj} scene={scene} total={total} frame={frame} /> : null}
+        {obj ? <Model obj={obj} scene={scene} total={total} frame={frame} view={view} tune={tune} /> : null}
       </ThreeCanvas>
     </div>
   );

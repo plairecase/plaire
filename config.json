@@ -63,5 +63,24 @@
   ],
   "promote_days": [
     "Mon"
-  ]
+  ],
+  "3d": {
+    "enabled_colors": [
+      "black",
+      "cognac"
+    ],
+    "transition_rate": 0.5,
+    "segment_rate": 0.35,
+    "max_share_of_duration": 0.3,
+    "material": {
+      "black": {
+        "roughness": null,
+        "tint": 1.0
+      },
+      "cognac": {
+        "roughness": null,
+        "tint": 1.0
+      }
+    }
+  }
 }
