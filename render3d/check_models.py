@@ -64,7 +64,9 @@ def inspect(path: Path) -> dict:
 def render_view(model: str, view: str, tune: dict, out: Path) -> Path:
     props = out.with_suffix(".json")
     props.write_text(json.dumps({"model": model, "view": view, "tune": tune}))
-    cmd = ["npx", "remotion", "still", "src/index.ts", "model-still", str(out), f"--props={props}", "--log=error"]
+    # кадр 20, а не 0: модели с текстурами нужно несколько кадров, чтобы отрисоваться
+    cmd = ["npx", "remotion", "still", "src/index.ts", "model-still", str(out), f"--props={props}", "--frame=20",
+           "--log=error"]
     if os.environ.get("REMOTION_BROWSER"):
         cmd.append(f"--browser-executable={os.environ['REMOTION_BROWSER']}")
     res = subprocess.run(cmd, cwd=REMOTION, capture_output=True, text=True, timeout=300)
@@ -262,6 +264,13 @@ def main(argv=None) -> int:
         result = None
         for attempt in range(1, 4):
             views = {v: render_view(f"models/{col}.glb", v, tune, WORK / f"{col}_{v}.png") for v in VIEWS}
+            import cv2 as _cv
+            blank = all(float(np.abs(_cv.imread(str(views[v])).astype(int) - _cv.imread(str(views[v]))[10, 10].astype(int)).sum(2).max()) < 30
+                        for v in VIEWS)
+            if blank:
+                L.append(f"- попытка {attempt}: ❌ рендер пустой (модель не отрисовалась) — это ошибка рендера, не модели")
+                result = None
+                break
             de = None
             if real:
                 de = round(delta_e2000(mean_lab_real(real, bbox), mean_lab_3d(views["three_quarter"])), 1)
@@ -281,7 +290,10 @@ def main(argv=None) -> int:
                 tune["tint"] = round(tune.get("tint", 1.0) * 1.25, 3)
         rows.append(row)
         tunes[col] = tune
-        if result and (result.get("match") is not False):
+        if result is None:
+            L.append(f"- ⚠️ проверку цвета {col} повторить после исправления рендера (3D пока не выключаю)")
+            enabled.append(col)
+        elif result.get("match") is not False:
             enabled.append(col)
         else:
             L.append(f"- ❌ после 3 попыток не совпадает — 3D для цвета {col} выключено")

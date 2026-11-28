@@ -35,7 +35,7 @@ export const Root: React.FC = () => (
       defaultProps={demo} calculateMetadata={meta} />
     <Composition id="n-statement" component={Video} width={1080} height={1920} fps={30} durationInFrames={90}
       defaultProps={{...demo, template: 'n_statement', style: 'native'}} calculateMetadata={meta} />
-    <Composition id="model-still" component={ModelStill} width={1080} height={1920} fps={30} durationInFrames={1}
+    <Composition id="model-still" component={ModelStill} width={1080} height={1920} fps={30} durationInFrames={30}
       defaultProps={{model: 'models/black.glb', view: 'three_quarter' as View}} />
   </>
 );
