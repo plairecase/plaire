@@ -75,14 +75,14 @@
    {
     "from": 0,
     "durationInFrames": 40,
-    "text": "Holds 2. Feels like nothing.",
-    "eyebrow": null,
+    "text": "Looks like a wallet.",
+    "eyebrow": "THE CONDOM CASE",
     "animateIn": false,
     "role": "inside",
     "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#0.00-3.20",
     "action": null,
     "color": "white",
-    "plate": true
+    "plate": false
    },
    {
     "from": 40,
@@ -94,7 +94,7 @@
     "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
     "action": "close",
     "color": "white",
-    "plate": true
+    "plate": false
    },
    {
     "from": 81,
@@ -106,7 +106,7 @@
     "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#14.25-19.00",
     "action": "profile",
     "color": "white",
-    "plate": true
+    "plate": false
    },
    {
     "from": 121,
@@ -118,7 +118,7 @@
     "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#9.50-14.25",
     "action": "palm",
     "color": "white",
-    "plate": true
+    "plate": false
    }
   ],
   "textColor": "white",
@@ -197,24 +197,24 @@
  },
  "visual": {
   "issues": [
-   "В кадре 5 текстовая плашка пустая — тёмный прямоугольник без текста",
-   "В первом кадре виден только один презерватив, поэтому подпись «Holds 2» не подтверждается",
-   "Подпись «Holds 2» повторяется в двух кадрах подряд, а в кадрах 7–9 текста нет совсем",
-   "Показан только чёрный цвет, второй цвет (Cognac) не появляется",
-   "Тёмно-синяя полоса сверху в кадрах 4–6 выглядит как артефакт кадрирования",
-   "Текстовые плашки в стиле субтитров по умолчанию (серый прямоугольник) смотрятся дёшево",
-   "Кадры 3–6 с белыми перчатками и разной подачей рвут непрерывность действия; перчатки выглядят неестественно для нативного контента",
-   "Кадр 1 обрезан по краям: футляр выходит за границы кадра",
-   "В кадре 6 футляр частично закрыт пальцами и плохо читается, подпись «mini wallet» не очень соответствует виду сбоку"
+   "В первом кадре раскрытый кейс показывает только один презерватив, а не два, поэтому «Holds 2» не подтверждается",
+   "Мелкая надпись «THE CONDOM CASE» в кадрах 1–2 слишком маленькая и бледная на сером фоне, её почти не прочитать",
+   "Белый текст на светло-сером фоне даёт слабый контраст, особенно «Ultra-slim.» и «Looks like a mini wallet.»",
+   "Текст «Looks like a wallet.» повторяется в кадрах 1 и 2 и снова почти повторяется в кадре 6 («Looks like a mini wallet.»), это избыточно",
+   "Кадры 4 и 5 смазаны и снимаются крупно с неудачным ракурсом, кейс частично закрыт белыми перчатками и плохо читается",
+   "Текст «Ultra-slim.» не подтверждается кадром: тонкость кейса не видна, виден лишь смазанный торец",
+   "Кадры 7–9 без текста и без CTA, концовка просто зацикливается на открытом кейсе без финального посыла",
+   "Белые перчатки выглядят нетипично и по-студийному, как для демонстрации, а не как личный контент",
+   "Кадр 1 не явно объясняет продукт: чёрный кейс с презервативом в вырезе легко принять за кошелёк с фольгой"
   ],
-  "text_readable": true,
+  "text_readable": false,
   "text_not_cut": true,
   "case_visible": true,
   "no_filters_look": true,
   "no_black_endcard": true,
-  "first_frame_explains_product": true,
+  "first_frame_explains_product": false,
   "hand_present": true,
-  "shots_feel_continuous": false,
+  "shots_feel_continuous": true,
   "text_matches_shot": false,
   "one_location": true,
   "looks_like_ad": false,
@@ -222,12 +222,13 @@
   "matches_style": "native",
   "pass": false,
   "failed": [
-   "shots_feel_continuous",
+   "text_readable",
    "text_matches_shot",
+   "first_frame_explains_product",
    "looks_cheap"
   ]
  },
  "errors": [
-  "визуально: shots_feel_continuous, text_matches_shot, looks_cheap"
+  "визуально: text_readable, text_matches_shot, first_frame_explains_product, looks_cheap"
  ]
 }

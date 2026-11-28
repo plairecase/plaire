@@ -3,12 +3,12 @@
   "template": "p_studio_to_life",
   "style": "premium",
   "fps": 30,
-  "durationInFrames": 234,
+  "durationInFrames": 242,
   "clips": [
    {
-    "src": "clips/c4.mp4",
+    "src": "clips/c9.mp4",
     "from": 0,
-    "durationInFrames": 44,
+    "durationInFrames": 40,
     "pushIn": [
      1.0,
      1.05
@@ -19,9 +19,9 @@
     }
    },
    {
-    "src": "clips/c5.mp4",
-    "from": 44,
-    "durationInFrames": 58,
+    "src": "clips/c10.mp4",
+    "from": 40,
+    "durationInFrames": 41,
     "pushIn": [
      1.0,
      1.05
@@ -36,9 +36,9 @@
     }
    },
    {
-    "src": "clips/c6.mp4",
-    "from": 96,
-    "durationInFrames": 65,
+    "src": "clips/c11.mp4",
+    "from": 75,
+    "durationInFrames": 46,
     "pushIn": [
      1.0,
      1.05
@@ -49,9 +49,9 @@
     }
    },
    {
-    "src": "clips/c7.mp4",
-    "from": 161,
-    "durationInFrames": 73,
+    "src": "clips/c12.mp4",
+    "from": 121,
+    "durationInFrames": 121,
     "pushIn": [
      1.08,
      1.0
@@ -65,19 +65,19 @@
   "screens": [
    {
     "from": 0,
-    "durationInFrames": 44,
-    "text": "Eco-leather. Magnetic. Ultra-slim.",
+    "durationInFrames": 40,
+    "text": "Quiet luxury for your pocket.",
     "eyebrow": null,
     "animateIn": false,
     "role": "inside",
     "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
     "action": null,
     "color": "white",
-    "plate": true
+    "plate": false
    },
    {
-    "from": 44,
-    "durationInFrames": 58,
+    "from": 40,
+    "durationInFrames": 41,
     "text": "Eco-leather. Ultra-slim.",
     "eyebrow": null,
     "animateIn": true,
@@ -85,11 +85,11 @@
     "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#3.10-6.19",
     "action": "studio_closed",
     "color": "white",
-    "plate": true
+    "plate": false
    },
    {
-    "from": 102,
-    "durationInFrames": 59,
+    "from": 81,
+    "durationInFrames": 40,
     "text": "Made to carry.",
     "eyebrow": null,
     "animateIn": true,
@@ -97,7 +97,7 @@
     "shot": "1ZeTBdL8TXdvsnZjMZFk40oVO2rV6vmDx#4.03-8.07",
     "action": "street",
     "color": "white",
-    "plate": true
+    "plate": false
    }
   ],
   "textColor": "white",
@@ -113,7 +113,7 @@
    "color": "black",
    "inside": true,
    "both": false,
-   "dur": 1.461
+   "dur": 1.346
   },
   {
    "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#3.10-6.19",
@@ -124,7 +124,7 @@
    "color": "black",
    "inside": true,
    "both": false,
-   "dur": 1.948
+   "dur": 1.346
   },
   {
    "shot": "1ZeTBdL8TXdvsnZjMZFk40oVO2rV6vmDx#4.03-8.07",
@@ -135,7 +135,7 @@
    "color": "black",
    "inside": false,
    "both": false,
-   "dur": 1.948
+   "dur": 1.346
   },
   {
    "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
@@ -146,59 +146,57 @@
    "color": "black",
    "inside": true,
    "both": false,
-   "dur": 2.435
+   "dur": 4.038
   }
  ],
  "checks": {
   "world": "studio_paper",
-  "world_share": 0.75,
+  "world_share": 0.83,
   "world_changes": 1,
   "world_consistency": true,
   "hands_consistency": true,
   "color_consistency": true,
   "text_shot_match": true,
   "inside_early": true,
-  "first_cut_s": 1.47,
-  "max_shot_s": 1.95,
+  "first_cut_s": 1.33,
+  "max_shot_s": 1.35,
   "price_on_screen": false,
   "loop_ssim": 0.992
  },
  "visual": {
   "issues": [
-   "В кадре 1 и 2 текст перекрывает верхний край кейса и застёжку",
-   "Кадры 5–6 снимаются в другой локации (на коленях, улица, белые шорты), резкая смена света и фона относительно студийных кадров",
-   "Текст на тёмных плашках выглядит как шаблонный, а не нативный",
-   "В кадре с рукой кейс почти чёрный на тёмном фоне, плохо читается форма и содержимое",
-   "Текст 'Eco-leather. Magnetic. Ultra-slim.' в кадре 1 не соответствует видимому: магнит и тонкость не показаны",
-   "Последние три кадра без текста и почти одинаковые, статичное повторение без действия",
-   "Внутри кейса видна только одна презервативная упаковка, а не две, первый кадр не показывает 'Holds 2'",
-   "Рука появляется только в середине, первый кадр без руки выглядит как каталожный",
-   "Цвет Cognac Brown не показан, только Midnight Black"
+   "Текст «Quiet luxury for your pocket.» в кадрах 1–2 частично перекрыт кейсом: слово «pocket» наезжает на верхний угол продукта",
+   "Текст «Made to carry.» во втором кадре с рукой полупрозрачный и сливается с белой одеждой и браслетом, читается плохо",
+   "В кадре 5 текст блёкнет и мало контрастирует с фоном",
+   "В первом кадре видно только один презерватив (жёлтый), нет явного показа двух, поэтому понятность продукта слабая",
+   "Текст «Eco-leather. Ultra-slim.» стоит на кадре сверху, где толщину не видно (вид сверху), соответствие слабое",
+   "В кадрах с рукой кейс частично закрыт пальцами и тёмный на тёмной одежде, продукт плохо виден",
+   "Резкий переход студия → улица, но запланирован и объяснён текстом; кадры 1–2 и 7–9 почти одинаковые, поэтому ритм монотонный",
+   "Тёмный кейс на бежевом фоне выглядит студийно, ближе к каталожному кадру, чем к нативному контенту"
   ],
-  "text_readable": true,
+  "text_readable": false,
   "text_not_cut": false,
   "case_visible": true,
   "no_filters_look": true,
   "no_black_endcard": true,
   "first_frame_explains_product": false,
   "hand_present": true,
-  "shots_feel_continuous": false,
+  "shots_feel_continuous": true,
   "text_matches_shot": false,
-  "one_location": false,
+  "one_location": true,
   "looks_like_ad": true,
   "looks_cheap": false,
-  "matches_style": "native",
+  "matches_style": "premium",
   "pass": false,
   "failed": [
+   "text_readable",
    "text_not_cut",
-   "shots_feel_continuous",
    "text_matches_shot",
-   "one_location",
    "first_frame_explains_product",
    "looks_like_ad"
   ]
  },
  "errors": [
-  "визуально: text_not_cut, shots_feel_continuous, text_matches_shot, one_location, first_frame_explains_product, looks_like_ad"
+  "визуально: text_readable, text_not_cut, text_matches_shot, first_frame_explains_product, looks_like_ad"
  ]
 }

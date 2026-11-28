@@ -66,14 +66,14 @@
    {
     "from": 0,
     "durationInFrames": 44,
-    "text": "A condom case, finally done right.",
+    "text": "Small case. Calm mind.",
     "eyebrow": null,
     "animateIn": false,
     "role": "inside",
-    "shot": "1DFSz6wnZTszcmRtlhy_OjJ_41iQAR8Q8#0.00-4.15",
+    "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
     "action": null,
     "color": "white",
-    "plate": true
+    "plate": false
    },
    {
     "from": 44,
@@ -82,10 +82,10 @@
     "eyebrow": null,
     "animateIn": true,
     "role": "studio_closed",
-    "shot": "1Bh6WFDcjLYDM7jEQOgkxhdRiU5eNA73W#0.00-4.69",
+    "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#3.10-6.19",
     "action": "studio_closed",
     "color": "white",
-    "plate": true
+    "plate": false
    },
    {
     "from": 102,
@@ -94,10 +94,10 @@
     "eyebrow": null,
     "animateIn": true,
     "role": "street",
-    "shot": "16x49qmlKM8dPjzC2RR5ZW4q7277S9kN7#5.39-10.78",
+    "shot": "1ZeTBdL8TXdvsnZjMZFk40oVO2rV6vmDx#4.03-8.07",
     "action": "street",
     "color": "white",
-    "plate": true
+    "plate": false
    }
   ],
   "textColor": "white",
@@ -105,45 +105,45 @@
  },
  "shots": [
   {
-   "shot": "1DFSz6wnZTszcmRtlhy_OjJ_41iQAR8Q8#0.00-4.15",
-   "file": "IMG_1440.MOV",
+   "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
+   "file": "IMG_1386.MOV",
    "role": "inside",
    "world": "studio_paper",
    "hands": "none",
-   "color": "cognac",
+   "color": "black",
    "inside": true,
    "both": false,
    "dur": 1.461
   },
   {
-   "shot": "1Bh6WFDcjLYDM7jEQOgkxhdRiU5eNA73W#0.00-4.69",
-   "file": "IMG_1444.MOV",
+   "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#3.10-6.19",
+   "file": "IMG_1386.MOV",
    "role": "studio_closed",
    "world": "studio_paper",
    "hands": "none",
-   "color": "cognac",
-   "inside": false,
+   "color": "black",
+   "inside": true,
    "both": false,
    "dur": 1.948
   },
   {
-   "shot": "16x49qmlKM8dPjzC2RR5ZW4q7277S9kN7#5.39-10.78",
-   "file": "-6741131299191009673.MP4",
+   "shot": "1ZeTBdL8TXdvsnZjMZFk40oVO2rV6vmDx#4.03-8.07",
+   "file": "6796620381629818176.MP4",
    "role": "street",
    "world": "street_hands",
    "hands": "bare",
-   "color": "cognac",
+   "color": "black",
    "inside": false,
    "both": false,
    "dur": 1.948
   },
   {
-   "shot": "1DFSz6wnZTszcmRtlhy_OjJ_41iQAR8Q8#0.00-4.15",
-   "file": "IMG_1440.MOV",
+   "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
+   "file": "IMG_1386.MOV",
    "role": "loop",
    "world": "studio_paper",
    "hands": "none",
-   "color": "cognac",
+   "color": "black",
    "inside": true,
    "both": false,
    "dur": 2.435
@@ -161,43 +161,42 @@
   "first_cut_s": 1.47,
   "max_shot_s": 1.95,
   "price_on_screen": false,
-  "loop_ssim": 0.983
+  "loop_ssim": 0.992
  },
  "visual": {
   "issues": [
-   "Текст в кадрах 3–4 («Eco-leather. Ultra-slim.») перекрывает чёрную коробку и частично закрыт ею, плашка сливается с коробкой",
-   "Первый кадр: презервативы почти не видны, только жёлтая упаковка в прорези, не понятно, что внутри 2 штуки",
-   "Кадры 5–6 резко меняют локацию (улица, сумка, солнце) на фоне студийных кадров — нет непрерывности",
-   "Текст «Made to carry» стоит на кадре, где кейс почти закрыт руками",
-   "Руки появляются только в середине, в остальных кадрах студийная съёмка выглядит как каталог",
-   "Кадры 1–2 и 7–9 почти одинаковые, дублирование без развития действия",
-   "Тёмные плашки с текстом выглядят шаблонно и по-рекламному",
-   "Нет второго цвета, ни один текст про цвета не подкреплён"
+   "Текст «Small case. Calm mind.» в кадрах 1–2 перекрывается корпусом: слово «mind» заходит на кейс",
+   "Текст белый на светло-бежевом фоне, низкий контраст, читается слабо",
+   "В кадре 1 презентация продукта слабая: кейс чёрный, на нём видны только один презерватив и чёрная полоса, а не два презерватива",
+   "В кадрах 5–6 текст «Made to carry.» лежит на белых шортах, контраст очень низкий",
+   "В кадрах 5–6 кейс закрыт пальцами и затемнён, содержимое не видно, руки заслоняют продукт",
+   "Смена студии на улицу резкая, свет и цвет сильно отличаются, но она запланирована и допустима",
+   "Кадры 7–9 без текста, ролик заканчивается без призыва или итоговой надписи",
+   "Текст «Eco-leather. Ultra-slim.» нельзя подтвердить визуально, кейс показан сверху без указания на толщину",
+   "Статичные ракурсы студийных кадров почти одинаковы, мало динамики"
   ],
-  "text_readable": true,
+  "text_readable": false,
   "text_not_cut": false,
   "case_visible": true,
   "no_filters_look": true,
   "no_black_endcard": true,
   "first_frame_explains_product": false,
   "hand_present": true,
-  "shots_feel_continuous": false,
+  "shots_feel_continuous": true,
   "text_matches_shot": false,
-  "one_location": false,
-  "looks_like_ad": true,
+  "one_location": true,
+  "looks_like_ad": false,
   "looks_cheap": false,
-  "matches_style": "premium",
+  "matches_style": "native",
   "pass": false,
   "failed": [
+   "text_readable",
    "text_not_cut",
-   "shots_feel_continuous",
    "text_matches_shot",
-   "one_location",
-   "first_frame_explains_product",
-   "looks_like_ad"
+   "first_frame_explains_product"
   ]
  },
  "errors": [
-  "визуально: text_not_cut, shots_feel_continuous, text_matches_shot, one_location, first_frame_explains_product, looks_like_ad"
+  "визуально: text_readable, text_not_cut, text_matches_shot, first_frame_explains_product"
  ]
 }

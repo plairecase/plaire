@@ -3,12 +3,12 @@
   "template": "p_gloves_pov",
   "style": "premium",
   "fps": 30,
-  "durationInFrames": 202,
+  "durationInFrames": 274,
   "clips": [
    {
     "src": "clips/c37.mp4",
     "from": 0,
-    "durationInFrames": 40,
+    "durationInFrames": 44,
     "pushIn": [
      1.0,
      1.05
@@ -20,8 +20,8 @@
    },
    {
     "src": "clips/c38.mp4",
-    "from": 40,
-    "durationInFrames": 41,
+    "from": 44,
+    "durationInFrames": 58,
     "pushIn": [
      1.0,
      1.05
@@ -33,8 +33,8 @@
    },
    {
     "src": "clips/c39.mp4",
-    "from": 81,
-    "durationInFrames": 40,
+    "from": 102,
+    "durationInFrames": 59,
     "pushIn": [
      1.0,
      1.05
@@ -46,8 +46,8 @@
    },
    {
     "src": "clips/c40.mp4",
-    "from": 121,
-    "durationInFrames": 41,
+    "from": 161,
+    "durationInFrames": 58,
     "pushIn": [
      1.0,
      1.05
@@ -59,8 +59,8 @@
    },
    {
     "src": "clips/c41.mp4",
-    "from": 162,
-    "durationInFrames": 40,
+    "from": 219,
+    "durationInFrames": 55,
     "pushIn": [
      1.55125,
      1.55125
@@ -75,19 +75,19 @@
   "screens": [
    {
     "from": 0,
-    "durationInFrames": 40,
-    "text": "Made from soft eco-leather.",
-    "eyebrow": "MATERIAL",
+    "durationInFrames": 44,
+    "text": "Body heat. Friction. Cards.",
+    "eyebrow": null,
     "animateIn": false,
     "role": "inside",
     "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#0.00-3.20",
     "action": null,
     "color": "white",
-    "plate": true
+    "plate": false
    },
    {
-    "from": 40,
-    "durationInFrames": 41,
+    "from": 44,
+    "durationInFrames": 58,
     "text": "Hidden magnetic closure.",
     "eyebrow": null,
     "animateIn": true,
@@ -95,11 +95,11 @@
     "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
     "action": "close",
     "color": "white",
-    "plate": true
+    "plate": false
    },
    {
-    "from": 81,
-    "durationInFrames": 40,
+    "from": 102,
+    "durationInFrames": 59,
     "text": "Ultra-slim.",
     "eyebrow": null,
     "animateIn": true,
@@ -107,11 +107,11 @@
     "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#14.25-19.00",
     "action": "profile",
     "color": "white",
-    "plate": true
+    "plate": false
    },
    {
-    "from": 121,
-    "durationInFrames": 41,
+    "from": 161,
+    "durationInFrames": 58,
     "text": "Looks like a mini wallet.",
     "eyebrow": null,
     "animateIn": true,
@@ -119,13 +119,13 @@
     "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#9.50-14.25",
     "action": "palm",
     "color": "white",
-    "plate": true
+    "plate": false
    }
   ],
   "textColor": "white",
   "endFrame": {
-   "from": 162,
-   "durationInFrames": 40,
+   "from": 219,
+   "durationInFrames": 55,
    "color": "ink",
    "eyebrow": "The condom case",
    "price": "€29",
@@ -144,7 +144,7 @@
    "color": "black",
    "inside": true,
    "both": false,
-   "dur": 1.348
+   "dur": 1.461
   },
   {
    "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
@@ -155,7 +155,7 @@
    "color": "black",
    "inside": false,
    "both": false,
-   "dur": 1.348
+   "dur": 1.948
   },
   {
    "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#14.25-19.00",
@@ -166,7 +166,7 @@
    "color": "black",
    "inside": false,
    "both": false,
-   "dur": 1.348
+   "dur": 1.948
   },
   {
    "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#9.50-14.25",
@@ -177,7 +177,7 @@
    "color": "black",
    "inside": false,
    "both": false,
-   "dur": 1.348
+   "dur": 1.948
   },
   {
    "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
@@ -200,25 +200,25 @@
   "color_consistency": true,
   "text_shot_match": true,
   "inside_early": true,
-  "first_cut_s": 1.33,
-  "max_shot_s": 1.35,
+  "first_cut_s": 1.47,
+  "max_shot_s": 1.95,
   "price_on_screen": true
  },
  "visual": {
   "issues": [
-   "Первый кадр: чехол раскрыт, но виден только один презерватив (не 2), и он обрезан краем кадра — непонятно, что это за продукт",
-   "Текст «Looks like» в кадре 6 оборван — фраза не дочитана, затем в кадре 7 дополняется до «Looks like a mini wallet»",
-   "Тёмные тёмно-серые плашки под текстом выглядят грубо и дёшево, шрифт системный, без стиля бренда",
-   "Текст «Made from soft eco-leather» наложен на кадр с открытым чехлом и презервативом — не соответствует содержанию кадра",
-   "Текст «Ultra-slim» не подтверждается кадром: чехол размыт, закрыт руками, толщина не показана",
-   "Тёмные синие полосы сверху в кадрах 5–7 — артефакты кадрирования, выглядят как баг монтажа",
-   "Яркие белые перчатки перетягивают внимание и выглядят неестественно, кадры 5–7 с другим светом и фоном — нет цельности",
-   "Финальная карточка: мелкий текст «Free shipping» и цена нечитаемы на мобильном, чехол перекрывает низ кадра",
-   "Показан только чёрный цвет, нет Cognac Brown; конец дублирует кадр, нет явного CTA",
-   "Повторяющиеся кадры (1–2, 3–4, 8–9) — затянуто, мало новой информации"
+   "Первый кадр показывает открытый чехол, но внутри только один презерватив, а не два: «Holds 2» не подтверждается, и без пояснения непонятно, что это за продукт",
+   "Текст «Body heat. Friction. Cards.» белый на светло-сером фоне с низким контрастом и не объясняет кадр",
+   "Подпись «Looks like a mini wallet.» в кадре 6 частично сливается с белой перчаткой и светлым фоном, читается плохо",
+   "Кадр 4 без текста, внутри виден белый круг без презерватива, что выглядит как пустой чехол и ломает логику",
+   "Фон меняется: в кадрах 4–6 появляются посторонние чёрные предметы и коробка, что слегка засоряет кадр",
+   "Текст «Ultra-slim.» не соответствует кадру: толщина не показана, чехол лежит плашмя на ладони",
+   "В кадре 7 чехол почти полностью закрыт пальцами в перчатках, логотипа не видно",
+   "Финальная карточка с ценой наложена поверх видео, а логотип и мелкий текст «Free shipping» очень мелкие и плохо читаются",
+   "Белые перчатки выглядят странно для продукта и придают сходство с демонстрацией, а не с обычным контентом; ощущение рекламы",
+   "Склейки между кадрами 3→4→5 резкие, смена ракурса и масштаба без плавного действия"
   ],
   "text_readable": false,
-  "text_not_cut": false,
+  "text_not_cut": true,
   "case_visible": true,
   "no_filters_look": true,
   "no_black_endcard": true,
@@ -226,22 +226,18 @@
   "hand_present": true,
   "shots_feel_continuous": false,
   "text_matches_shot": false,
-  "one_location": false,
+  "one_location": true,
   "looks_like_ad": true,
-  "looks_cheap": true,
-  "matches_style": "native",
+  "looks_cheap": false,
+  "matches_style": "premium",
   "pass": false,
   "failed": [
    "text_readable",
-   "text_not_cut",
    "shots_feel_continuous",
-   "text_matches_shot",
-   "one_location",
-   "looks_cheap"
+   "text_matches_shot"
   ]
  },
  "errors": [
-  "длительность 6.7 с вне 9–15 с",
-  "визуально: text_readable, text_not_cut, shots_feel_continuous, text_matches_shot, one_location, looks_cheap"
+  "визуально: text_readable, shots_feel_continuous, text_matches_shot"
  ]
 }

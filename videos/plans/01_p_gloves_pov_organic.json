@@ -6,7 +6,7 @@
   "durationInFrames": 243,
   "clips": [
    {
-    "src": "clips/c8.mp4",
+    "src": "clips/c4.mp4",
     "from": 0,
     "durationInFrames": 40,
     "pushIn": [
@@ -19,7 +19,7 @@
     }
    },
    {
-    "src": "clips/c9.mp4",
+    "src": "clips/c5.mp4",
     "from": 40,
     "durationInFrames": 41,
     "pushIn": [
@@ -32,7 +32,7 @@
     }
    },
    {
-    "src": "clips/c10.mp4",
+    "src": "clips/c6.mp4",
     "from": 81,
     "durationInFrames": 40,
     "pushIn": [
@@ -45,7 +45,7 @@
     }
    },
    {
-    "src": "clips/c11.mp4",
+    "src": "clips/c7.mp4",
     "from": 121,
     "durationInFrames": 41,
     "pushIn": [
@@ -58,7 +58,7 @@
     }
    },
    {
-    "src": "clips/c12.mp4",
+    "src": "clips/c8.mp4",
     "from": 162,
     "durationInFrames": 81,
     "pushIn": [
@@ -75,14 +75,14 @@
    {
     "from": 0,
     "durationInFrames": 40,
-    "text": "Designed to carry two.",
+    "text": "Stop keeping condoms in your wallet.",
     "eyebrow": null,
     "animateIn": false,
     "role": "inside",
     "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#0.00-3.20",
     "action": null,
     "color": "white",
-    "plate": true
+    "plate": false
    },
    {
     "from": 40,
@@ -94,7 +94,7 @@
     "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
     "action": "close",
     "color": "white",
-    "plate": true
+    "plate": false
    },
    {
     "from": 81,
@@ -106,7 +106,7 @@
     "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#14.25-19.00",
     "action": "profile",
     "color": "white",
-    "plate": true
+    "plate": false
    },
    {
     "from": 121,
@@ -118,7 +118,7 @@
     "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#9.50-14.25",
     "action": "palm",
     "color": "white",
-    "plate": true
+    "plate": false
    }
   ],
   "textColor": "white",
@@ -197,37 +197,36 @@
  },
  "visual": {
   "issues": [
-   "В кадре 5 плашка с текстом пустая — чёрный прямоугольник без надписи",
-   "В первом кадре виден только один презерватив, а подпись говорит «Designed to carry two», так что текст не совпадает с кадром",
-   "Кадры 1 и 2 повторяют одну и ту же подпись «Designed to carry two»",
-   "Текст «Ultra-slim.» стоит на кадре, где кейс закрыт и повёрнут боком, и толщина не считывается",
-   "Тёмно-синие полосы сверху в кадрах 4-6 выглядят как артефакт кадрирования",
-   "В кадрах 7-9 нет подписей, а действие повторяет начало, так что ролик выглядит зацикленным и затянутым",
-   "Видны только чёрные кейсы, коричневый цвет не показан",
-   "Белые перчатки и студийный свет делают ролик похожим на каталожный, а не на пост живого человека",
-   "Тёмные плашки с текстом закрывают часть кадра и выглядят грубо"
+   "Белый текст на светло-сером фоне имеет низкий контраст, особенно \"Ultra-slim.\" и \"Looks like a mini wallet.\" — читается плохо",
+   "В первом кадре виден только один презерватив, а не два, поэтому не ясно, что кейс вмещает 2 штуки",
+   "Кадр 1 и кадр 7 показывают открытый кейс, но текст \"Stop keeping condoms in your wallet\" в первом кадре не объясняет сам продукт, у кейса нет видимого логотипа",
+   "В кадре 4 (\"Ultra-slim.\") продукт частично закрыт пальцами и размыт, тонкость кейса не показана",
+   "В кадре 6 кейс частично закрыт рукой и в тени, подпись \"Looks like a mini wallet\" читается плохо",
+   "Нет текста в последних трёх кадрах: зацикленная концовка выглядит без финального призыва или бренда",
+   "Белые перчатки выглядят как студийная демонстрация, а не как обычный пользовательский контент",
+   "Резкие смены ракурса между кадрами 3–6 ослабляют ощущение единого действия"
   ],
-  "text_readable": true,
+  "text_readable": false,
   "text_not_cut": true,
   "case_visible": true,
   "no_filters_look": true,
   "no_black_endcard": true,
-  "first_frame_explains_product": true,
+  "first_frame_explains_product": false,
   "hand_present": true,
   "shots_feel_continuous": true,
   "text_matches_shot": false,
   "one_location": true,
-  "looks_like_ad": true,
-  "looks_cheap": true,
+  "looks_like_ad": false,
+  "looks_cheap": false,
   "matches_style": "native",
   "pass": false,
   "failed": [
+   "text_readable",
    "text_matches_shot",
-   "looks_like_ad",
-   "looks_cheap"
+   "first_frame_explains_product"
   ]
  },
  "errors": [
-  "визуально: text_matches_shot, looks_like_ad, looks_cheap"
+  "визуально: text_readable, text_matches_shot, first_frame_explains_product"
  ]
 }
