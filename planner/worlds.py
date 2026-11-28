@@ -71,7 +71,8 @@ def pick_text(ctx: Ctx, role: str, used: set, shot: dict | None = None) -> dict 
 def pick_hook(ctx: Ctx, first: dict, purpose: str, template: str) -> dict:
     pool = [t for t in ctx.texts if t.get("style") == "premium" and t.get("kind") == "hook"
             and t["id"] not in ctx.avoid_hooks and not check_item(t)
-            and (purpose == "promote" or t.get("purpose") != "promote")]      # бренд-хук — не в organic
+            and (purpose == "promote" or t.get("purpose") != "promote")       # бренд-хук — не в organic
+            and (t.get("shot") != "both" or v(first).get("both_colors_in_frame"))]  # «два цвета» — только если оба в кадре
     # «Holds 2 / Two condoms» — только если в кадре видно обе штуки (fix-03, правило 2).
     # В текущих исходниках внутри виден один, поэтому хуки «про два» не берём, пока нет такого кадра.
     two_visible = bool(v(first).get("two_visible"))
@@ -297,9 +298,9 @@ def _build_color(ctx, template, purpose, bpm_fallback, spec, in_world, C):
             if clips[idx].get("transitionIn", {}).get("type") == "zoom":
                 clips[idx]["transitionIn"] = {"type": "punch", "frames": 4}       # 3D заменяет зум-переход
                 clips[idx - 1].pop("transitionOut", None)
-            fly = 14
-            three.append({"type": "fly", "model": model, "from": max(0, cut - 8), "durationInFrames": fly})
-            sfx.append({"t": round(max(0.0, (cut - 8) / fps), 2), "kind": "whoosh", "gain_db": -3})
+            fly = 12                                       # кадр закрыт целиком на 8–10-м кадре — там склейка
+            three.append({"type": "fly", "model": model, "from": max(0, cut - 9), "durationInFrames": fly})
+            sfx.append({"t": round(max(0.0, (cut - 9) / fps), 2), "kind": "whoosh", "gain_db": -3})
         if end:
             # финал promote: 3D-чехол медленно поворачивается на бумаге под вордмарком и ценой
             three.append({"type": "hero", "model": model, "from": end["from"], "durationInFrames": end["durationInFrames"]})

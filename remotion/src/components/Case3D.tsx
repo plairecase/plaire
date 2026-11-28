@@ -50,14 +50,15 @@ const Model: React.FC<{obj: THREE.Object3D; scene: Scene3D; total: number; frame
     // финал: медленный поворот 0 → 200°, лёгкое парение; чехол ниже текста
     const p = interpolate(frame, [0, total], [0, 1], {easing: ease, extrapolateRight: 'clamp'});
     rotY = -0.6 + p * (200 * Math.PI) / 180;
-    y = -0.21 + 0.015 * Math.sin(frame / 12);       // центр чехла ≈ 60 % высоты кадра, под ценой
-    scale = 0.5;
+    y = -0.26 + 0.015 * Math.sin(frame / 12);       // центр чехла ≈ 62 % высоты кадра, под ценой
+    scale = 0.64;
   } else {
     // переход: чехол влетает, вращаясь, закрывает кадр в середине (там склейка) и пролетает сквозь камеру
     const p = frame / Math.max(1, total);
     rotY = p * Math.PI * 2.2;
     rotX = 0.5 - p * 0.6;
-    scale = interpolate(p, [0, 0.5, 1], [0.2, 3.2, 9], {easing: Easing.in(Easing.quad)});
+    // полностью закрывает кадр лишь 2–3 кадра (иначе читается как «пустая вставка»)
+    scale = interpolate(p, [0, 0.62, 0.8, 1], [0.25, 2.4, 6, 14], {easing: Easing.in(Easing.quad)});
     z = 0;
   }
   return (
