@@ -9,7 +9,9 @@
       "screens": [
         "Introducing Plaire."
       ],
-      "eyebrow": "PLAIRE — ECO-LEATHER CASE"
+      "eyebrow": "PLAIRE — ECO-LEATHER CASE",
+      "shot": "any",
+      "purpose": "promote"
     },
     {
       "id": "p_hook_02",
@@ -17,7 +19,8 @@
       "kind": "hook",
       "screens": [
         "Stop keeping condoms in your wallet."
-      ]
+      ],
+      "shot": "any"
     },
     {
       "id": "p_hook_03",
@@ -25,7 +28,8 @@
       "kind": "hook",
       "screens": [
         "Holds 2. Feels like nothing."
-      ]
+      ],
+      "shot": "inside"
     },
     {
       "id": "p_hook_04",
@@ -33,7 +37,8 @@
       "kind": "hook",
       "screens": [
         "Eco-leather. Magnetic. Ultra-slim."
-      ]
+      ],
+      "shot": "any"
     },
     {
       "id": "p_hook_05",
@@ -42,7 +47,8 @@
       "screens": [
         "The condom case, redesigned."
       ],
-      "eyebrow": "PLAIRE"
+      "eyebrow": "PLAIRE",
+      "shot": "any"
     },
     {
       "id": "p_hook_06",
@@ -51,7 +57,8 @@
       "screens": [
         "Looks like a wallet."
       ],
-      "eyebrow": "THE CONDOM CASE"
+      "eyebrow": "THE CONDOM CASE",
+      "shot": "any"
     },
     {
       "id": "p_hook_07",
@@ -60,7 +67,8 @@
       "screens": [
         "Body heat. Friction. Cards.",
         "Your wallet was never the place."
-      ]
+      ],
+      "shot": "any"
     },
     {
       "id": "p_hook_08",
@@ -68,7 +76,8 @@
       "kind": "hook",
       "screens": [
         "Quiet luxury for your pocket."
-      ]
+      ],
+      "shot": "any"
     },
     {
       "id": "p_hook_09",
@@ -76,7 +85,8 @@
       "kind": "hook",
       "screens": [
         "A condom case, finally done right."
-      ]
+      ],
+      "shot": "any"
     },
     {
       "id": "p_hook_10",
@@ -84,7 +94,8 @@
       "kind": "hook",
       "screens": [
         "Holds two. Nothing more."
-      ]
+      ],
+      "shot": "inside"
     },
     {
       "id": "p_hook_11",
@@ -93,7 +104,8 @@
       "screens": [
         "Slim enough to forget."
       ],
-      "eyebrow": "ULTRA-SLIM CONDOM CASE"
+      "eyebrow": "ULTRA-SLIM CONDOM CASE",
+      "shot": "any"
     },
     {
       "id": "p_hook_12",
@@ -102,7 +114,8 @@
       "screens": [
         "Hidden magnetic closure."
       ],
-      "eyebrow": "PLAIRE — ECO-LEATHER CASE"
+      "eyebrow": "PLAIRE — ECO-LEATHER CASE",
+      "shot": "any"
     },
     {
       "id": "p_hook_13",
@@ -110,7 +123,8 @@
       "kind": "hook",
       "screens": [
         "Designed to carry two."
-      ]
+      ],
+      "shot": "inside"
     },
     {
       "id": "p_hook_14",
@@ -118,7 +132,8 @@
       "kind": "hook",
       "screens": [
         "Small case. Calm mind."
-      ]
+      ],
+      "shot": "any"
     },
     {
       "id": "p_hook_15",
@@ -127,7 +142,8 @@
       "screens": [
         "Made from soft eco-leather."
       ],
-      "eyebrow": "MATERIAL"
+      "eyebrow": "MATERIAL",
+      "shot": "any"
     },
     {
       "id": "p_hook_16",
@@ -135,7 +151,8 @@
       "kind": "hook",
       "screens": [
         "Two condoms. One slim case."
-      ]
+      ],
+      "shot": "inside"
     },
     {
       "id": "p_hook_17",
@@ -143,7 +160,8 @@
       "kind": "hook",
       "screens": [
         "Your condoms deserve better."
-      ]
+      ],
+      "shot": "any"
     },
     {
       "id": "p_hook_18",
@@ -152,7 +170,8 @@
       "screens": [
         "Cognac Brown. Midnight Black."
       ],
-      "eyebrow": "TWO COLOURS"
+      "eyebrow": "TWO COLOURS",
+      "shot": "any"
     },
     {
       "id": "n_hook_01",
@@ -391,7 +410,7 @@
       "screens": [
         "Holds 2."
       ],
-      "action": "open"
+      "action": "inside"
     },
     {
       "id": "p_sec_magnet",
@@ -409,7 +428,7 @@
       "screens": [
         "Eco-leather. Ultra-slim."
       ],
-      "action": "any"
+      "action": "macro"
     },
     {
       "id": "p_sec_wallet",
@@ -418,7 +437,7 @@
       "screens": [
         "Looks like a mini wallet."
       ],
-      "action": "closed"
+      "action": "palm"
     },
     {
       "id": "p_sec_colours",
@@ -427,7 +446,7 @@
       "screens": [
         "Two colours."
       ],
-      "action": "colours"
+      "action": "both_colors"
     },
     {
       "id": "n_sec_holds",
@@ -473,6 +492,60 @@
         "2 colours"
       ],
       "action": "colours"
+    },
+    {
+      "id": "p_sec_slim",
+      "style": "premium",
+      "kind": "second",
+      "screens": [
+        "Ultra-slim."
+      ],
+      "action": "profile"
+    },
+    {
+      "id": "p_sec_carry",
+      "style": "premium",
+      "kind": "second",
+      "screens": [
+        "Made to carry."
+      ],
+      "action": "street"
+    },
+    {
+      "id": "p_sec_cognac",
+      "style": "premium",
+      "kind": "second",
+      "screens": [
+        "Also in Cognac."
+      ],
+      "action": "second_color"
+    },
+    {
+      "id": "p_sec_black",
+      "style": "premium",
+      "kind": "second",
+      "screens": [
+        "Also in Black."
+      ],
+      "action": "second_color"
+    },
+    {
+      "id": "p_sec_eco",
+      "style": "premium",
+      "kind": "second",
+      "screens": [
+        "Eco-leather."
+      ],
+      "action": "macro"
+    },
+    {
+      "id": "p_sec_ecoslim",
+      "style": "premium",
+      "kind": "second",
+      "screens": [
+        "Eco-leather. Ultra-slim."
+      ],
+      "action": "studio_closed"
     }
   ],
   "caption_ctas": [

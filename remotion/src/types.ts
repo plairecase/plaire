@@ -14,6 +14,7 @@ export type ClipSpec = {
   pushIn?: [number, number];// масштаб в начале и в конце плана (премиум)
   transitionIn?: Transition;
   transitionOut?: Transition;
+  offsetY?: number;         // сдвиг кадра вниз, px (финал promote: чехол не под текстом)
 };
 
 export type TextScreen = {
@@ -23,6 +24,7 @@ export type TextScreen = {
   eyebrow?: string;
   animateIn: boolean;       // первый экран = обложка, виден с кадра 0
   color?: TextColor;        // цвет по кадру под текстом (иначе общий textColor)
+  plate?: boolean;          // тёмная плашка под текстом на пёстром/среднем фоне (fix-03)
 };
 
 export type EndFrameSpec = {

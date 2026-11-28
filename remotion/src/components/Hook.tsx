@@ -46,13 +46,16 @@ const HookScreen: React.FC<{s: TextScreen; color: TextColor}> = ({s, color}) => 
       ) : null}
       <div
         style={{
+          display: 'inline-block',
+          background: s.plate ? 'rgba(18,18,18,0.85)' : undefined,
+          padding: s.plate ? '16px 24px' : undefined,
           fontFamily: FONT,
-          fontWeight: type.display[0],
+          fontWeight: s.plate || color === 'white' ? 400 : type.display[0],
           fontSize: type.display[1],
           lineHeight: '100px',
           letterSpacing: '-0.02em',
           color: colorOf(color),
-          textShadow: shadowOf(color),
+          textShadow: s.plate ? 'none' : shadowOf(color),
           textWrap: 'balance',
         }}
       >

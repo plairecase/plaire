@@ -3,7 +3,7 @@ import {effects, FONT, palette, type} from '../brand';
 import type {TextColor} from '../types';
 import {colorOf, eyebrowStyle, shadowOf} from './Hook';
 
-/** €29 | • PLAIRE.EU — контурная капсула 2 px поверх фото, без заливки. */
+/** €29 | • PLAIRE.EU — контурная рамка 2 px с прямыми углами, без заливки. */
 export const PriceTag: React.FC<{price: string; site: string; color: TextColor}> = ({price, site, color}) => {
   const c = colorOf(color);
   return (
@@ -14,7 +14,7 @@ export const PriceTag: React.FC<{price: string; site: string; color: TextColor}>
         gap: 24,
         padding: '14px 32px',
         border: `${effects.hairline_px}px solid ${c}`,
-        borderRadius: 999,
+        borderRadius: 0,                  // прямые углы (fix-01/fix-03)
       }}
     >
       <span

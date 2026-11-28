@@ -42,14 +42,19 @@
   },
   "templates": {
     "premium": [
-      "p_organic"
+      "p_gloves_pov",
+      "p_studio_to_life"
     ],
     "native": [
       "n_statement"
     ],
     "promote": [
-      "p_organic"
-    ]
+      "p_gloves_pov"
+    ],
+    "disabled": {
+      "p_organic": "смешивает миры (fix-03)",
+      "p_one_line": "заменён"
+    }
   },
   "beat_grid_bpm": [
     120,

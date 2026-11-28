@@ -61,7 +61,7 @@ const Clip: React.FC<{clip: ClipSpec}> = ({clip}) => {
       style={{
         opacity,
         filter: blur > 0.3 ? `blur(${blur}px)` : undefined,
-        transform: `translate(${tx}%, ${ty}%)`,
+        transform: `translate(${tx}%, ${ty}%) translateY(${clip.offsetY ?? 0}px)`,
       }}
     >
       <OffthreadVideo

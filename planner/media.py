@@ -47,7 +47,8 @@ def cut(src: Path, start: float, dur: float, out: Path, fps: int, crf: int, hdr:
                         f"unsharp=5:5:0.5:3:3:0.0")
             else:
                 stab = ",deshake=rx=48:ry=48"            # запасной встроенный стабилизатор
-        vf = f"{base}{stab}{',reverse' if reverse else ''},format=yuv420p,setsar=1"
+        # tpad: если исходник кончился раньше плана — держим последний кадр (никаких чёрных кадров)
+        vf = f"{base}{stab}{',reverse' if reverse else ''},tpad=stop_mode=clone:stop_duration=1,format=yuv420p,setsar=1"
         cmd = ["ffmpeg", "-v", "error", "-y", "-ss", f"{start:.3f}", "-i", str(src), "-t", f"{dur:.3f}",
                "-vf", vf, "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", str(crf),
                "-pix_fmt", "yuv420p", "-color_primaries", "bt709", "-color_trc", "bt709",
@@ -66,7 +67,8 @@ def cut(src: Path, start: float, dur: float, out: Path, fps: int, crf: int, hdr:
 
 def reverse_head(clip: Path, dur: float, out: Path, crf: int) -> Path:
     """Первые dur секунд готового клипа задом наперёд (для бесшовного лупа)."""
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(clip), "-t", f"{dur:.3f}", "-vf", "reverse",
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(clip), "-t", f"{dur:.3f}",
+                    "-vf", "reverse,tpad=stop_mode=clone:stop_duration=1", "-t", f"{dur:.3f}",
                     "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", str(crf), "-pix_fmt", "yuv420p",
                     "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709",
                     "-movflags", "+faststart", str(out)], check=True, timeout=300)

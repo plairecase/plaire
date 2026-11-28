@@ -9,6 +9,10 @@ on:
         description: "Число, чтобы повторить конкретный монтаж (пусто = случайно)"
         required: false
         default: ""
+      check_old:
+        description: "Прогнать визуальную проверку на старых роликах теста 1450 (должны не пройти)"
+        type: boolean
+        default: false
 
 concurrency:
   group: plaire-autoedit
@@ -61,7 +65,15 @@ jobs:
           GDRIVE_SA_JSON: ${{ secrets.GDRIVE_SA_JSON }}
         run: bash scripts/setup_rclone.sh
 
+      - name: Проверка QC на старых роликах (fix-03)
+        if: ${{ inputs.check_old }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python -m qc.vision_check --fixtures | tee work_qc_old.txt
+
       - name: Собрать ролики
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python -m scripts.make_videos --mode test ${{ inputs.seed != '' && format('--seed {0}', inputs.seed) || '' }}
 
       - name: Превью (артефакт)
@@ -79,7 +91,8 @@ jobs:
       - name: Превью в ветку autoedit-reports
         if: always()
         run: |
-          [ -f work/videos_report.md ] || exit 0
+          [ -f work/videos_report.md ] || [ -f work_qc_old.txt ] || exit 0
+          mkdir -p work && touch work/videos_report.md
           git config user.name "plaire-autoedit"
           git config user.email "plaire-autoedit@users.noreply.github.com"
           if git fetch -q origin autoedit-reports 2>/dev/null; then
@@ -91,5 +104,7 @@ jobs:
           cp work/videos_report.md rep/videos/report.md
           cp work/contact_*.jpg rep/videos/ 2>/dev/null || true
           cp work/hdr_compare.jpg rep/videos/ 2>/dev/null || true
+          mkdir -p rep/videos/plans && cp work/plans/*.json rep/videos/plans/ 2>/dev/null || true
+          cp work_qc_old.txt rep/videos/qc_old.txt 2>/dev/null || true
           cd rep && git add -A
           git commit -q -m "Ролики $(date -u +%F\ %H:%M) (run ${{ github.run_id }})" && git push -q origin autoedit-reports || echo "нечего коммитить"
