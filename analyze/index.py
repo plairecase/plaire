@@ -103,10 +103,10 @@ def index_file(path: Path, meta: dict, cfg: dict, client, usage, frames_dir: Pat
 
 # ------------------------------------------------------------------ годность плана
 def thresholds(index: dict) -> dict:
-    """Порог резкости — относительный: нижние 15 % библиотеки считаем мягкими."""
+    """Порог резкости — относительный: нижние 35 % библиотеки считаем мягкими (fix-03)."""
     vals = sorted(s["metrics"]["sharpness"] for f in index["files"].values() if not f.get("deleted")
                   for s in f["shots"])
-    soft = vals[int(len(vals) * 0.15)] if len(vals) >= 7 else 0
+    soft = vals[int(len(vals) * 0.35)] if len(vals) >= 7 else 0     # fix-03: порог резкости строже
     return {"sharp_min": soft}
 
 
@@ -116,6 +116,7 @@ def usable(s: dict, th: dict, cfg: dict) -> bool:
         return False
     return (v["case_visible_ratio"] >= cfg["index"]["case_visible_min"]
             and m["sharpness"] >= th["sharp_min"]
+            and v.get("focus_ok", True)
             and (m["clip_high"] or 0) < 0.05)
 
 
@@ -157,6 +158,23 @@ def report(index: dict, new_files: list[str], skipped: list[str], errors: list[s
         L.append("- Действие: " + ", ".join(f"{k} {v}" for k, v in act.most_common()))
         sf = collections.Counter(x for s in tagged for x in s["vision"]["style_fit"])
         L.append(f"- Подходит для стиля: премиум {sf.get('premium', 0)}, нативный {sf.get('native', 0)}")
+        if any("world" in s["vision"] for s in tagged):
+            wnames = {"gloves": "перчатки", "studio_paper": "студия/бумага", "street_hands": "улица, голые руки",
+                      "packaging": "упаковка", "lifestyle_other": "карман/сумка/город"}
+            L += ["", "## Миры и цвета (fix-03)", "", "| мир | cognac | black | оба | годных | внутри видно 2 шт. |",
+                  "|---|---|---|---|---|---|"]
+            for w in wnames:
+                ws = [s for s in tagged if s["vision"].get("world") == w]
+                if not ws:
+                    continue
+                cc = collections.Counter(s["vision"]["color"] for s in ws)
+                L.append(f"| {wnames[w]} | {cc.get('cognac', 0)} | {cc.get('black', 0)} | {cc.get('both', 0)} | "
+                         f"{sum(1 for s in ws if s['id'] in good_ids)} | {sum(1 for s in ws if s['vision'].get('shows_inside'))} |")
+            both = sum(1 for s in tagged if s["vision"].get("both_colors_in_frame"))
+            prof = sum(1 for s in tagged if s["vision"].get("shows_profile"))
+            blur = sum(1 for s in tagged if s["vision"].get("focus_ok") is False)
+            L.append("")
+            L.append(f"- Оба цвета в одном кадре: **{both}** · торец/толщина: **{prof}** · не в фокусе: **{blur}**")
         heroes = sorted(good, key=lambda s: -s["vision"]["hero_score"])[:5]
         if heroes:
             L += ["", "**Лучшие планы для хука:**"]
@@ -188,6 +206,20 @@ def report(index: dict, new_files: list[str], skipped: list[str], errors: list[s
             todo.append("больше планов с Midnight Black")
         if col.get("cognac", 0) + col.get("both", 0) < 3:
             todo.append("больше планов с Cognac Brown")
+        # fix-03: полные «цепочки действий» в каждом мире
+        def has(world=None, color=None, **flags):
+            return any((world is None or s["vision"].get("world") == world)
+                       and (color is None or s["vision"]["color"] == color)
+                       and all(s["vision"].get(k) == v for k, v in flags.items()) for s in good)
+        for col, cname in (("black", "чёрный"), ("cognac", "коньячный")):
+            if not has("street_hands", col, shows_inside=True):
+                todo.append(f"улица, голые руки, {cname}: достать из кармана → открыть → показать 2 шт. → закрыть "
+                            f"(щелчок) → убрать; одним дублем 6–10 с + крупно каждый шаг")
+        if not any(s["vision"].get("both_colors_in_frame") for s in good):
+            todo.append("оба цвета в одном кадре: рядом на бумаге, в двух руках, в перчатках")
+        if not has("gloves", "cognac", shows_profile=True):
+            todo.append("перчатки, коньячный: открыть → 2 шт. → закрыть → торец (как уже есть для чёрного)")
+        todo.append("всё в фокусе; держать кадр 1 с до и после действия (запас для монтажа)")
         L += ["", "## Что снять в следующий раз", ""] + ([f"- {t}" for t in todo] or ["- Пока хватает."])
 
     if skipped:
@@ -232,7 +264,7 @@ def contact_sheet(index: dict, out: Path, cols: int = 8) -> Path | None:
             canvas[:h, x0:x0 + crop.shape[1]] = crop
             v = s.get("vision") or {}
             l1 = f"{f['name'][:14]} {s['start']:.0f}-{s['end']:.0f}s"
-            l2 = f"{v.get('setting', '?')[:9]} {v.get('color', '?')[:6]} c{v.get('case_visible_ratio', 0):.1f} h{v.get('hero_score', '-')}"
+            l2 = f"{v.get('world', v.get('setting', '?'))[:10]} {v.get('color', '?')[:6]} {'IN ' if v.get('shows_inside') else ''}h{v.get('hero_score', '-')}"
             cv2.putText(canvas, l1, (4, h + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.42, (20, 20, 20), 1, cv2.LINE_AA)
             cv2.putText(canvas, l2, (4, h + 42), cv2.FONT_HERSHEY_SIMPLEX, 0.42, (20, 20, 20), 1, cv2.LINE_AA)
             tiles.append(canvas)

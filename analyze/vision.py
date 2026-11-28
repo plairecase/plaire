@@ -17,6 +17,10 @@ SETTINGS = ["studio", "street", "indoor_lifestyle", "hands", "pocket_bag", "pack
 ACTIONS = ["static", "rotate", "open", "close", "insert", "carry", "reveal", "detail_macro"]
 COLORS = ["cognac", "black", "both", "none"]
 STYLES = ["premium", "native"]
+WORLDS = ["gloves", "studio_paper", "street_hands", "packaging", "lifestyle_other"]
+HANDS = ["none", "bare", "gloves"]
+BACKGROUNDS = ["grey", "paper", "outdoor", "fabric", "other"]
+STATES = ["open", "closed", "opening", "closing"]
 
 SCHEMA = {
     "type": "object",
@@ -29,9 +33,19 @@ SCHEMA = {
         "style_fit": {"type": "array", "items": {"type": "string", "enum": STYLES}},
         "hero_score": {"type": "integer"},
         "notes": {"type": "string"},
+        "world": {"type": "string", "enum": WORLDS},
+        "hands": {"type": "string", "enum": HANDS},
+        "background": {"type": "string", "enum": BACKGROUNDS},
+        "both_colors_in_frame": {"type": "boolean"},
+        "shows_inside": {"type": "boolean"},
+        "shows_profile": {"type": "boolean"},
+        "start_state": {"type": "string", "enum": STATES},
+        "end_state": {"type": "string", "enum": STATES},
+        "focus_ok": {"type": "boolean"},
     },
     "required": ["case_visible_ratio", "case_bbox", "color", "setting", "action", "style_fit",
-                 "hero_score", "notes"],
+                 "hero_score", "notes", "world", "hands", "background", "both_colors_in_frame",
+                 "shows_inside", "shows_profile", "start_state", "end_state", "focus_ok"],
     "additionalProperties": False,
 }
 
@@ -50,6 +64,14 @@ wallet_before (the "before" problem: condom kept in a wallet, crushed wrapper, p
 - style_fit: which edit styles the shot suits. premium = calm, clean, Apple-like product shot. \
 native = real life, handheld, TikTok lifestyle. Can be both or empty.
 - hero_score: 0-10, how strong the shot is as a hero / hook frame (sharp, case well lit and big, clean background).
+- world: the "world" of the shot, so an editor never mixes worlds: gloves (white gloves, grey backdrop, catalogue / unboxing look) | studio_paper (case on light paper, usually from above, no hands) | street_hands (bare hands, outdoors / bench, daylight) | packaging (box, packaging is the subject) | lifestyle_other (pocket, bag, evening, city, home).
+- hands: none | bare | gloves.
+- background: grey | paper | outdoor | fabric | other.
+- both_colors_in_frame: true only if a cognac AND a black case are visible at the same time.
+- shows_inside: true only if the case is open and the condoms inside are clearly visible.
+- shows_profile: true if the edge / thickness of the case is shown (side view, how slim it is).
+- start_state / end_state: case state in the first and the last frame: open | closed | opening | closing.
+- focus_ok: false if the case is blurry / out of focus in most frames.
 - notes: very short, in Russian (до 12 слов): что в кадре и проблемы (смаз, пересвет, чужой бренд, лицо).
 Be strict: blurry frames, the case partly out of frame, or no case lower the ratio and the score."""
 
@@ -131,6 +153,9 @@ def validate(d: dict) -> dict:
     """Проверка и нормализация ответа. Ошибка → ValueError."""
     if set(d) != set(SCHEMA["required"]):
         raise ValueError(f"поля: {sorted(d)}")
+    if d["world"] not in WORLDS or d["hands"] not in HANDS or d["background"] not in BACKGROUNDS \
+            or d["start_state"] not in STATES or d["end_state"] not in STATES:
+        raise ValueError("enum (world/hands/background/state)")
     r = float(d["case_visible_ratio"])
     if not 0 <= r <= 1:
         raise ValueError("case_visible_ratio вне 0..1")
@@ -146,7 +171,11 @@ def validate(d: dict) -> dict:
         raise ValueError("hero_score вне 0..10")
     return {"case_visible_ratio": round(r, 3), "case_bbox": [round(min(max(x, 0), 1), 4) for x in bbox],
             "color": d["color"], "setting": d["setting"], "action": d["action"],
-            "style_fit": sorted(set(d["style_fit"])), "hero_score": hs, "notes": str(d["notes"])[:200]}
+            "style_fit": sorted(set(d["style_fit"])), "hero_score": hs, "notes": str(d["notes"])[:200],
+            "world": d["world"], "hands": d["hands"], "background": d["background"],
+            "both_colors_in_frame": bool(d["both_colors_in_frame"]), "shows_inside": bool(d["shows_inside"]),
+            "shows_profile": bool(d["shows_profile"]), "start_state": d["start_state"],
+            "end_state": d["end_state"], "focus_ok": bool(d["focus_ok"])}
 
 
 def _b64(p: Path) -> str:

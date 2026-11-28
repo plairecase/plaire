@@ -104,9 +104,14 @@ def shot_metrics(frames: np.ndarray, fps: float, start: float, end: float) -> di
     seg = frames[a:b].astype(np.float32) / 255.0
     if len(seg) == 0:
         return {"exposure": None, "clip_high": None, "clip_low": None, "motion": None,
-                "shake": None, "luma_top": None}
+                "shake": None, "luma_top": None, "text_luma": None, "text_detail": None}
     mid = seg[len(seg) // 2]
     top = mid[: max(1, int(mid.shape[0] * 0.3))]
+    # зона текста хука: y 270…700 из 1920 (14–36 % высоты)
+    h = mid.shape[0]
+    tz = seg[:, int(h * 0.14): int(h * 0.36)]
+    text_luma = float(tz.mean())
+    text_detail = float(np.mean([np.abs(cv2.Laplacian(f, cv2.CV_32F)).mean() for f in tz[:: max(1, len(tz) // 5)]]))
     motion = float(np.mean(np.abs(np.diff(seg, axis=0)))) if len(seg) > 1 else 0.0
 
     shifts = []
@@ -127,4 +132,6 @@ def shot_metrics(frames: np.ndarray, fps: float, start: float, end: float) -> di
         "motion": round(motion, 4),
         "shake": round(shake, 5),
         "luma_top": round(float(top.mean()), 4),
+        "text_luma": round(text_luma, 4),
+        "text_detail": round(text_detail, 4),
     }
