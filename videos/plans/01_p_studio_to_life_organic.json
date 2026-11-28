@@ -1,0 +1,208 @@
+{
+ "props": {
+  "template": "p_studio_to_life",
+  "style": "premium",
+  "fps": 30,
+  "durationInFrames": 234,
+  "clips": [
+   {
+    "src": "clips/c9.mp4",
+    "from": 0,
+    "durationInFrames": 44,
+    "pushIn": [
+     1.0,
+     1.05
+    ],
+    "transitionIn": {
+     "type": "impact",
+     "frames": 3
+    }
+   },
+   {
+    "src": "clips/c10.mp4",
+    "from": 44,
+    "durationInFrames": 58,
+    "pushIn": [
+     1.0,
+     1.05
+    ],
+    "transitionIn": {
+     "type": "punch",
+     "frames": 4
+    }
+   },
+   {
+    "src": "clips/c11.mp4",
+    "from": 96,
+    "durationInFrames": 65,
+    "pushIn": [
+     1.0,
+     1.05
+    ],
+    "transitionIn": {
+     "type": "punch",
+     "frames": 4
+    }
+   },
+   {
+    "src": "clips/c12.mp4",
+    "from": 161,
+    "durationInFrames": 73,
+    "pushIn": [
+     1.08,
+     1.0
+    ],
+    "transitionIn": {
+     "type": "punch",
+     "frames": 4
+    }
+   }
+  ],
+  "screens": [
+   {
+    "from": 0,
+    "durationInFrames": 44,
+    "text": "Eco-leather. Magnetic. Ultra-slim.",
+    "eyebrow": null,
+    "animateIn": false,
+    "role": "inside",
+    "shot": "1DFSz6wnZTszcmRtlhy_OjJ_41iQAR8Q8#0.00-4.15",
+    "action": null,
+    "color": "ink",
+    "plate": false,
+    "top": 300
+   },
+   {
+    "from": 44,
+    "durationInFrames": 58,
+    "text": "Eco-leather. Ultra-slim.",
+    "eyebrow": null,
+    "animateIn": true,
+    "role": "studio_closed",
+    "shot": "1Bh6WFDcjLYDM7jEQOgkxhdRiU5eNA73W#0.00-4.69",
+    "action": "studio_closed",
+    "color": "ink",
+    "plate": false,
+    "top": 270
+   },
+   {
+    "from": 102,
+    "durationInFrames": 59,
+    "text": "Made to carry.",
+    "eyebrow": null,
+    "animateIn": true,
+    "role": "street",
+    "shot": "16x49qmlKM8dPjzC2RR5ZW4q7277S9kN7#5.39-10.78",
+    "action": "street",
+    "color": "ink",
+    "plate": false
+   }
+  ],
+  "textColor": "white",
+  "endFrame": null,
+  "threeD": [
+   {
+    "type": "fly",
+    "model": "models/cognac.glb",
+    "from": 94,
+    "durationInFrames": 14
+   }
+  ]
+ },
+ "shots": [
+  {
+   "shot": "1DFSz6wnZTszcmRtlhy_OjJ_41iQAR8Q8#0.00-4.15",
+   "file": "IMG_1440.MOV",
+   "role": "inside",
+   "world": "studio_paper",
+   "hands": "none",
+   "color": "cognac",
+   "inside": true,
+   "both": false,
+   "dur": 1.461
+  },
+  {
+   "shot": "1Bh6WFDcjLYDM7jEQOgkxhdRiU5eNA73W#0.00-4.69",
+   "file": "IMG_1444.MOV",
+   "role": "studio_closed",
+   "world": "studio_paper",
+   "hands": "none",
+   "color": "cognac",
+   "inside": false,
+   "both": false,
+   "dur": 1.948
+  },
+  {
+   "shot": "16x49qmlKM8dPjzC2RR5ZW4q7277S9kN7#5.39-10.78",
+   "file": "-6741131299191009673.MP4",
+   "role": "street",
+   "world": "street_hands",
+   "hands": "bare",
+   "color": "cognac",
+   "inside": false,
+   "both": false,
+   "dur": 1.948
+  },
+  {
+   "shot": "1DFSz6wnZTszcmRtlhy_OjJ_41iQAR8Q8#0.00-4.15",
+   "file": "IMG_1440.MOV",
+   "role": "loop",
+   "world": "studio_paper",
+   "hands": "none",
+   "color": "cognac",
+   "inside": true,
+   "both": false,
+   "dur": 2.435
+  }
+ ],
+ "checks": {
+  "world": "studio_paper",
+  "world_share": 0.75,
+  "world_changes": 1,
+  "world_consistency": true,
+  "hands_consistency": true,
+  "color_consistency": true,
+  "text_shot_match": true,
+  "inside_early": true,
+  "first_cut_s": 1.47,
+  "max_shot_s": 1.95,
+  "price_on_screen": false,
+  "loop_ssim": 0.983
+ },
+ "visual": {
+  "issues": [
+   "Текст «Eco-leather. Magnetic. Ultra-slim.» налезает на кейс в кадрах 1–2: слова «Ultra-slim» перекрыты изделием",
+   "В кадрах 3–4 текст пересекается с коробкой (логотип PLAIRE), читается плохо",
+   "Тёмный текст на тёмной коробке и на коричневой коже имеет низкий контраст",
+   "В первом кадре кейс закрыт, видна жёлтая вставка, но двух презервативов нет — непонятно, что это за продукт",
+   "Текст «Made to carry.» на фоне города и сумки теряется, контраст слабый",
+   "В кадрах 3–4 кейс выглядит как обычный кошелёк без раскрытия, нет показа «Holds 2»",
+   "Смена студия → улица резкая, хотя она запланирована; в целом допустима",
+   "Финальные кадры без текста и без CTA, но чёрной плашки нет"
+  ],
+  "text_readable": false,
+  "text_not_cut": false,
+  "case_visible": true,
+  "no_filters_look": true,
+  "no_black_endcard": true,
+  "first_frame_explains_product": false,
+  "hand_present": true,
+  "shots_feel_continuous": true,
+  "text_matches_shot": false,
+  "one_location": true,
+  "looks_like_ad": false,
+  "looks_cheap": true,
+  "matches_style": "native",
+  "pass": false,
+  "failed": [
+   "text_readable",
+   "text_not_cut",
+   "text_matches_shot",
+   "first_frame_explains_product",
+   "looks_cheap"
+  ]
+ },
+ "errors": [
+  "визуально: text_readable, text_not_cut, text_matches_shot, first_frame_explains_product, looks_cheap"
+ ]
+}
