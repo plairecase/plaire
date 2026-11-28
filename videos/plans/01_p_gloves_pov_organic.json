@@ -1,0 +1,233 @@
+{
+ "props": {
+  "template": "p_gloves_pov",
+  "style": "premium",
+  "fps": 30,
+  "durationInFrames": 243,
+  "clips": [
+   {
+    "src": "clips/c8.mp4",
+    "from": 0,
+    "durationInFrames": 40,
+    "pushIn": [
+     1.0,
+     1.05
+    ],
+    "transitionIn": {
+     "type": "impact",
+     "frames": 3
+    }
+   },
+   {
+    "src": "clips/c9.mp4",
+    "from": 40,
+    "durationInFrames": 41,
+    "pushIn": [
+     1.0,
+     1.05
+    ],
+    "transitionIn": {
+     "type": "punch",
+     "frames": 4
+    }
+   },
+   {
+    "src": "clips/c10.mp4",
+    "from": 81,
+    "durationInFrames": 40,
+    "pushIn": [
+     1.0,
+     1.05
+    ],
+    "transitionIn": {
+     "type": "punch",
+     "frames": 4
+    }
+   },
+   {
+    "src": "clips/c11.mp4",
+    "from": 121,
+    "durationInFrames": 41,
+    "pushIn": [
+     1.0,
+     1.05
+    ],
+    "transitionIn": {
+     "type": "punch",
+     "frames": 4
+    }
+   },
+   {
+    "src": "clips/c12.mp4",
+    "from": 162,
+    "durationInFrames": 81,
+    "pushIn": [
+     1.08,
+     1.0
+    ],
+    "transitionIn": {
+     "type": "punch",
+     "frames": 4
+    }
+   }
+  ],
+  "screens": [
+   {
+    "from": 0,
+    "durationInFrames": 40,
+    "text": "Designed to carry two.",
+    "eyebrow": null,
+    "animateIn": false,
+    "role": "inside",
+    "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#0.00-3.20",
+    "action": null,
+    "color": "white",
+    "plate": true
+   },
+   {
+    "from": 40,
+    "durationInFrames": 41,
+    "text": "Hidden magnetic closure.",
+    "eyebrow": null,
+    "animateIn": true,
+    "role": "close",
+    "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
+    "action": "close",
+    "color": "white",
+    "plate": true
+   },
+   {
+    "from": 81,
+    "durationInFrames": 40,
+    "text": "Ultra-slim.",
+    "eyebrow": null,
+    "animateIn": true,
+    "role": "profile",
+    "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#14.25-19.00",
+    "action": "profile",
+    "color": "white",
+    "plate": true
+   },
+   {
+    "from": 121,
+    "durationInFrames": 41,
+    "text": "Looks like a mini wallet.",
+    "eyebrow": null,
+    "animateIn": true,
+    "role": "palm",
+    "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#9.50-14.25",
+    "action": "palm",
+    "color": "white",
+    "plate": true
+   }
+  ],
+  "textColor": "white",
+  "endFrame": null
+ },
+ "shots": [
+  {
+   "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#0.00-3.20",
+   "file": "IMG_1393.mov",
+   "role": "inside",
+   "world": "gloves",
+   "hands": "gloves",
+   "color": "black",
+   "inside": true,
+   "both": false,
+   "dur": 1.348
+  },
+  {
+   "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
+   "file": "IMG_1393.mov",
+   "role": "close",
+   "world": "gloves",
+   "hands": "gloves",
+   "color": "black",
+   "inside": false,
+   "both": false,
+   "dur": 1.348
+  },
+  {
+   "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#14.25-19.00",
+   "file": "IMG_1293.mov",
+   "role": "profile",
+   "world": "gloves",
+   "hands": "gloves",
+   "color": "black",
+   "inside": false,
+   "both": false,
+   "dur": 1.348
+  },
+  {
+   "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#9.50-14.25",
+   "file": "IMG_1293.mov",
+   "role": "palm",
+   "world": "gloves",
+   "hands": "gloves",
+   "color": "black",
+   "inside": false,
+   "both": false,
+   "dur": 1.348
+  },
+  {
+   "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#0.00-3.20",
+   "file": "IMG_1393.mov",
+   "role": "loop",
+   "world": "gloves",
+   "hands": "gloves",
+   "color": "black",
+   "inside": true,
+   "both": false,
+   "dur": 2.696
+  }
+ ],
+ "checks": {
+  "world": "gloves",
+  "world_share": 1.0,
+  "world_changes": 0,
+  "world_consistency": true,
+  "hands_consistency": true,
+  "color_consistency": true,
+  "text_shot_match": true,
+  "inside_early": true,
+  "first_cut_s": 1.33,
+  "max_shot_s": 1.35,
+  "price_on_screen": false,
+  "loop_ssim": 0.988
+ },
+ "visual": {
+  "issues": [
+   "В кадре 5 плашка с текстом пустая — чёрный прямоугольник без надписи",
+   "В первом кадре виден только один презерватив, а подпись говорит «Designed to carry two», так что текст не совпадает с кадром",
+   "Кадры 1 и 2 повторяют одну и ту же подпись «Designed to carry two»",
+   "Текст «Ultra-slim.» стоит на кадре, где кейс закрыт и повёрнут боком, и толщина не считывается",
+   "Тёмно-синие полосы сверху в кадрах 4-6 выглядят как артефакт кадрирования",
+   "В кадрах 7-9 нет подписей, а действие повторяет начало, так что ролик выглядит зацикленным и затянутым",
+   "Видны только чёрные кейсы, коричневый цвет не показан",
+   "Белые перчатки и студийный свет делают ролик похожим на каталожный, а не на пост живого человека",
+   "Тёмные плашки с текстом закрывают часть кадра и выглядят грубо"
+  ],
+  "text_readable": true,
+  "text_not_cut": true,
+  "case_visible": true,
+  "no_filters_look": true,
+  "no_black_endcard": true,
+  "first_frame_explains_product": true,
+  "hand_present": true,
+  "shots_feel_continuous": true,
+  "text_matches_shot": false,
+  "one_location": true,
+  "looks_like_ad": true,
+  "looks_cheap": true,
+  "matches_style": "native",
+  "pass": false,
+  "failed": [
+   "text_matches_shot",
+   "looks_like_ad",
+   "looks_cheap"
+  ]
+ },
+ "errors": [
+  "визуально: text_matches_shot, looks_like_ad, looks_cheap"
+ ]
+}

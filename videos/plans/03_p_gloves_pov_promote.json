@@ -1,0 +1,247 @@
+{
+ "props": {
+  "template": "p_gloves_pov",
+  "style": "premium",
+  "fps": 30,
+  "durationInFrames": 202,
+  "clips": [
+   {
+    "src": "clips/c37.mp4",
+    "from": 0,
+    "durationInFrames": 40,
+    "pushIn": [
+     1.0,
+     1.05
+    ],
+    "transitionIn": {
+     "type": "impact",
+     "frames": 3
+    }
+   },
+   {
+    "src": "clips/c38.mp4",
+    "from": 40,
+    "durationInFrames": 41,
+    "pushIn": [
+     1.0,
+     1.05
+    ],
+    "transitionIn": {
+     "type": "punch",
+     "frames": 4
+    }
+   },
+   {
+    "src": "clips/c39.mp4",
+    "from": 81,
+    "durationInFrames": 40,
+    "pushIn": [
+     1.0,
+     1.05
+    ],
+    "transitionIn": {
+     "type": "punch",
+     "frames": 4
+    }
+   },
+   {
+    "src": "clips/c40.mp4",
+    "from": 121,
+    "durationInFrames": 41,
+    "pushIn": [
+     1.0,
+     1.05
+    ],
+    "transitionIn": {
+     "type": "punch",
+     "frames": 4
+    }
+   },
+   {
+    "src": "clips/c41.mp4",
+    "from": 162,
+    "durationInFrames": 40,
+    "pushIn": [
+     1.55125,
+     1.55125
+    ],
+    "offsetY": 510,
+    "transitionIn": {
+     "type": "punch",
+     "frames": 4
+    }
+   }
+  ],
+  "screens": [
+   {
+    "from": 0,
+    "durationInFrames": 40,
+    "text": "Made from soft eco-leather.",
+    "eyebrow": "MATERIAL",
+    "animateIn": false,
+    "role": "inside",
+    "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#0.00-3.20",
+    "action": null,
+    "color": "white",
+    "plate": true
+   },
+   {
+    "from": 40,
+    "durationInFrames": 41,
+    "text": "Hidden magnetic closure.",
+    "eyebrow": null,
+    "animateIn": true,
+    "role": "close",
+    "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
+    "action": "close",
+    "color": "white",
+    "plate": true
+   },
+   {
+    "from": 81,
+    "durationInFrames": 40,
+    "text": "Ultra-slim.",
+    "eyebrow": null,
+    "animateIn": true,
+    "role": "profile",
+    "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#14.25-19.00",
+    "action": "profile",
+    "color": "white",
+    "plate": true
+   },
+   {
+    "from": 121,
+    "durationInFrames": 41,
+    "text": "Looks like a mini wallet.",
+    "eyebrow": null,
+    "animateIn": true,
+    "role": "palm",
+    "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#9.50-14.25",
+    "action": "palm",
+    "color": "white",
+    "plate": true
+   }
+  ],
+  "textColor": "white",
+  "endFrame": {
+   "from": 162,
+   "durationInFrames": 40,
+   "color": "ink",
+   "eyebrow": "The condom case",
+   "price": "€29",
+   "site": "PLAIRE.EU",
+   "shipping": "Free shipping to all EU countries",
+   "tagTop": 500
+  }
+ },
+ "shots": [
+  {
+   "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#0.00-3.20",
+   "file": "IMG_1393.mov",
+   "role": "inside",
+   "world": "gloves",
+   "hands": "gloves",
+   "color": "black",
+   "inside": true,
+   "both": false,
+   "dur": 1.348
+  },
+  {
+   "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
+   "file": "IMG_1393.mov",
+   "role": "close",
+   "world": "gloves",
+   "hands": "gloves",
+   "color": "black",
+   "inside": false,
+   "both": false,
+   "dur": 1.348
+  },
+  {
+   "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#14.25-19.00",
+   "file": "IMG_1293.mov",
+   "role": "profile",
+   "world": "gloves",
+   "hands": "gloves",
+   "color": "black",
+   "inside": false,
+   "both": false,
+   "dur": 1.348
+  },
+  {
+   "shot": "1gRKpC-QOLdVe7CWh3kKJ4Vxy4l2IsaPW#9.50-14.25",
+   "file": "IMG_1293.mov",
+   "role": "palm",
+   "world": "gloves",
+   "hands": "gloves",
+   "color": "black",
+   "inside": false,
+   "both": false,
+   "dur": 1.348
+  },
+  {
+   "shot": "1AmgLDIpkdiyIEqgKdvriLdGQ4ShI_bzK#3.20-6.41",
+   "file": "IMG_1393.mov",
+   "role": "card",
+   "world": "gloves",
+   "hands": "gloves",
+   "color": "black",
+   "inside": false,
+   "both": false,
+   "dur": null
+  }
+ ],
+ "checks": {
+  "world": "gloves",
+  "world_share": 1.0,
+  "world_changes": 0,
+  "world_consistency": true,
+  "hands_consistency": true,
+  "color_consistency": true,
+  "text_shot_match": true,
+  "inside_early": true,
+  "first_cut_s": 1.33,
+  "max_shot_s": 1.35,
+  "price_on_screen": true
+ },
+ "visual": {
+  "issues": [
+   "Первый кадр: чехол раскрыт, но виден только один презерватив (не 2), и он обрезан краем кадра — непонятно, что это за продукт",
+   "Текст «Looks like» в кадре 6 оборван — фраза не дочитана, затем в кадре 7 дополняется до «Looks like a mini wallet»",
+   "Тёмные тёмно-серые плашки под текстом выглядят грубо и дёшево, шрифт системный, без стиля бренда",
+   "Текст «Made from soft eco-leather» наложен на кадр с открытым чехлом и презервативом — не соответствует содержанию кадра",
+   "Текст «Ultra-slim» не подтверждается кадром: чехол размыт, закрыт руками, толщина не показана",
+   "Тёмные синие полосы сверху в кадрах 5–7 — артефакты кадрирования, выглядят как баг монтажа",
+   "Яркие белые перчатки перетягивают внимание и выглядят неестественно, кадры 5–7 с другим светом и фоном — нет цельности",
+   "Финальная карточка: мелкий текст «Free shipping» и цена нечитаемы на мобильном, чехол перекрывает низ кадра",
+   "Показан только чёрный цвет, нет Cognac Brown; конец дублирует кадр, нет явного CTA",
+   "Повторяющиеся кадры (1–2, 3–4, 8–9) — затянуто, мало новой информации"
+  ],
+  "text_readable": false,
+  "text_not_cut": false,
+  "case_visible": true,
+  "no_filters_look": true,
+  "no_black_endcard": true,
+  "first_frame_explains_product": false,
+  "hand_present": true,
+  "shots_feel_continuous": false,
+  "text_matches_shot": false,
+  "one_location": false,
+  "looks_like_ad": true,
+  "looks_cheap": true,
+  "matches_style": "native",
+  "pass": false,
+  "failed": [
+   "text_readable",
+   "text_not_cut",
+   "shots_feel_continuous",
+   "text_matches_shot",
+   "one_location",
+   "looks_cheap"
+  ]
+ },
+ "errors": [
+  "длительность 6.7 с вне 9–15 с",
+  "визуально: text_readable, text_not_cut, shots_feel_continuous, text_matches_shot, one_location, looks_cheap"
+ ]
+}

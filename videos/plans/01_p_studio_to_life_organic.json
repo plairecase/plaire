@@ -1,0 +1,204 @@
+{
+ "props": {
+  "template": "p_studio_to_life",
+  "style": "premium",
+  "fps": 30,
+  "durationInFrames": 234,
+  "clips": [
+   {
+    "src": "clips/c4.mp4",
+    "from": 0,
+    "durationInFrames": 44,
+    "pushIn": [
+     1.0,
+     1.05
+    ],
+    "transitionIn": {
+     "type": "impact",
+     "frames": 3
+    }
+   },
+   {
+    "src": "clips/c5.mp4",
+    "from": 44,
+    "durationInFrames": 58,
+    "pushIn": [
+     1.0,
+     1.05
+    ],
+    "transitionIn": {
+     "type": "punch",
+     "frames": 4
+    },
+    "transitionOut": {
+     "type": "zoom",
+     "frames": 6
+    }
+   },
+   {
+    "src": "clips/c6.mp4",
+    "from": 96,
+    "durationInFrames": 65,
+    "pushIn": [
+     1.0,
+     1.05
+    ],
+    "transitionIn": {
+     "type": "zoom",
+     "frames": 6
+    }
+   },
+   {
+    "src": "clips/c7.mp4",
+    "from": 161,
+    "durationInFrames": 73,
+    "pushIn": [
+     1.08,
+     1.0
+    ],
+    "transitionIn": {
+     "type": "punch",
+     "frames": 4
+    }
+   }
+  ],
+  "screens": [
+   {
+    "from": 0,
+    "durationInFrames": 44,
+    "text": "Eco-leather. Magnetic. Ultra-slim.",
+    "eyebrow": null,
+    "animateIn": false,
+    "role": "inside",
+    "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
+    "action": null,
+    "color": "white",
+    "plate": true
+   },
+   {
+    "from": 44,
+    "durationInFrames": 58,
+    "text": "Eco-leather. Ultra-slim.",
+    "eyebrow": null,
+    "animateIn": true,
+    "role": "studio_closed",
+    "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#3.10-6.19",
+    "action": "studio_closed",
+    "color": "white",
+    "plate": true
+   },
+   {
+    "from": 102,
+    "durationInFrames": 59,
+    "text": "Made to carry.",
+    "eyebrow": null,
+    "animateIn": true,
+    "role": "street",
+    "shot": "1ZeTBdL8TXdvsnZjMZFk40oVO2rV6vmDx#4.03-8.07",
+    "action": "street",
+    "color": "white",
+    "plate": true
+   }
+  ],
+  "textColor": "white",
+  "endFrame": null
+ },
+ "shots": [
+  {
+   "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
+   "file": "IMG_1386.MOV",
+   "role": "inside",
+   "world": "studio_paper",
+   "hands": "none",
+   "color": "black",
+   "inside": true,
+   "both": false,
+   "dur": 1.461
+  },
+  {
+   "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#3.10-6.19",
+   "file": "IMG_1386.MOV",
+   "role": "studio_closed",
+   "world": "studio_paper",
+   "hands": "none",
+   "color": "black",
+   "inside": true,
+   "both": false,
+   "dur": 1.948
+  },
+  {
+   "shot": "1ZeTBdL8TXdvsnZjMZFk40oVO2rV6vmDx#4.03-8.07",
+   "file": "6796620381629818176.MP4",
+   "role": "street",
+   "world": "street_hands",
+   "hands": "bare",
+   "color": "black",
+   "inside": false,
+   "both": false,
+   "dur": 1.948
+  },
+  {
+   "shot": "1YIlrX3U_pVcnj_xmC9zgZIiiR9eL8WEJ#0.00-3.10",
+   "file": "IMG_1386.MOV",
+   "role": "loop",
+   "world": "studio_paper",
+   "hands": "none",
+   "color": "black",
+   "inside": true,
+   "both": false,
+   "dur": 2.435
+  }
+ ],
+ "checks": {
+  "world": "studio_paper",
+  "world_share": 0.75,
+  "world_changes": 1,
+  "world_consistency": true,
+  "hands_consistency": true,
+  "color_consistency": true,
+  "text_shot_match": true,
+  "inside_early": true,
+  "first_cut_s": 1.47,
+  "max_shot_s": 1.95,
+  "price_on_screen": false,
+  "loop_ssim": 0.992
+ },
+ "visual": {
+  "issues": [
+   "В кадре 1 и 2 текст перекрывает верхний край кейса и застёжку",
+   "Кадры 5–6 снимаются в другой локации (на коленях, улица, белые шорты), резкая смена света и фона относительно студийных кадров",
+   "Текст на тёмных плашках выглядит как шаблонный, а не нативный",
+   "В кадре с рукой кейс почти чёрный на тёмном фоне, плохо читается форма и содержимое",
+   "Текст 'Eco-leather. Magnetic. Ultra-slim.' в кадре 1 не соответствует видимому: магнит и тонкость не показаны",
+   "Последние три кадра без текста и почти одинаковые, статичное повторение без действия",
+   "Внутри кейса видна только одна презервативная упаковка, а не две, первый кадр не показывает 'Holds 2'",
+   "Рука появляется только в середине, первый кадр без руки выглядит как каталожный",
+   "Цвет Cognac Brown не показан, только Midnight Black"
+  ],
+  "text_readable": true,
+  "text_not_cut": false,
+  "case_visible": true,
+  "no_filters_look": true,
+  "no_black_endcard": true,
+  "first_frame_explains_product": false,
+  "hand_present": true,
+  "shots_feel_continuous": false,
+  "text_matches_shot": false,
+  "one_location": false,
+  "looks_like_ad": true,
+  "looks_cheap": false,
+  "matches_style": "native",
+  "pass": false,
+  "failed": [
+   "text_not_cut",
+   "shots_feel_continuous",
+   "text_matches_shot",
+   "one_location",
+   "first_frame_explains_product",
+   "looks_like_ad"
+  ]
+ },
+ "errors": [
+  "визуально: text_not_cut, shots_feel_continuous, text_matches_shot, one_location, first_frame_explains_product, looks_like_ad"
+ ]
+}
