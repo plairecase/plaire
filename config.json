@@ -79,9 +79,9 @@
         "normalScale": null
       },
       "cognac": {
-        "roughness": null,
-        "tint": 1.0,
-        "normalScale": null
+        "roughness": 0.45,
+        "tint": 0.85,
+        "normalScale": 0.5
       }
     }
   }
